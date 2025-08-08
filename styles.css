@@ -360,5 +360,5 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
 
 .main.landing {
   /* was inherited: 100px */
-  padding-top: 50px; /* adjust lower if you want it even higher */
+  padding-top: 70px; /* adjust lower if you want it even higher */
 }
