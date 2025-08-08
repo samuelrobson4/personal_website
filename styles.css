@@ -110,7 +110,7 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
   display: flex;
   align-items: flex-start;     /* was center */
   justify-content: center;
-  padding-top: clamp(40px, 8vh, 120px); /* clears fixed header and moves title up */
+  padding-top: clamp(60px, 10vh, 120px); /* clears fixed header and moves title up */
 }
 .landing .hero { 
     text-align: left; 
@@ -360,5 +360,5 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
 
 .main.landing {
   /* was inherited: 100px */
-  padding-top: 70px; /* adjust lower if you want it even higher */
+  padding-top: 100px; /* adjust lower if you want it even higher */
 }
