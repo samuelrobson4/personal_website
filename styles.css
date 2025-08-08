@@ -110,13 +110,13 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
   display: flex;
   align-items: flex-start;     /* was center */
   justify-content: center;
-  padding-top: clamp(60px, 10vh, 120px); /* clears fixed header and moves title up */
+  padding-top: 0; /* match about: we add inner padding on the hero instead */
 }
 .landing .hero { 
     text-align: left; 
     margin: 0 auto; 
     max-width: 1100px; 
-    padding: 0 2rem; 
+    padding: 140px 2rem 0; /* match about page's .page top padding */
 }
 .landing .hero-title a { color: #000; text-decoration: none; }
 .landing .hero-title a:hover { color: var(--blue); text-decoration: none; }
