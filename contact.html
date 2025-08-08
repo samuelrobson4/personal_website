@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact – Samuel Robson</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Baskervville:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+  <style>
+    .page{max-width:700px;margin:0 auto;padding:140px 2rem 4rem}
+    h1{font-family:'Baskervville',serif;font-size:24px;font-weight:600;margin-bottom:1rem}
+    form{margin-top:1.5rem;display:grid;gap:12px}
+    label{font-size:14px;color:#444}
+    input,textarea{width:100%;padding:12px 14px;border-radius:12px;border:1px solid #949494;background:#fff;font:inherit;color:#333}
+    textarea{min-height:140px;resize:vertical}
+    .actions{display:flex;gap:12px;align-items:center}
+    button{padding:10px 16px;border-radius:12px;border:1px solid #949494;background:#fff;color:#000;cursor:pointer}
+    .muted{color:var(--text)}
+  </style>
+</head>
+<body>
+  <header class="header">
+    <nav class="nav">
+      <div class="nav-container">
+        <a class="nav-item" href="index.html">home</a>
+        <a class="nav-item" href="about.html">about</a>
+        <a class="nav-item" href="projects.html">projects</a>
+        <a class="nav-item" href="blog.html">blog</a>
+        <a class="nav-item" href="contact.html">contact</a>
+      </div>
+    </nav>
+  </header>
+  <main class="main page">
+    <h1>contact</h1>
+    <p class="muted">Send me a message and I’ll reply soon.</p>
+    <form id="contact-form">
+      <div>
+        <label for="name">name</label>
+        <input id="name" name="name" type="text" placeholder="your name" required />
+      </div>
+      <div>
+        <label for="email">email</label>
+        <input id="email" name="email" type="email" placeholder="your@email.com" required />
+      </div>
+      <div>
+        <label for="message">message</label>
+        <textarea id="message" name="message" placeholder="how can I help?" required></textarea>
+      </div>
+      <div class="actions">
+        <button type="submit">send</button>
+        <span id="status" class="muted" aria-live="polite"></span>
+      </div>
+    </form>
+  </main>
+  <script>
+    const form = document.getElementById('contact-form');
+    const statusEl = document.getElementById('status');
+    form?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      statusEl.textContent = 'sending…';
+      const data = new FormData(form);
+      const params = new URLSearchParams();
+      for (const [k, v] of data.entries()) params.append(k, String(v));
+      // Use mailto as a no-backend fallback
+      const subject = encodeURIComponent('Portfolio contact');
+      const body = encodeURIComponent(`name: ${data.get('name')}\nemail: ${data.get('email')}\n\n${data.get('message')}`);
+      window.location.href = `mailto:L28094@gmail.com?subject=${subject}&body=${body}`;
+      statusEl.textContent = 'opening your email app…';
+    });
+  </script>
+</body>
+</html>
+
+

@@ -1,0 +1,40 @@
+/* Container */
+.container {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  user-select: none;
+}
+
+.card {
+  position: absolute;
+  width: 260px;
+  height: 140px;
+  border-radius: 14px;
+  border: 1px solid #949494; /* lighter grey */
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 14px;
+  box-shadow: none;
+  transform-origin: center;
+  will-change: transform;
+  cursor: pointer;
+}
+.card.dragging { cursor: grabbing; z-index: 10; }
+
+.title {
+  font-family: 'Baskervville', Georgia, 'Times New Roman', serif;
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1em;
+  color: #000;
+  text-transform: lowercase;
+}
+.subtitle { font-size: 15px; color: #777777; }
+
+.srOnly { position: absolute; left: -10000px; top: auto; width: 1px; height: 1px; overflow: hidden; }
+
+
