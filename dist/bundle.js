@@ -29321,11 +29321,13 @@
         const col = Math.floor(index / rows);
         const row = index % rows;
         const x = startX + col * (cardSize.w + gapX) + (Math.random() - 0.5) * 12;
-        const topBand = 24;
+        const topBandPercent = 0.14;
+        const topBand = bounds.height * topBandPercent;
         const rowGapY = cardSize.h + 12;
         const startY = topBand;
         const yBase = startY + row * rowGapY;
-        const y = Math.min(Math.max(yBase + (Math.random() - 0.5) * 10, 60), bounds.height - 60);
+        const margin = Math.max(20, Math.min(60, bounds.height * 0.08));
+        const y = Math.min(Math.max(yBase + (Math.random() - 0.5) * 10, margin), bounds.height - margin);
         return { x: Math.min(Math.max(x, 60), bounds.width - 60), y };
       }
       cards.forEach((card, i) => {
