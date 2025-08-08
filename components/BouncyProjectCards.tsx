@@ -108,6 +108,16 @@ export const BouncyProjectCards = forwardRef<BouncyProjectCardsRef, Props>(funct
 
     // Mouse drag
     const mouse = Mouse.create(container);
+    // Ensure page scrolling works over the canvas area
+    // Stop Matter's wheel handler from preventing default scrolling
+    container.addEventListener(
+      'wheel',
+      (e) => {
+        // Do not prevent default; just stop Matter's listener
+        e.stopImmediatePropagation();
+      },
+      { capture: true }
+    );
     const mouseConstraint = MouseConstraint.create(engine, { mouse, constraint: { stiffness: 0.2 } });
     World.add(engine.world, mouseConstraint);
 

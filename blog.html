@@ -30,7 +30,6 @@
     <h1>studio log</h1>
     <p class="lead">New thoughts and ideas related to my work...</p>
     <div id="blog-bouncy" style="margin-top:12px"></div>
-    <div id="substack-list" class="list" style="margin-top:24px"></div>
   </main>
   <script src="dist/bundle.js"></script>
   <script>
@@ -46,9 +45,7 @@
             url: p.url
           }));
           window.bouncyMount?.(document.getElementById('blog-bouncy'), cards);
-        } else {
-          throw new Error('no feed');
-        }
+        } else { throw new Error('no feed'); }
       } catch (e) {
         const fallback = [
           { id: 'b1', title: 'designing for delight', subtitle: 'writing', url: '#' },
@@ -57,7 +54,6 @@
         ];
         window.bouncyMount?.(document.getElementById('blog-bouncy'), fallback);
       }
-      window.renderSubstack?.(document.getElementById('substack-list'));
     }
     mountBlog();
   </script>

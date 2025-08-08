@@ -29341,6 +29341,13 @@
         import_matter_js.World.add(engine.world, body);
       });
       const mouse = import_matter_js.Mouse.create(container);
+      container.addEventListener(
+        "wheel",
+        (e) => {
+          e.stopImmediatePropagation();
+        },
+        { capture: true }
+      );
       const mouseConstraint = import_matter_js.MouseConstraint.create(engine, { mouse, constraint: { stiffness: 0.2 } });
       import_matter_js.World.add(engine.world, mouseConstraint);
       import_matter_js.Events.on(mouseConstraint, "startdrag", (e) => {
@@ -29465,7 +29472,8 @@
         if (!refW || !containerRef.current)
           return;
         const b = containerRef.current.getBoundingClientRect();
-        const body = import_matter_js.Bodies.rectangle(Math.random() * b.width * 0.8 + 50, 60, DEFAULT_CARD.w, DEFAULT_CARD.h, {
+        const cssSize = getCssCardSize(containerRef.current);
+        const body = import_matter_js.Bodies.rectangle(Math.random() * b.width * 0.8 + 50, 60, cssSize.w, cssSize.h, {
           restitution,
           frictionAir: airFriction
         });
