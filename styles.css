@@ -106,10 +106,11 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
 
 /* Landing layout (index) */
 .landing {
-    min-height: 90vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;     /* was center */
+  justify-content: center;
+  padding-top: clamp(120px, 14vh, 220px); /* clears fixed header and moves title up */
 }
 .landing .hero { 
     text-align: left; 
