@@ -59,11 +59,14 @@
     track.appendChild(art);
   }
   root.style.setProperty('--hs-panel-count', String(config.panels.length));
+  // Ensure initial state shows panel 1
+  track.style.transform = 'translate3d(0,0,0)';
+  if (!prefersReduced) pathEl.style.strokeDashoffset = '1';
 
   // Path setup
   // Single continuous path spanning all panels
   // Base curve in viewBox units; we scale offsets by a factor tied to panel count
-  const unit = 240; // base segment width (viewBox units)
+  const unit = 300; // widen segment to better span each 100vw panel
   let d = '';
   for (let i = 0; i < config.panels.length; i++) {
     const ox = i * unit;
