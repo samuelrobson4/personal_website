@@ -427,8 +427,14 @@
   // Initialize when DOM is ready, with a small delay to ensure bundle.js is loaded
   function delayedInit() {
     // Small delay to ensure dist/bundle.js has loaded and defined global functions
-    setTimeout(init, 100);
+    setTimeout(() => {
+      console.log('[HS-Scroller] Starting delayed initialization...');
+      init();
+    }, 100);
   }
+  
+  // Expose init for debugging
+  window.hsInit = init;
   
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', delayedInit);
