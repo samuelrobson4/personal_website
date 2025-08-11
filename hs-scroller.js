@@ -16,10 +16,11 @@
   // Config
   const config = {
     panelTexts: [
-      { title: 'panel one', body: 'intro to the story' },
-      { title: 'panel two', body: 'the process' },
-      { title: 'panel three', body: 'decisions and craft' },
-      { title: 'panel four', body: 'results and next' },
+      { title: 'made by samuel robson', body: 'value-first products that bring joy', href: 'about.html' },
+      { title: 'about', body: 'principles and approach', href: 'about.html' },
+      { title: 'projects', body: 'a selection of recent work', href: 'projects.html' },
+      { title: 'blog', body: 'studio log, notes and ideas', href: 'blog.html' },
+      { title: 'contact', body: 'get in touch', href: 'contact.html' },
     ],
     pathD:
       'M 40 520 C 180 480 240 420 320 420 C 460 420 520 520 640 520 C 760 520 800 460 880 420',
@@ -34,16 +35,25 @@
 
   // Progressive enhancement: ensure panels reflect config
   track.innerHTML = '';
-  for (const { title, body } of config.panelTexts) {
+  for (const { title, body, href } of config.panelTexts) {
     const art = document.createElement('article');
     art.className = 'hs-panel';
-    art.innerHTML = `<h2>${title}</h2><p>${body}</p>`;
+    const safeHref = href ? ` href="${href}"` : '';
+    art.innerHTML = `<h2>${href ? `<a${safeHref}>${title}</a>` : title}</h2><p>${body}</p>`;
     track.appendChild(art);
   }
   root.style.setProperty('--hs-panel-count', String(config.panelTexts.length));
 
   // Path setup
-  pathEl.setAttribute('d', config.pathD);
+  // Extend the path across panels by scaling its X to the full virtual width
+  // Compute a path that spans panelCount widths by adjusting the viewBox via transform
+  // Simpler approach: repeat the curve segments across panels
+  const segments = [];
+  for (let i = 0; i < config.panelTexts.length; i++) {
+    const offset = i * 240; // segment base width units in viewBox; tweak to taste
+    segments.push(`M ${40 + offset} 520 C ${180 + offset} 480 ${240 + offset} 420 ${320 + offset} 420 C ${460 + offset} 420 ${520 + offset} 520 ${640 + offset} 520 C ${760 + offset} 520 ${800 + offset} 460 ${880 + offset} 420`);
+  }
+  pathEl.setAttribute('d', segments.join(' '));
   pathEl.setAttribute('vector-effect', 'non-scaling-stroke');
   // Normalize by pathLength so 0..1 maps to entire length
   pathEl.setAttribute('pathLength', '1');
@@ -66,7 +76,7 @@
     // Track width = panelCount * viewportW. We need to translate from 0 to (trackW - viewportW)
     const trackDistance = Math.max(0, panelCount * viewportW - viewportW);
     // Add a small buffer so the last panel settles
-    totalScroll = trackDistance + 0.001;
+    totalScroll = trackDistance + viewportH * 0.1; // buffer so line finishes past the last panel edge
     root.style.setProperty('--hs-section-height', `${viewportH + totalScroll}px`);
   }
 
