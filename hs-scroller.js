@@ -39,21 +39,26 @@
     const art = document.createElement('article');
     art.className = 'hs-panel';
     const safeHref = href ? ` href="${href}"` : '';
-    art.innerHTML = `<h2>${href ? `<a${safeHref}>${title}</a>` : title}</h2><p>${body}</p>`;
+    art.innerHTML = `<div class="hs-inner"><h2>${href ? `<a${safeHref}>${title}</a>` : title}</h2><p>${body}</p></div>`;
     track.appendChild(art);
   }
   root.style.setProperty('--hs-panel-count', String(config.panelTexts.length));
 
   // Path setup
-  // Extend the path across panels by scaling its X to the full virtual width
-  // Compute a path that spans panelCount widths by adjusting the viewBox via transform
-  // Simpler approach: repeat the curve segments across panels
-  const segments = [];
+  // Single continuous path spanning all panels
+  // Base curve in viewBox units; we scale offsets by a factor tied to panel count
+  const unit = 240; // base segment width
+  let d = '';
   for (let i = 0; i < config.panelTexts.length; i++) {
-    const offset = i * 240; // segment base width units in viewBox; tweak to taste
-    segments.push(`M ${40 + offset} 520 C ${180 + offset} 480 ${240 + offset} 420 ${320 + offset} 420 C ${460 + offset} 420 ${520 + offset} 520 ${640 + offset} 520 C ${760 + offset} 520 ${800 + offset} 460 ${880 + offset} 420`);
+    const ox = i * unit;
+    if (i === 0) {
+      d += `M ${40 + ox} 520`;
+    }
+    d += ` C ${180 + ox} 480 ${240 + ox} 420 ${320 + ox} 420`;
+    d += ` C ${460 + ox} 420 ${520 + ox} 520 ${640 + ox} 520`;
+    d += ` C ${760 + ox} 520 ${800 + ox} 460 ${880 + ox} 420`;
   }
-  pathEl.setAttribute('d', segments.join(' '));
+  pathEl.setAttribute('d', d);
   pathEl.setAttribute('vector-effect', 'non-scaling-stroke');
   // Normalize by pathLength so 0..1 maps to entire length
   pathEl.setAttribute('pathLength', '1');
