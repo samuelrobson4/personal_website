@@ -375,6 +375,13 @@
   function init() {
     log('Initializing HS Scroller with GSAP');
     
+    // Debug: Log panel information
+    log('Panel debugging:', {
+      panelCount: panels.length,
+      panelIds: Array.from(panels).map(p => p.id),
+      trackWidth: track.style.width || getComputedStyle(track).width
+    });
+    
     // Initialize SVG
     initSVG();
     
