@@ -16,7 +16,7 @@
   // Config
   const config = {
     panels: [
-      { key: 'home' }, // "made by samuel robson"
+      { key: 'home' },
       { key: 'about' },
       { key: 'projects' },
       { key: 'blog' },
