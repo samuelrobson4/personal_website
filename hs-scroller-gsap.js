@@ -129,7 +129,7 @@
   let activePanel = 0;
   
   /**
-   * Update navigation progress line position
+   * Update navigation progress line - grows like status indicator
    */
   function updateNavProgress(activePanel) {
     if (!progressLine || !navItems.length) return;
@@ -137,24 +137,27 @@
     // Remove active class from all nav items
     navItems.forEach(item => item.classList.remove('active'));
     
-    // Find the corresponding nav item
+    // Calculate total progress across all nav items
+    const totalPanels = navItems.length;
+    const currentPanelIndex = activePanel;
+    const progressPercent = ((currentPanelIndex + 1) / totalPanels) * 100;
+    
+    // Find the active nav item for styling
     const panelId = getPanelId(activePanel);
     const activeNavItem = document.querySelector(`[data-panel="${panelId}"]`);
     
     if (activeNavItem) {
       // Add active class
       activeNavItem.classList.add('active');
-      
-      // Position the progress line
-      const itemRect = activeNavItem.getBoundingClientRect();
-      const containerRect = activeNavItem.parentElement.getBoundingClientRect();
-      
-      const left = itemRect.left - containerRect.left;
-      const width = itemRect.width;
-      
-      progressLine.style.left = left + 'px';
-      progressLine.style.width = width + 'px';
     }
+    
+    // Update progress line to grow from left, showing overall progress
+    const containerRect = progressLine.parentElement.getBoundingClientRect();
+    const totalWidth = containerRect.width;
+    const progressWidth = (progressPercent / 100) * totalWidth;
+    
+    progressLine.style.left = '0px';
+    progressLine.style.width = progressWidth + 'px';
   }
   
   /**
@@ -275,16 +278,16 @@
    * Seek to specific panel
    */
   function seekToPanel(panelId, animate = true) {
-    log('seekToPanel called with:', panelId, 'animate:', animate);
-    log('Current state:', {
+    console.log('[HS-Scroller] seekToPanel called with:', panelId, 'animate:', animate);
+    console.log('[HS-Scroller] Current state:', {
       isMobile: isMobile(),
       prefersReducedMotion,
       mainTimelineExists: !!mainTimeline,
-      panelsLength: panels.length
+      panelsLength: panels ? panels.length : 0
     });
     
     if (isMobile() || prefersReducedMotion || !mainTimeline) {
-      log('Seeking disabled - using fallback scroll');
+      console.log('[HS-Scroller] Seeking disabled - using fallback scroll');
       const targetPanel = document.getElementById(panelId);
       if (targetPanel) {
         targetPanel.scrollIntoView({ behavior: 'smooth' });
@@ -295,20 +298,25 @@
     const index = getPanelIndex(panelId);
     const progress = index / (panels.length - 1);
     
-    log('Seeking to panel:', panelId, 'Index:', index, 'Progress:', progress);
+    console.log('[HS-Scroller] Seeking to panel:', panelId, 'Index:', index, 'Progress:', progress);
+    console.log('[HS-Scroller] Current timeline progress:', mainTimeline.progress());
     
     if (animate) {
+      console.log('[HS-Scroller] Starting GSAP animation...');
       gsap.to(mainTimeline, {
         progress: progress,
         duration: CONFIG.snapDuration,
         ease: 'power2.inOut',
+        onStart: () => {
+          console.log('[HS-Scroller] GSAP animation started to', panelId);
+        },
         onComplete: () => {
-          log('GSAP animation to', panelId, 'completed');
+          console.log('[HS-Scroller] GSAP animation to', panelId, 'completed');
         }
       });
     } else {
+      console.log('[HS-Scroller] Setting timeline progress directly to:', progress);
       mainTimeline.progress(progress);
-      log('Set timeline progress directly to:', progress);
     }
     
     activePanel = index;
@@ -347,7 +355,7 @@
           });
           
           if (mainTimeline && !isMobile()) {
-            log('Using GSAP navigation');
+            console.log('[HS-Scroller] Using GSAP navigation for:', panelId);
             seekToPanel(panelId);
           } else {
             log('Using fallback scroll navigation');
