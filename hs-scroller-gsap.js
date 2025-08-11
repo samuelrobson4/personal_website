@@ -112,15 +112,26 @@
     // Mark stage as pinned to allow GSAP transforms
     stage.setAttribute('data-pinned', 'true');
     
-    // Get the track's initial position to calculate offset
-    const initialRect = track.getBoundingClientRect();
-    const initialOffset = initialRect.x;
-    log('Initial track offset:', initialOffset);
+    // Force initial positioning to show first panel
+    // The track naturally positions with an offset due to flexbox layout
+    // We need to calculate and apply a correction to show the home panel at x=0
+    
+    // First, clear any existing transforms
+    gsap.set(track, { clearProps: "transform" });
+    
+    // Get the track's natural position without any transforms
+    const naturalRect = track.getBoundingClientRect();
+    const naturalOffset = naturalRect.x;
+    log('Natural track offset:', naturalOffset);
 
-    // Calculate the transform needed to show the first panel at x=0
-    let correctionOffset = -initialOffset;
+    // Calculate correction needed to position home panel at x=0
+    let correctionOffset = -naturalOffset;
     gsap.set(track, { x: correctionOffset, force3D: true });
     log('Applied correction offset:', correctionOffset);
+    
+    // Verify the correction worked
+    const correctedRect = track.getBoundingClientRect();
+    log('After correction - track position:', correctedRect.x);
     
     // Create main timeline
     mainTimeline = gsap.timeline({
