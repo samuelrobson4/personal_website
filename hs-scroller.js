@@ -15,12 +15,12 @@
 
   // Config
   const config = {
-    panelTexts: [
-      { title: 'made by samuel robson', body: 'value-first products that bring joy', href: 'about.html' },
-      { title: 'about', body: 'principles and approach', href: 'about.html' },
-      { title: 'projects', body: 'a selection of recent work', href: 'projects.html' },
-      { title: 'blog', body: 'studio log, notes and ideas', href: 'blog.html' },
-      { title: 'contact', body: 'get in touch', href: 'contact.html' },
+    panels: [
+      { key: 'home' },
+      { key: 'about' },
+      { key: 'projects' },
+      { key: 'blog' },
+      { key: 'contact' },
     ],
     pathD:
       'M 40 520 C 180 480 240 420 320 420 C 460 420 520 520 640 520 C 760 520 800 460 880 420',
@@ -33,23 +33,39 @@
   const svg = root.querySelector('.hs-svg');
   if (!stage || !track || !pathEl || !svg) return;
 
-  // Progressive enhancement: ensure panels reflect config
+  // Progressive enhancement: build panels mirroring page content
+  function panelMarkup(key) {
+    switch (key) {
+      case 'home':
+        return `<div class="hs-inner"><h1 class="hero-title"><a href="about.html">made by samuel robson</a></h1><p class="hero-subtitle">I focus on building high quality, value first products which try and bring joy to those who use them</p></div>`;
+      case 'about':
+        return `<div class="hs-inner"><h1>about</h1><p class="muted">As a product creator, I believe that technology should amplify what makes us human. My approach is rooted in a core set of principles that guide every project I work on.</p><div class="section"><h2 style="font-family:'Baskervville',serif;font-size:24px;font-weight:600">product principles</h2><ol class="principles"><li>simple → cut through the noise</li><li>impactful → solve real and important problems</li><li>human first → designed for people and our planet</li><li>elegant → refined, with intention and care</li><li>joyful → make it feel good to use</li></ol></div></div>`;
+      case 'projects':
+        return `<div class="hs-inner"><h1>projects</h1><p class="lead">A selection of my latest work...</p><div id="hs-projects-bouncy"></div></div>`;
+      case 'blog':
+        return `<div class="hs-inner"><h1>studio log</h1><p class="lead">New thoughts and ideas related to my work...</p><div id="hs-blog-bouncy" style="margin-top:12px"></div></div>`;
+      case 'contact':
+        return `<div class="hs-inner"><h1>contact</h1><p class="muted">Send me a message and I’ll reply soon.</p><form id="hs-contact-form"><div><label for="hs-name">name</label><input id="hs-name" name="name" type="text" placeholder="your name" required /></div><div><label for="hs-email">email</label><input id="hs-email" name="email" type="email" placeholder="your@email.com" required /></div><div><label for="hs-message">message</label><textarea id="hs-message" name="message" placeholder="how can I help?" required></textarea></div><div class="actions"><button type="submit">send</button><span id="hs-status" class="muted" aria-live="polite"></span></div></form></div>`;
+      default:
+        return `<div class="hs-inner"><h2>${key}</h2></div>`;
+    }
+  }
+
   track.innerHTML = '';
-  for (const { title, body, href } of config.panelTexts) {
+  for (const { key } of config.panels) {
     const art = document.createElement('article');
     art.className = 'hs-panel';
-    const safeHref = href ? ` href="${href}"` : '';
-    art.innerHTML = `<div class="hs-inner"><h2>${href ? `<a${safeHref}>${title}</a>` : title}</h2><p>${body}</p></div>`;
+    art.innerHTML = panelMarkup(key);
     track.appendChild(art);
   }
-  root.style.setProperty('--hs-panel-count', String(config.panelTexts.length));
+  root.style.setProperty('--hs-panel-count', String(config.panels.length));
 
   // Path setup
   // Single continuous path spanning all panels
   // Base curve in viewBox units; we scale offsets by a factor tied to panel count
-  const unit = 240; // base segment width
+  const unit = 240; // base segment width (viewBox units)
   let d = '';
-  for (let i = 0; i < config.panelTexts.length; i++) {
+  for (let i = 0; i < config.panels.length; i++) {
     const ox = i * unit;
     if (i === 0) {
       d += `M ${40 + ox} 520`;
@@ -68,14 +84,14 @@
   // Sizing cache
   let viewportW = 0;
   let viewportH = 0;
-  let panelCount = config.panelTexts.length;
+  let panelCount = config.panels.length;
   let totalScroll = 0; // total vertical scroll budget for this section
 
   function recalc() {
     const r = stage.getBoundingClientRect();
     viewportW = window.innerWidth;
     viewportH = window.innerHeight;
-    panelCount = config.panelTexts.length;
+    panelCount = config.panels.length;
     // The total vertical distance over which the stage remains pinned
     // equals the horizontal distance needed to move panels fully into view.
     // Track width = panelCount * viewportW. We need to translate from 0 to (trackW - viewportW)
@@ -123,8 +139,60 @@
     onScroll();
   }
 
+  // Dynamic mounts for projects, blog, and contact form
+  function initDynamic() {
+    // Projects
+    const projectsEl = document.getElementById('hs-projects-bouncy');
+    if (projectsEl && typeof window !== 'undefined') {
+      window.mountProjects?.(projectsEl);
+    }
+    // Blog
+    const blogEl = document.getElementById('hs-blog-bouncy');
+    if (blogEl) {
+      (async () => {
+        try {
+          const res = await fetch('dist/substack.json', { cache: 'no-store' });
+          if (res.ok) {
+            const posts = await res.json();
+            const cards = posts.slice(0, 8).map((p, i) => ({
+              id: String(i + 1),
+              title: (p.title || '').toLowerCase(),
+              subtitle: new Date(p.date || Date.now()).toLocaleDateString(),
+              url: p.url,
+            }));
+            window.bouncyMount?.(blogEl, cards);
+          } else {
+            throw new Error('no feed');
+          }
+        } catch (e) {
+          const fallback = [
+            { id: 'b1', title: 'designing for delight', subtitle: 'writing', url: '#' },
+            { id: 'b2', title: 'simple > complex', subtitle: 'writing', url: '#' },
+            { id: 'b3', title: 'human-first tech', subtitle: 'writing', url: '#' },
+          ];
+          window.bouncyMount?.(blogEl, fallback);
+        }
+      })();
+    }
+    // Contact form (mailto)
+    const form = document.getElementById('hs-contact-form');
+    const statusEl = document.getElementById('hs-status');
+    if (form && statusEl) {
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        statusEl.textContent = 'sending…';
+        const data = new FormData(form);
+        const subject = encodeURIComponent('Portfolio contact');
+        const body = encodeURIComponent(`name: ${data.get('name')}\nemail: ${data.get('email')}\n\n${data.get('message')}`);
+        window.location.href = `mailto:L28094@gmail.com?subject=${subject}&body=${body}`;
+        statusEl.textContent = 'opening your email app…';
+      }, { passive: false });
+    }
+  }
+
   // Initialize
   recalc();
+  initDynamic();
   // Snap mode: set path fully drawn
   if (isSnapMode() || prefersReduced) {
     pathEl.style.strokeDashoffset = '0';
