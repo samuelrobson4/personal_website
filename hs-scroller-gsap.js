@@ -108,8 +108,15 @@
     // Mark stage as pinned to allow GSAP transforms
     stage.setAttribute('data-pinned', 'true');
     
-    // Force track to start at position 0 (show first panel)
-    gsap.set(track, { x: 0, force3D: true });
+    // Get the track's initial position to calculate offset
+    const initialRect = track.getBoundingClientRect();
+    const initialOffset = initialRect.x;
+    log('Initial track offset:', initialOffset);
+
+    // Calculate the transform needed to show the first panel at x=0
+    let correctionOffset = -initialOffset;
+    gsap.set(track, { x: correctionOffset, force3D: true });
+    log('Applied correction offset:', correctionOffset);
     
     // Create main timeline
     mainTimeline = gsap.timeline({
@@ -125,8 +132,8 @@
           const progress = self.progress;
           activePanel = Math.round(progress * (panelCount - 1));
           
-          // Manual transform calculation to ensure accuracy
-          const targetX = -(progress * (panelCount - 1) * window.innerWidth); // px units
+          // Manual transform calculation accounting for initial offset
+          const targetX = correctionOffset - (progress * (panelCount - 1) * window.innerWidth);
           gsap.set(track, { x: targetX, force3D: true });
           
           if (window.__HS_DEBUG__) {
@@ -144,13 +151,17 @@
         },
         onRefresh: () => {
           log('ScrollTrigger refreshed');
-          // Ensure we start at the correct position after refresh
-          gsap.set(track, { x: 0, force3D: true });
+          // Recalculate and apply correction offset
+          const refreshRect = track.getBoundingClientRect();
+          const refreshOffset = refreshRect.x;
+          correctionOffset = -refreshOffset;
+          gsap.set(track, { x: correctionOffset, force3D: true });
+          log('Refresh correction applied:', correctionOffset);
         }
       }
     });
     
-    log('GSAP animation created with manual transforms');
+    log('GSAP animation created with offset correction');
   }
   
   /**

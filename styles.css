@@ -380,6 +380,9 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
   display: flex;
   height: 100%;
   width: 500vw; /* 5 panels × 100vw */
+  margin-left: 0; /* Ensure no margin offset */
+  position: relative;
+  left: 0; /* Explicit left position */
 }
 
 .hs-panel {
