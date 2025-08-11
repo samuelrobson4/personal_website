@@ -51,13 +51,7 @@
     }
   }
 
-  track.innerHTML = '';
-  for (const { key } of config.panels) {
-    const art = document.createElement('article');
-    art.className = 'hs-panel';
-    art.innerHTML = panelMarkup(key);
-    track.appendChild(art);
-  }
+  // Do not overwrite authored panels; just ensure the panel count CSS var is set
   root.style.setProperty('--hs-panel-count', String(config.panels.length));
   // Ensure initial state shows panel 1
   track.style.transform = 'translate3d(0,0,0)';

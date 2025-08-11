@@ -31,12 +31,12 @@
               <path id="hs-path" class="hs-path" d="" />
             </svg>
             <div class="hs-track" role="region" aria-label="story panels">
-              <!-- Panels will be populated by hs-scroller.js for progressive enhancement; keep minimal fallback below -->
-              <article class="hs-panel"><div class="hs-inner"><h2><a href="about.html">made by samuel robson</a></h2><p>I focus on building high quality, value first products which try and bring joy to those who use them</p></div></article>
-              <article class="hs-panel"><div class="hs-inner"><h2><a href="about.html">about</a></h2><p>principles and approach</p></div></article>
-              <article class="hs-panel"><div class="hs-inner"><h2><a href="projects.html">projects</a></h2><p>a selection of recent work</p></div></article>
-              <article class="hs-panel"><div class="hs-inner"><h2><a href="blog.html">blog</a></h2><p>studio log, notes and ideas</p></div></article>
-              <article class="hs-panel"><div class="hs-inner"><h2><a href="contact.html">contact</a></h2><p>get in touch</p></div></article>
+              <!-- Panels are authored here and JS only enhances behavior -->
+              <article class="hs-panel"><div class="hs-inner"><h2><a href="about.html">made by samuel robson</a></h2><p>I focus on building high quality, value first products which try and bring joy to those who use them</p><div id="hs-home-bouncy" style="margin-top:12px"></div></div></article>
+              <article class="hs-panel"><div class="hs-inner"><h2><a href="about.html">about</a></h2><p class="muted">As a product creator, I believe that technology should amplify what makes us human. My approach is rooted in a core set of principles that guide every project I work on.</p><div class="section"><h2 style="font-family:'Baskervville',serif;font-size:24px;font-weight:600">product principles</h2><ol class="principles"><li>simple → cut through the noise</li><li>impactful → solve real and important problems</li><li>human first → designed for people and our planet</li><li>elegant → refined, with intention and care</li><li>joyful → make it feel good to use</li></ol></div></div></article>
+              <article class="hs-panel"><div class="hs-inner"><h2><a href="projects.html">projects</a></h2><p class="lead">A selection of my latest work...</p><div id="hs-projects-bouncy"></div></div></article>
+              <article class="hs-panel"><div class="hs-inner"><h2><a href="blog.html">blog</a></h2><p class="lead">New thoughts and ideas related to my work...</p><div id="hs-blog-bouncy" style="margin-top:12px"></div></div></article>
+              <article class="hs-panel"><div class="hs-inner"><h2><a href="contact.html">contact</a></h2><p class="muted">Send me a message and I’ll reply soon.</p><form id="hs-contact-form"><div><label for="hs-name">name</label><input id="hs-name" name="name" type="text" placeholder="your name" required /></div><div><label for="hs-email">email</label><input id="hs-email" name="email" type="email" placeholder="your@email.com" required /></div><div><label for="hs-message">message</label><textarea id="hs-message" name="message" placeholder="how can I help?" required></textarea></div><div class="actions"><button type="submit">send</button><span id="hs-status" class="muted" aria-live="polite"></span></div></form></div></article>
             </div>
           </div>
         </section>
@@ -44,7 +44,7 @@
 
     <!-- Ensure bundle loads before hs-scroller to mount dynamic cards -->
     <script src="dist/bundle.js"></script>
-    <!-- Only load hs-scroller on index -->
-    <script src="hs-scroller.js"></script>
+    <!-- Only load hs-scroller on index (cache-busted) -->
+    <script src="hs-scroller.js?v=2"></script>
 </body>
 </html>
