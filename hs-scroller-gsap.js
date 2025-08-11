@@ -101,29 +101,33 @@
       return;
     }
     
-    // Calculate total track width and translate distance
     const panelCount = panels.length;
-    const translateX = (panelCount - 1) * 100; // vw units
+    log('Panel count:', panelCount);
+    log('Panel IDs in order:', Array.from(panels).map(p => p.id));
     
-    log('Panel count:', panelCount, 'Translate distance:', translateX + 'vw');
+    // Force track to start at position 0 (show first panel)
+    gsap.set(track, { x: 0, force3D: true });
     
     // Create main timeline
     mainTimeline = gsap.timeline({
       scrollTrigger: {
         trigger: section,
         start: 'top top',
-        end: () => `+=${(panelCount - 1) * window.innerHeight}`, // One viewport per panel
-        scrub: 1, // Smooth scrubbing
+        end: () => `+=${(panelCount - 1) * window.innerHeight}`,
+        scrub: 1,
         pin: stage,
         anticipatePin: 1,
+        invalidateOnRefresh: true,
         onUpdate: (self) => {
           const progress = self.progress;
           activePanel = Math.round(progress * (panelCount - 1));
           
-          // Force console log regardless of debug flag to troubleshoot
+          // Manual transform calculation to ensure accuracy
+          const targetX = -(progress * (panelCount - 1) * 100); // vw units
+          gsap.set(track, { x: `${targetX}vw`, force3D: true });
+          
           if (window.__HS_DEBUG__) {
-            const currentTransform = gsap.getProperty(track, 'x');
-            console.log('[HS-Scroller] Progress:', progress.toFixed(3), 'Active panel:', activePanel, 'Panel ID:', getPanelId(activePanel), 'Track X:', currentTransform);
+            console.log('[HS-Scroller] Progress:', progress.toFixed(3), 'Active panel:', activePanel, 'Panel ID:', getPanelId(activePanel), 'Target X:', targetX + 'vw');
           }
           
           // Update SVG animation
@@ -137,21 +141,13 @@
         },
         onRefresh: () => {
           log('ScrollTrigger refreshed');
+          // Ensure we start at the correct position after refresh
+          gsap.set(track, { x: 0, force3D: true });
         }
       }
     });
     
-    // Set initial position to show first panel
-    gsap.set(track, { x: 0 });
-    
-    // Add horizontal movement animation
-    mainTimeline.to(track, {
-      x: `-${translateX}vw`,
-      ease: 'none',
-      duration: 1
-    });
-    
-    log('GSAP animation created');
+    log('GSAP animation created with manual transforms');
   }
   
   /**
