@@ -14,25 +14,25 @@
     <script src="lib/gsap/ScrollTrigger.min.js"></script>
 </head>
 <body>
-
+    <header class="header">
+        <nav class="nav">
+            <div class="nav-container">
+                <a class="nav-item" href="index.html" data-panel="home">home</a>
+                <a class="nav-item" href="about.html" data-panel="about">about</a>
+                <a class="nav-item" href="projects.html" data-panel="projects">projects</a>
+                <a class="nav-item" href="blog.html" data-panel="blog">blog</a>
+                <a class="nav-item" href="contact.html" data-panel="contact">contact</a>
+                <div class="nav-progress-line"></div>
+            </div>
+         </nav>
+    </header>
 
     <main class="main landing">
 
         <!-- hs- horizontal scroller (GSAP + ScrollTrigger) -->
         <section class="hs-section">
           <div class="hs-stage">
-            <!-- SVG hand-drawn line overlay -->
-                          <svg class="hs-svg" viewBox="0 0 1500 600" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-                <defs>
-                  <!-- Arrow marker -->
-                  <marker id="hs-arrow" markerWidth="20" markerHeight="20" refX="10" refY="10" orient="auto" markerUnits="strokeWidth">
-                    <path d="M2,2 L2,18 L18,10 z" fill="#0066ff" opacity="0.8"/>
-                  </marker>
-                </defs>
-                <path id="hs-path" class="hs-path" d="M 50 300 Q 200 200 350 300 Q 500 400 650 300 Q 800 200 950 300 Q 1100 400 1250 300 Q 1400 200 1450 300" />
-                <!-- Moving arrow circle -->
-                <circle id="hs-arrow-dot" r="6" cx="50" cy="300" fill="#999" opacity="0.8"></circle>
-              </svg>
+
             
             <!-- Horizontal track with panels -->
             <div class="hs-track">

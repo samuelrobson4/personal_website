@@ -29,10 +29,10 @@
   const stage = document.querySelector('.hs-stage');
   const track = document.querySelector('.hs-track');
   const panels = document.querySelectorAll('.hs-panel');
-  const svgPath = document.querySelector('#hs-path');
-  const arrowDot = document.querySelector('#hs-arrow-dot');
+  const progressLine = document.querySelector('.nav-progress-line');
+  const navItems = document.querySelectorAll('.nav-item');
   
-  if (!section || !stage || !track || !panels.length || !svgPath) {
+  if (!section || !stage || !track || !panels.length) {
     log('Required elements not found, aborting');
     return;
   }
@@ -72,24 +72,31 @@
   let activePanel = 0;
   
   /**
-   * Initialize SVG path
+   * Update navigation progress line position
    */
-  function initSVG() {
-    svgPath.setAttribute('d', CONFIG.svgPath);
-    svgPath.style.strokeWidth = CONFIG.svgStrokeWidth;
+  function updateNavProgress(activePanel) {
+    if (!progressLine || !navItems.length) return;
     
-    // Measure path length for animation
-    svgLength = svgPath.getTotalLength();
-    log('SVG path length:', svgLength);
+    // Remove active class from all nav items
+    navItems.forEach(item => item.classList.remove('active'));
     
-    if (prefersReducedMotion) {
-      // Show full path immediately for reduced motion
-      svgPath.style.strokeDasharray = 'none';
-      svgPath.style.strokeDashoffset = '0';
-    } else {
-      // Set up for dash animation
-      svgPath.style.strokeDasharray = svgLength;
-      svgPath.style.strokeDashoffset = svgLength;
+    // Find the corresponding nav item
+    const panelId = getPanelId(activePanel);
+    const activeNavItem = document.querySelector(`[data-panel="${panelId}"]`);
+    
+    if (activeNavItem) {
+      // Add active class
+      activeNavItem.classList.add('active');
+      
+      // Position the progress line
+      const itemRect = activeNavItem.getBoundingClientRect();
+      const containerRect = activeNavItem.parentElement.getBoundingClientRect();
+      
+      const left = itemRect.left - containerRect.left;
+      const width = itemRect.width;
+      
+      progressLine.style.left = left + 'px';
+      progressLine.style.width = width + 'px';
     }
   }
   
@@ -157,19 +164,8 @@
             console.log('[HS-Scroller] Progress:', progress.toFixed(3), 'Active panel:', activePanel, 'Panel ID:', getPanelId(activePanel), 'Target X:', targetX + 'px');
           }
           
-          // Update SVG animation
-          if (!prefersReducedMotion && svgPath) {
-            const dashOffset = svgLength * (1 - progress);
-            svgPath.style.strokeDashoffset = dashOffset;
-            
-            // Move arrow dot along the path
-            if (arrowDot && svgPath) {
-              const pathLength = svgPath.getTotalLength();
-              const point = svgPath.getPointAtLength(progress * pathLength);
-              arrowDot.setAttribute('cx', point.x);
-              arrowDot.setAttribute('cy', point.y);
-            }
-          }
+          // Update navigation progress
+          updateNavProgress(activePanel);
           
           // Update browser hash without triggering scroll
           updateHashWithoutScroll(getPanelId(activePanel));
@@ -423,10 +419,7 @@
         trackWidth: track.style.width || getComputedStyle(track).width
       });
       
-      log('About to initialize SVG');
-      // Initialize SVG
-      initSVG();
-      log('SVG initialized successfully');
+      log('Setting up navigation progress tracking');
       
       // Create scroll animation (unless mobile/reduced motion)
       log('Checking mobile/reduced motion:', { isMobile: isMobile(), prefersReducedMotion });

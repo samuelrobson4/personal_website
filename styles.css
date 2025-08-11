@@ -44,20 +44,39 @@ body {
     max-width: 1200px;
     margin: 0 auto;
     justify-content: flex-end;
+    position: relative;
+    font-size: 14px; /* Smaller text */
 }
 
 .nav-item {
-    font-size: 15px;
+    font-size: 14px; /* Smaller text */
     font-weight: 300;
-    color: #111;
+    color: #999; /* Lighter grey */
     cursor: pointer;
     transition: color 0.3s ease;
     user-select: none;
     text-decoration: none;
+    padding: 0.25rem 0.5rem;
+    position: relative;
 }
 
 .nav-item:hover {
-    color: var(--blue);
+    color: #666;
+}
+
+.nav-item.active {
+    color: #333;
+}
+
+/* Progress line that moves under active nav item */
+.nav-progress-line {
+    position: absolute;
+    bottom: -8px;
+    height: 2px;
+    background: #ccc;
+    transition: all 0.3s ease;
+    width: 0;
+    left: 0;
 }
 
 /* Headings: Baskervville semibold, black. Only links inside headings turn blue on hover */
@@ -359,8 +378,8 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
 }
 
 .main.landing {
-  /* No header padding needed */
-  padding-top: 0;
+  /* Account for fixed header */
+  padding-top: 80px;
 }
 
 /* hs- Horizontal scroller (GSAP + ScrollTrigger) */
