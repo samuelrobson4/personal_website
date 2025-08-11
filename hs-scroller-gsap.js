@@ -136,8 +136,8 @@
           const progress = self.progress;
           activePanel = Math.round(progress * (panelCount - 1));
           
-          // Manual transform calculation accounting for initial offset
-          const targetX = correctionOffset - (progress * (panelCount - 1) * window.innerWidth);
+          // Simple transform calculation - no correction offset needed in onUpdate
+          const targetX = -(progress * (panelCount - 1) * window.innerWidth);
           gsap.set(track, { x: targetX, force3D: true });
           
           if (window.__HS_DEBUG__) {
