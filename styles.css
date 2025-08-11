@@ -58,10 +58,11 @@ body {
     text-decoration: none;
     padding: 0.25rem 0.5rem;
     position: relative;
+    display: inline-block; /* Ensure proper click area */
 }
 
 .nav-item:hover {
-    color: #666;
+    color: var(--blue); /* Light blue on hover */
 }
 
 .nav-item.active {

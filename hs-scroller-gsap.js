@@ -243,24 +243,35 @@
    */
   function initNavigation() {
     const navItems = document.querySelectorAll('[data-panel]');
+    log('Found nav items:', navItems.length);
     
     navItems.forEach(item => {
       item.addEventListener('click', (e) => {
         const panelId = item.getAttribute('data-panel');
+        log('Nav item clicked:', panelId);
         
-        // Only intercept on index.html with working scroller
-        if (window.location.pathname.includes('index.html') || window.location.pathname === '/') {
+        // Always prevent default navigation on index page
+        if (window.location.pathname.includes('index.html') || window.location.pathname === '/' || window.location.pathname === '') {
+          e.preventDefault();
+          log('Prevented default navigation');
+          
           if (mainTimeline && !isMobile()) {
-            e.preventDefault();
             seekToPanel(panelId);
-            log('Nav click intercepted for panel:', panelId);
+            log('GSAP navigation to panel:', panelId);
+          } else {
+            // Fallback: use native scroll behavior
+            const targetPanel = document.getElementById(panelId);
+            if (targetPanel) {
+              targetPanel.scrollIntoView({ behavior: 'smooth' });
+              log('Fallback scroll to panel:', panelId);
+            }
           }
         }
-        // Otherwise, let the link navigate normally to the standalone page
+        // On other pages, let the link navigate normally
       });
     });
     
-    log('Navigation initialized');
+    log('Navigation initialized with', navItems.length, 'items');
   }
   
   /**
