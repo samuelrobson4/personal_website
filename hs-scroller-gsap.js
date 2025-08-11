@@ -96,10 +96,14 @@
    * Create horizontal scroll animation with GSAP
    */
   function createScrollAnimation() {
+    log('createScrollAnimation called');
+    
     if (isMobile() || prefersReducedMotion) {
       log('Skipping GSAP animation for mobile or reduced motion');
       return;
     }
+    
+    log('Environment check passed, creating GSAP animation');
     
     const panelCount = panels.length;
     log('Panel count:', panelCount);
