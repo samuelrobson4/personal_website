@@ -359,8 +359,8 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
 }
 
 .main.landing {
-  /* was inherited: 100px */
-  padding-top: 100px; /* adjust lower if you want it even higher */
+  /* No header padding needed */
+  padding-top: 0;
 }
 
 /* hs- Horizontal scroller (GSAP + ScrollTrigger) */
@@ -391,7 +391,7 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  padding-top: 140px; /* Consistent top spacing for all panels */
+  padding-top: 80px; /* Reduced since no header */
 }
 
 .hs-inner {
@@ -499,7 +499,7 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
 
 .hs-path {
   fill: none;
-  stroke: #000;
+  stroke: #666; /* Match text color */
   stroke-width: 2.5;
   stroke-linecap: round;
   stroke-linejoin: round;
@@ -507,7 +507,7 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
 }
 
 #hs-arrow-dot {
-  filter: drop-shadow(0 2px 4px rgba(0, 102, 255, 0.3));
+  filter: drop-shadow(0 2px 4px rgba(102, 102, 102, 0.3));
   transition: opacity 0.3s ease;
 }
 
@@ -552,7 +552,7 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
   .hs-panel {
     scroll-snap-align: center;
     min-height: 100vh;
-    padding-top: 100px; /* Reduced spacing on mobile */
+    padding-top: 60px; /* Reduced spacing on mobile, no header */
   }
   
   .hs-hero__title {
