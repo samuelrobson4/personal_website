@@ -27,9 +27,27 @@
             <h1 class="hero-title"><a href="about.html">made by samuel robson</a></h1>
             <p class="hero-subtitle">I focus on building high quality, value first products which try and bring joy to those who use them</p>
         </div>
+
+        <!-- hs- horizontal scroller (scroll-driven) -->
+        <section class="hs-section" style="--hs-panel-count: 4">
+          <div class="hs-stage" aria-label="scroll-driven story">
+            <svg class="hs-svg" viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+              <path id="hs-path" class="hs-path" d="" />
+            </svg>
+            <div class="hs-track" role="region" aria-label="story panels">
+              <!-- Panels will be populated by hs-scroller.js for progressive enhancement; keep minimal fallback below -->
+              <article class="hs-panel"><h2>panel one</h2><p>intro to the story</p></article>
+              <article class="hs-panel"><h2>panel two</h2><p>the process</p></article>
+              <article class="hs-panel"><h2>panel three</h2><p>decisions and craft</p></article>
+              <article class="hs-panel"><h2>panel four</h2><p>results and next</p></article>
+            </div>
+          </div>
+        </section>
     </main>
 
     <!-- load bundle for potential shared utils; safe if missing in local preview -->
     <script src="dist/bundle.js"></script>
+    <!-- Only load hs-scroller on index -->
+    <script src="hs-scroller.js" defer></script>
 </body>
 </html>

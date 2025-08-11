@@ -362,3 +362,48 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
   /* was inherited: 100px */
   padding-top: 100px; /* adjust lower if you want it even higher */
 }
+
+/* hs- Horizontal scroller (namespaced) */
+/* Adjust spacing/stroke via variables below */
+.hs-section { 
+  --hs-gap: 40px; 
+  --hs-stage-h: 100vh;
+  --hs-panel-w: 100vw;
+  --hs-panel-h: 100vh;
+  --hs-section-height: auto; /* set by JS to stageHeight + scroll budget */
+}
+.hs-section { position: relative; display: block; }
+.hs-stage { position: sticky; top: 0; height: var(--hs-stage-h); overflow: hidden; }
+.hs-track { display: flex; height: 100%; will-change: transform; }
+.hs-panel {
+  flex: 0 0 var(--hs-panel-w);
+  height: var(--hs-panel-h);
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  padding: 2rem; gap: 0.5rem;
+  text-align: center;
+}
+.hs-panel h2 { font-family: 'Baskervville', serif; font-size: 24px; font-weight: 600; color: #000; }
+.hs-panel p { color: var(--text); }
+
+/* Make the entire section allocate scroll space equal to JS-computed height */
+.hs-section::after { content: ''; display: block; height: var(--hs-section-height); }
+
+/* SVG overlay */
+.hs-svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.hs-path {
+  fill: none; stroke: #000; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round;
+}
+
+/* Reduced motion: don’t animate, show full path */
+@media (prefers-reduced-motion: reduce) {
+  .hs-track { will-change: auto; }
+  .hs-path { stroke-dashoffset: 0 !important; }
+}
+
+/* Small screens: degrade to native horizontal scroll with snap */
+@media (max-width: 680px) {
+  .hs-stage { position: relative; height: auto; overflow: auto; }
+  .hs-track { overflow-x: auto; scroll-snap-type: x mandatory; transform: none !important; }
+  .hs-panel { scroll-snap-align: center; min-height: 70vh; }
+  .hs-section::after { height: 0; }
+}
