@@ -105,6 +105,9 @@
     log('Panel count:', panelCount);
     log('Panel IDs in order:', Array.from(panels).map(p => p.id));
     
+    // Mark stage as pinned to allow GSAP transforms
+    stage.setAttribute('data-pinned', 'true');
+    
     // Force track to start at position 0 (show first panel)
     gsap.set(track, { x: 0, force3D: true });
     

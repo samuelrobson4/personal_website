@@ -518,7 +518,11 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
   
   .hs-track {
     scroll-snap-type: x mandatory;
-    transform: none !important; /* Override GSAP transforms */
+  }
+  
+  /* Only disable transforms when stage is not pinned (mobile/reduced motion) */
+  .hs-stage:not([data-pinned]) .hs-track {
+    transform: none !important;
   }
   
   .hs-panel {
