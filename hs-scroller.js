@@ -37,7 +37,7 @@
   function panelMarkup(key) {
     switch (key) {
       case 'home':
-        return `<div class="hs-inner"><h1 class="hero-title"><a href="about.html">made by samuel robson</a></h1><p class="hero-subtitle">I focus on building high quality, value first products which try and bring joy to those who use them</p></div>`;
+        return `<div class="hs-inner"><h1 class="hero-title"><a href="about.html">made by samuel robson</a></h1><p class="hero-subtitle">I focus on building high quality, value first products which try and bring joy to those who use them</p><div id="hs-home-bouncy" style="margin-top:12px"></div></div>`;
       case 'about':
         return `<div class="hs-inner"><h1>about</h1><p class="muted">As a product creator, I believe that technology should amplify what makes us human. My approach is rooted in a core set of principles that guide every project I work on.</p><div class="section"><h2 style="font-family:'Baskervville',serif;font-size:24px;font-weight:600">product principles</h2><ol class="principles"><li>simple → cut through the noise</li><li>impactful → solve real and important problems</li><li>human first → designed for people and our planet</li><li>elegant → refined, with intention and care</li><li>joyful → make it feel good to use</li></ol></div></div>`;
       case 'projects':
@@ -145,6 +145,14 @@
     const projectsEl = document.getElementById('hs-projects-bouncy');
     if (projectsEl && typeof window !== 'undefined') {
       window.mountProjects?.(projectsEl);
+    }
+    // Home single bouncy card representing the hero as a card
+    const homeBouncy = document.getElementById('hs-home-bouncy');
+    if (homeBouncy && typeof window !== 'undefined') {
+      const cards = [
+        { id: 'home', title: 'made by samuel robson', subtitle: 'about', url: 'about.html' },
+      ];
+      window.bouncyMount?.(homeBouncy, cards);
     }
     // Blog
     const blogEl = document.getElementById('hs-blog-bouncy');
