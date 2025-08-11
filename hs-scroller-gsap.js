@@ -122,7 +122,8 @@
           
           // Force console log regardless of debug flag to troubleshoot
           if (window.__HS_DEBUG__) {
-            console.log('[HS-Scroller] Progress:', progress.toFixed(3), 'Active panel:', activePanel, 'Panel ID:', getPanelId(activePanel));
+            const currentTransform = gsap.getProperty(track, 'x');
+            console.log('[HS-Scroller] Progress:', progress.toFixed(3), 'Active panel:', activePanel, 'Panel ID:', getPanelId(activePanel), 'Track X:', currentTransform);
           }
           
           // Update SVG animation
@@ -139,6 +140,9 @@
         }
       }
     });
+    
+    // Set initial position to show first panel
+    gsap.set(track, { x: 0 });
     
     // Add horizontal movement animation
     mainTimeline.to(track, {
