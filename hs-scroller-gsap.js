@@ -393,21 +393,30 @@
   function init() {
     log('Initializing HS Scroller with GSAP');
     
-    // Debug: Log panel information
-    log('Panel debugging:', {
-      panelCount: panels.length,
-      panelIds: Array.from(panels).map(p => p.id),
-      trackWidth: track.style.width || getComputedStyle(track).width
-    });
-    
-    // Initialize SVG
-    initSVG();
-    
-    // Create scroll animation (unless mobile/reduced motion)
-    if (!isMobile() && !prefersReducedMotion) {
-      createScrollAnimation();
-    } else {
-      log('Using native scroll mode');
+    try {
+      // Debug: Log panel information
+      log('Panel debugging:', {
+        panelCount: panels.length,
+        panelIds: Array.from(panels).map(p => p.id),
+        trackWidth: track.style.width || getComputedStyle(track).width
+      });
+      
+      log('About to initialize SVG');
+      // Initialize SVG
+      initSVG();
+      log('SVG initialized successfully');
+      
+      // Create scroll animation (unless mobile/reduced motion)
+      log('Checking mobile/reduced motion:', { isMobile: isMobile(), prefersReducedMotion });
+      if (!isMobile() && !prefersReducedMotion) {
+        log('Calling createScrollAnimation');
+        createScrollAnimation();
+        log('createScrollAnimation completed');
+      } else {
+        log('Using native scroll mode');
+      }
+    } catch (error) {
+      console.error('[HS-Scroller] Error in animation setup:', error);
     }
     
     // Initialize navigation
