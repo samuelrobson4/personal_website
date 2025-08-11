@@ -120,7 +120,10 @@
           const progress = self.progress;
           activePanel = Math.round(progress * (panelCount - 1));
           
-          log('Progress:', progress.toFixed(3), 'Active panel:', activePanel);
+          // Force console log regardless of debug flag to troubleshoot
+          if (window.__HS_DEBUG__) {
+            console.log('[HS-Scroller] Progress:', progress.toFixed(3), 'Active panel:', activePanel, 'Panel ID:', getPanelId(activePanel));
+          }
           
           // Update SVG animation
           if (!prefersReducedMotion && svgPath) {
