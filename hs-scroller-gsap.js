@@ -253,9 +253,23 @@
   function initDynamicContent() {
     // Projects
     const projectsEl = document.getElementById('hs-projects-bouncy');
-    if (projectsEl && window.mountProjects) {
-      window.mountProjects(projectsEl);
-      log('Projects mounted');
+    if (projectsEl) {
+      const mountProjectsIfReady = () => {
+        if (window.mountProjects) {
+          window.mountProjects(projectsEl);
+          log('Projects mounted');
+        } else {
+          // Fallback: wait for window load
+          projectsEl.innerHTML = '<p class="muted">loading projects…</p>';
+          window.addEventListener('load', () => {
+            if (window.mountProjects) {
+              window.mountProjects(projectsEl);
+              log('Projects mounted after load');
+            }
+          }, { once: true });
+        }
+      };
+      mountProjectsIfReady();
     }
     
     // Blog
@@ -289,6 +303,14 @@
       if (window.bouncyMount) {
         window.bouncyMount(container, cards);
         log('Blog content mounted');
+      } else {
+        // Fallback: wait for window load
+        window.addEventListener('load', () => {
+          if (window.bouncyMount) {
+            window.bouncyMount(container, cards);
+            log('Blog content mounted after load');
+          }
+        }, { once: true });
       }
     } catch (error) {
       log('Blog loading failed, using fallback');
@@ -300,6 +322,10 @@
       
       if (window.bouncyMount) {
         window.bouncyMount(container, fallback);
+      } else {
+        window.addEventListener('load', () => {
+          if (window.bouncyMount) window.bouncyMount(container, fallback);
+        }, { once: true });
       }
     }
   }
@@ -374,11 +400,16 @@
     log('HS Scroller initialized successfully');
   }
   
-  // Initialize when DOM is ready
+  // Initialize when DOM is ready, with a small delay to ensure bundle.js is loaded
+  function delayedInit() {
+    // Small delay to ensure dist/bundle.js has loaded and defined global functions
+    setTimeout(init, 100);
+  }
+  
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
+    document.addEventListener('DOMContentLoaded', delayedInit);
   } else {
-    init();
+    delayedInit();
   }
   
 })();
