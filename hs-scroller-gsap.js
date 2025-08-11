@@ -123,11 +123,11 @@
           activePanel = Math.round(progress * (panelCount - 1));
           
           // Manual transform calculation to ensure accuracy
-          const targetX = -(progress * (panelCount - 1) * 100); // vw units
-          gsap.set(track, { x: `${targetX}vw`, force3D: true });
+          const targetX = -(progress * (panelCount - 1) * window.innerWidth); // px units
+          gsap.set(track, { x: targetX, force3D: true });
           
           if (window.__HS_DEBUG__) {
-            console.log('[HS-Scroller] Progress:', progress.toFixed(3), 'Active panel:', activePanel, 'Panel ID:', getPanelId(activePanel), 'Target X:', targetX + 'vw');
+            console.log('[HS-Scroller] Progress:', progress.toFixed(3), 'Active panel:', activePanel, 'Panel ID:', getPanelId(activePanel), 'Target X:', targetX + 'px');
           }
           
           // Update SVG animation
