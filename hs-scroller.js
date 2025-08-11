@@ -2,9 +2,15 @@
  * hs-scroller.js
  * Scroll-driven horizontal narrative with a hand-drawn SVG line.
  *
- * Edit config below to change panel content and the SVG path.
- * - panelTexts: array of { title, body }
- * - pathD: SVG path data string (single path)
+ * TO ADJUST PANEL COUNT:
+ * 1. Update config.panels array below (add/remove { key: 'name' } objects)
+ * 2. Add corresponding cases in panelMarkup() function
+ * 3. Update the authored HTML panels in index.html to match
+ * 4. The scroll math will automatically adapt to the new panel count
+ *
+ * Config options:
+ * - panels: array of { key } objects defining panel order
+ * - pathD: SVG path data string (single path segment, will be repeated)
  * - snapBreakpointPx: below this width, degrade to native horizontal scroll with snap
  */
 (function () {
@@ -53,9 +59,6 @@
 
   // Do not overwrite authored panels; just ensure the panel count CSS var is set
   root.style.setProperty('--hs-panel-count', String(config.panels.length));
-  // Ensure initial state shows panel 1
-  track.style.transform = 'translate3d(0,0,0)';
-  if (!prefersReduced) pathEl.style.strokeDashoffset = '1';
 
   // Path setup
   // Single continuous path spanning all panels
@@ -82,20 +85,27 @@
   let viewportW = 0;
   let viewportH = 0;
   let panelCount = config.panels.length;
-  let totalScroll = 0; // total vertical scroll budget for this section
+  let sectionTop = 0; // absolute position of section in document
+  let scrollRange = 0; // total scroll range for horizontal movement
 
   function recalc() {
-    const r = stage.getBoundingClientRect();
     viewportW = window.innerWidth;
     viewportH = window.innerHeight;
     panelCount = config.panels.length;
-    // The total vertical distance over which the stage remains pinned
-    // equals the horizontal distance needed to move panels fully into view.
-    // Track width = panelCount * viewportW. We need to translate from 0 to (trackW - viewportW)
-    const trackDistance = Math.max(0, panelCount * viewportW - viewportW);
-    // Add a small buffer so the last panel settles
-    totalScroll = trackDistance + viewportH * 0.1; // buffer so line finishes past the last panel edge
-    root.style.setProperty('--hs-section-height', `${viewportH + totalScroll}px`);
+    
+    // SCROLL RANGE CALCULATION:
+    // We need to scroll through (panelCount - 1) panel widths to see all panels
+    // because the first panel is visible without any horizontal translation
+    scrollRange = Math.max(0, (panelCount - 1) * viewportW);
+    
+    // SECTION HEIGHT CALCULATION:
+    // Total section height = viewport height (for the sticky stage) + scroll range
+    // This ensures we have enough scroll distance to move through all panels
+    const totalSectionHeight = viewportH + scrollRange;
+    root.style.setProperty('--hs-section-height', `${totalSectionHeight}px`);
+    
+    // Cache section's document position for scroll calculations
+    sectionTop = root.offsetTop;
   }
 
   // Small screens: snap mode (no pinning transform)
@@ -109,9 +119,6 @@
     if (ticking) return; ticking = true;
     requestAnimationFrame(() => {
       ticking = false;
-      const rect = root.getBoundingClientRect();
-      const start = rect.top + window.scrollY; // section top relative to doc
-      const current = window.scrollY - start; // how far into the section
       const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 
       if (isSnapMode() || prefersReduced) {
@@ -121,12 +128,26 @@
         return;
       }
 
-      const progress = clamp(current / totalScroll, 0, 1);
-      const trackW = panelCount * viewportW;
-      const maxX = Math.max(0, trackW - viewportW);
-      const translateX = progress * maxX;
+      // PROGRESS CALCULATION:
+      // start = when the section top hits the viewport top
+      // end = when we've scrolled enough to see the last panel
+      // scrollY = current scroll position from document top
+      const scrollY = window.pageYOffset || document.documentElement.scrollTop;
+      const sectionStart = sectionTop; // section top in document
+      const sectionEnd = sectionStart + scrollRange; // when horizontal scroll should complete
+      
+      // How far we've scrolled into the section's scroll range
+      const scrollIntoSection = scrollY - sectionStart;
+      
+      // Progress: 0 at section start, 1 when we've scrolled through all panels
+      const progress = clamp(scrollIntoSection / scrollRange, 0, 1);
+      
+      // TRANSFORM CALCULATION:
+      // translateX moves from 0 (first panel visible) to scrollRange (last panel visible)
+      const translateX = progress * scrollRange;
       track.style.transform = `translate3d(${-translateX}px, 0, 0)`;
-      // SVG reveal (pathLength=1): 1 -> 0
+      
+      // SVG reveal: progress 0 -> strokeDashoffset 1 (hidden), progress 1 -> strokeDashoffset 0 (fully shown)
       pathEl.style.strokeDashoffset = String(1 - progress);
     });
   }
@@ -213,12 +234,23 @@
   }
 
   // Initialize
-  recalc();
-  initDynamic();
-  // Snap mode: set path fully drawn
-  if (isSnapMode() || prefersReduced) {
-    pathEl.style.strokeDashoffset = '0';
+  // INITIAL STATE: Always start at panel 1 (progress = 0)
+  function initializeState() {
+    track.style.transform = 'translate3d(0,0,0)';
+    if (isSnapMode() || prefersReduced) {
+      pathEl.style.strokeDashoffset = '0'; // show full path
+    } else {
+      pathEl.style.strokeDashoffset = '1'; // hide path initially
+    }
   }
+  
+  // Recalc and set initial state
+  recalc();
+  initializeState();
+  initDynamic();
+  
+  // Run scroll once to ensure correct state on load
+  onScroll();
 
   const opts = { passive: true };
   window.addEventListener('scroll', onScroll, opts);
