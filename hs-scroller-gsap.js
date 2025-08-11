@@ -19,6 +19,52 @@
   const DEBUG = window.__HS_DEBUG__ || false;
   const log = (...args) => DEBUG && console.log('[HS-Scroller]', ...args);
   
+  /**
+   * Initialize and run world clock
+   */
+  function initWorldClock() {
+    function updateClocks() {
+      const now = new Date();
+      
+      // San Francisco (PST/PDT - UTC-8/-7)
+      const sfTime = new Date(now.toLocaleString("en-US", {timeZone: "America/Los_Angeles"}));
+      
+      // London (GMT/BST - UTC+0/+1)
+      const londonTime = new Date(now.toLocaleString("en-US", {timeZone: "Europe/London"}));
+      
+      // New York (EST/EDT - UTC-5/-4)
+      const nyTime = new Date(now.toLocaleString("en-US", {timeZone: "America/New_York"}));
+      
+      // Format time as HH:MM:SS
+      const formatTime = (date) => {
+        return date.toLocaleTimeString('en-US', { 
+          hour12: false, 
+          hour: '2-digit', 
+          minute: '2-digit', 
+          second: '2-digit' 
+        });
+      };
+      
+      // Update DOM elements
+      const sfElement = document.getElementById('time-sf');
+      const londonElement = document.getElementById('time-london');
+      const nyElement = document.getElementById('time-ny');
+      
+      if (sfElement) sfElement.textContent = formatTime(sfTime);
+      if (londonElement) londonElement.textContent = formatTime(londonTime);
+      if (nyElement) nyElement.textContent = formatTime(nyTime);
+    }
+    
+    // Update immediately and then every second
+    updateClocks();
+    setInterval(updateClocks, 1000);
+    
+    log('World clock initialized');
+  }
+  
+  // Start the world clock immediately
+  initWorldClock();
+  
   // Check for GSAP and required elements
   if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
     console.error('[HS-Scroller] GSAP or ScrollTrigger not found');
@@ -215,8 +261,20 @@
    * Seek to specific panel
    */
   function seekToPanel(panelId, animate = true) {
+    log('seekToPanel called with:', panelId, 'animate:', animate);
+    log('Current state:', {
+      isMobile: isMobile(),
+      prefersReducedMotion,
+      mainTimelineExists: !!mainTimeline,
+      panelsLength: panels.length
+    });
+    
     if (isMobile() || prefersReducedMotion || !mainTimeline) {
-      log('Seeking disabled for mobile/reduced motion');
+      log('Seeking disabled - using fallback scroll');
+      const targetPanel = document.getElementById(panelId);
+      if (targetPanel) {
+        targetPanel.scrollIntoView({ behavior: 'smooth' });
+      }
       return;
     }
     
@@ -229,10 +287,14 @@
       gsap.to(mainTimeline, {
         progress: progress,
         duration: CONFIG.snapDuration,
-        ease: 'power2.inOut'
+        ease: 'power2.inOut',
+        onComplete: () => {
+          log('GSAP animation to', panelId, 'completed');
+        }
       });
     } else {
       mainTimeline.progress(progress);
+      log('Set timeline progress directly to:', progress);
     }
     
     activePanel = index;
@@ -253,8 +315,13 @@
         // Always prevent default navigation on index page
         if (window.location.pathname.includes('index.html') || window.location.pathname === '/' || window.location.pathname === '') {
           e.preventDefault();
-          log('Prevented default navigation');
           
+          // Update the URL hash first
+          const newUrl = `${window.location.pathname}#${panelId}`;
+          window.history.pushState(null, null, newUrl);
+          log('Updated URL to:', newUrl);
+          
+          // Then navigate to the panel
           if (mainTimeline && !isMobile()) {
             seekToPanel(panelId);
             log('GSAP navigation to panel:', panelId);
