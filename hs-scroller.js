@@ -144,7 +144,16 @@
     // Projects
     const projectsEl = document.getElementById('hs-projects-bouncy');
     if (projectsEl && typeof window !== 'undefined') {
-      window.mountProjects?.(projectsEl);
+      const mountProjectsIfReady = () => {
+        if (window.mountProjects) {
+          window.mountProjects(projectsEl);
+        } else {
+          // simple progressive fallback
+          projectsEl.innerHTML = '<p class="muted">loading projects…</p>';
+          window.addEventListener('load', () => window.mountProjects?.(projectsEl), { once: true });
+        }
+      };
+      mountProjectsIfReady();
     }
     // Home single bouncy card representing the hero as a card
     const homeBouncy = document.getElementById('hs-home-bouncy');
@@ -152,7 +161,11 @@
       const cards = [
         { id: 'home', title: 'made by samuel robson', subtitle: 'about', url: 'about.html' },
       ];
-      window.bouncyMount?.(homeBouncy, cards);
+      if (window.bouncyMount) {
+        window.bouncyMount(homeBouncy, cards);
+      } else {
+        window.addEventListener('load', () => window.bouncyMount?.(homeBouncy, cards), { once: true });
+      }
     }
     // Blog
     const blogEl = document.getElementById('hs-blog-bouncy');
@@ -168,7 +181,11 @@
               subtitle: new Date(p.date || Date.now()).toLocaleDateString(),
               url: p.url,
             }));
-            window.bouncyMount?.(blogEl, cards);
+            if (window.bouncyMount) {
+              window.bouncyMount(blogEl, cards);
+            } else {
+              window.addEventListener('load', () => window.bouncyMount?.(blogEl, cards), { once: true });
+            }
           } else {
             throw new Error('no feed');
           }
@@ -178,7 +195,7 @@
             { id: 'b2', title: 'simple > complex', subtitle: 'writing', url: '#' },
             { id: 'b3', title: 'human-first tech', subtitle: 'writing', url: '#' },
           ];
-          window.bouncyMount?.(blogEl, fallback);
+          if (window.bouncyMount) window.bouncyMount(blogEl, fallback);
         }
       })();
     }

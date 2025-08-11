@@ -46,9 +46,9 @@
         </section>
     </main>
 
-    <!-- load bundle for potential shared utils; safe if missing in local preview -->
+    <!-- Ensure bundle loads before hs-scroller to mount dynamic cards -->
     <script src="dist/bundle.js"></script>
     <!-- Only load hs-scroller on index -->
-    <script src="hs-scroller.js" defer></script>
+    <script src="hs-scroller.js"></script>
 </body>
 </html>
