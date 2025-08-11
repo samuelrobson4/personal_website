@@ -147,8 +147,9 @@
           const progress = self.progress;
           activePanel = Math.round(progress * (panelCount - 1));
           
-          // Simple transform calculation - no correction offset needed in onUpdate
-          const targetX = -(progress * (panelCount - 1) * window.innerWidth);
+          // Transform calculation with correction offset
+          const scrollOffset = -(progress * (panelCount - 1) * window.innerWidth);
+          const targetX = correctionOffset + scrollOffset;
           gsap.set(track, { x: targetX, force3D: true });
           
           if (window.__HS_DEBUG__) {
@@ -166,7 +167,8 @@
         },
         onRefresh: () => {
           log('ScrollTrigger refreshed');
-          // Recalculate and apply correction offset
+          // Recalculate correction offset
+          gsap.set(track, { clearProps: "transform" });
           const refreshRect = track.getBoundingClientRect();
           const refreshOffset = refreshRect.x;
           correctionOffset = -refreshOffset;
