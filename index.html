@@ -32,9 +32,21 @@
         <section class="hs-section">
           <div class="hs-stage">
             <!-- SVG hand-drawn line overlay -->
-            <svg class="hs-svg" viewBox="0 0 1500 600" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-              <path id="hs-path" class="hs-path" d="M 50 300 Q 200 200 350 300 Q 500 400 650 300 Q 800 200 950 300 Q 1100 400 1250 300 Q 1400 200 1450 300" />
-            </svg>
+                          <svg class="hs-svg" viewBox="0 0 1500 600" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+                <defs>
+                  <!-- Arrow marker -->
+                  <marker id="hs-arrow" markerWidth="20" markerHeight="20" refX="10" refY="10" orient="auto" markerUnits="strokeWidth">
+                    <path d="M2,2 L2,18 L18,10 z" fill="#0066ff" opacity="0.8"/>
+                  </marker>
+                </defs>
+                <path id="hs-path" class="hs-path" d="M 50 300 Q 200 200 350 300 Q 500 400 650 300 Q 800 200 950 300 Q 1100 400 1250 300 Q 1400 200 1450 300" />
+                <!-- Moving arrow circle -->
+                <circle id="hs-arrow-dot" r="8" fill="#0066ff" opacity="0.8">
+                  <animateMotion dur="0s" repeatCount="1" rotate="auto">
+                    <mpath href="#hs-path"/>
+                  </animateMotion>
+                </circle>
+              </svg>
             
             <!-- Horizontal track with panels -->
             <div class="hs-track">

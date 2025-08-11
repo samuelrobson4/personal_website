@@ -389,8 +389,9 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
   flex: 0 0 100vw;
   height: 100vh;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
+  padding-top: 140px; /* Consistent top spacing for all panels */
 }
 
 .hs-inner {
@@ -403,20 +404,31 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
 /* Standard panel typography */
 .hs-panel h1 {
   font-family: 'Baskervville', serif;
-  font-size: 24px;
+  font-size: clamp(2rem, 4vw, 3rem); /* Responsive sizing similar to hero */
   font-weight: 600;
   color: #000;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
 }
 
 .hs-panel p {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(1rem, 2vw, 1.125rem);
   color: var(--text);
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.hs-panel p.lead {
+  font-size: clamp(1.125rem, 2.5vw, 1.25rem);
+  color: #666;
+  font-weight: 300;
 }
 
 /* Hero panel (Panel 1) - special styling */
 .hs-panel--hero {
-  align-items: flex-start;
-  padding-top: 140px; /* Account for header + generous spacing */
+  /* Now uses the same alignment as other panels */
 }
 
 .hs-hero {
@@ -494,11 +506,20 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
   /* Path length will be set by JS for proper dash animation */
 }
 
+#hs-arrow-dot {
+  filter: drop-shadow(0 2px 4px rgba(0, 102, 255, 0.3));
+  transition: opacity 0.3s ease;
+}
+
 /* Reduced motion: show full path, disable animations */
 @media (prefers-reduced-motion: reduce) {
   .hs-path {
     stroke-dasharray: none !important;
     stroke-dashoffset: 0 !important;
+  }
+  
+  #hs-arrow-dot {
+    opacity: 0 !important;
   }
   
   .hs-hero__scroll-hint svg {
@@ -531,10 +552,7 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
   .hs-panel {
     scroll-snap-align: center;
     min-height: 100vh;
-  }
-  
-  .hs-panel--hero {
-    padding-top: 100px;
+    padding-top: 100px; /* Reduced spacing on mobile */
   }
   
   .hs-hero__title {

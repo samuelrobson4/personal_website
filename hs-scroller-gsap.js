@@ -30,6 +30,7 @@
   const track = document.querySelector('.hs-track');
   const panels = document.querySelectorAll('.hs-panel');
   const svgPath = document.querySelector('#hs-path');
+  const arrowDot = document.querySelector('#hs-arrow-dot');
   
   if (!section || !stage || !track || !panels.length || !svgPath) {
     log('Required elements not found, aborting');
@@ -160,6 +161,14 @@
           if (!prefersReducedMotion && svgPath) {
             const dashOffset = svgLength * (1 - progress);
             svgPath.style.strokeDashoffset = dashOffset;
+            
+            // Move arrow dot along the path
+            if (arrowDot && svgPath) {
+              const pathLength = svgPath.getTotalLength();
+              const point = svgPath.getPointAtLength(progress * pathLength);
+              arrowDot.setAttribute('cx', point.x);
+              arrowDot.setAttribute('cy', point.y);
+            }
           }
           
           // Update browser hash without triggering scroll
