@@ -32,9 +32,6 @@
       // London (GMT/BST - UTC+0/+1)
       const londonTime = new Date(now.toLocaleString("en-US", {timeZone: "Europe/London"}));
       
-      // New York (EST/EDT - UTC-5/-4)
-      const nyTime = new Date(now.toLocaleString("en-US", {timeZone: "America/New_York"}));
-      
       // Format time as HH:MM:SS
       const formatTime = (date) => {
         return date.toLocaleTimeString('en-US', { 
@@ -48,11 +45,9 @@
       // Update DOM elements
       const sfElement = document.getElementById('time-sf');
       const londonElement = document.getElementById('time-london');
-      const nyElement = document.getElementById('time-ny');
       
       if (sfElement) sfElement.textContent = formatTime(sfTime);
       if (londonElement) londonElement.textContent = formatTime(londonTime);
-      if (nyElement) nyElement.textContent = formatTime(nyTime);
     }
     
     // Update immediately and then every second
@@ -64,6 +59,22 @@
   
   // Start the world clock immediately
   initWorldClock();
+  
+  // Expose navigation functions for debugging and external access
+  window.hsDebug = {
+    seekToPanel: null, // Will be set when function is defined
+    mainTimeline: null, // Will be set when timeline is created
+    testNavigation: function(panelId) {
+      console.log('[TEST] Testing navigation to:', panelId);
+      const element = document.getElementById(panelId);
+      console.log('[TEST] Panel element found:', !!element);
+      if (this.seekToPanel) {
+        this.seekToPanel(panelId);
+      } else {
+        console.log('[TEST] seekToPanel function not available');
+      }
+    }
+  };
   
   // Check for GSAP and required elements
   if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
@@ -230,6 +241,9 @@
     });
     
     log('GSAP animation created with offset correction');
+    
+    // Expose timeline for debugging
+    window.hsDebug.mainTimeline = mainTimeline;
   }
   
   /**
@@ -300,6 +314,9 @@
     activePanel = index;
   }
   
+  // Expose seekToPanel for external access
+  window.hsDebug.seekToPanel = seekToPanel;
+  
   /**
    * Handle navigation clicks
    */
@@ -322,15 +339,25 @@
           log('Updated URL to:', newUrl);
           
           // Then navigate to the panel
+          log('Navigation check:', {
+            mainTimelineExists: !!mainTimeline,
+            isMobile: isMobile(),
+            prefersReducedMotion,
+            panelId
+          });
+          
           if (mainTimeline && !isMobile()) {
+            log('Using GSAP navigation');
             seekToPanel(panelId);
-            log('GSAP navigation to panel:', panelId);
           } else {
+            log('Using fallback scroll navigation');
             // Fallback: use native scroll behavior
             const targetPanel = document.getElementById(panelId);
             if (targetPanel) {
               targetPanel.scrollIntoView({ behavior: 'smooth' });
               log('Fallback scroll to panel:', panelId);
+            } else {
+              log('Target panel not found:', panelId);
             }
           }
         }
