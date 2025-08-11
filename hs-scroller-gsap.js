@@ -31,6 +31,9 @@
   const panels = document.querySelectorAll('.hs-panel');
   const progressLine = document.querySelector('.nav-progress-line');
   const navItems = document.querySelectorAll('.nav-item');
+  const flyingArrow = document.querySelector('#flying-arrow');
+  const arrowTrail = document.querySelector('#arrow-trail');
+  const flightPath = document.querySelector('#arrow-flight-path');
   
   if (!section || !stage || !track || !panels.length) {
     log('Required elements not found, aborting');
@@ -72,31 +75,56 @@
   let activePanel = 0;
   
   /**
-   * Update navigation progress line position
+   * Update navigation progress line position and flying arrow
    */
-  function updateNavProgress(activePanel) {
-    if (!progressLine || !navItems.length) return;
-    
-    // Remove active class from all nav items
-    navItems.forEach(item => item.classList.remove('active'));
-    
-    // Find the corresponding nav item
-    const panelId = getPanelId(activePanel);
-    const activeNavItem = document.querySelector(`[data-panel="${panelId}"]`);
-    
-    if (activeNavItem) {
-      // Add active class
-      activeNavItem.classList.add('active');
+  function updateProgressAndArrow(activePanel, scrollProgress) {
+    // Update navigation progress line
+    if (progressLine && navItems.length) {
+      // Remove active class from all nav items
+      navItems.forEach(item => item.classList.remove('active'));
       
-      // Position the progress line
-      const itemRect = activeNavItem.getBoundingClientRect();
-      const containerRect = activeNavItem.parentElement.getBoundingClientRect();
+      // Find the corresponding nav item
+      const panelId = getPanelId(activePanel);
+      const activeNavItem = document.querySelector(`[data-panel="${panelId}"]`);
       
-      const left = itemRect.left - containerRect.left;
-      const width = itemRect.width;
+      if (activeNavItem) {
+        // Add active class
+        activeNavItem.classList.add('active');
+        
+        // Position the progress line
+        const itemRect = activeNavItem.getBoundingClientRect();
+        const containerRect = activeNavItem.parentElement.getBoundingClientRect();
+        
+        const left = itemRect.left - containerRect.left;
+        const width = itemRect.width;
+        
+        progressLine.style.left = left + 'px';
+        progressLine.style.width = width + 'px';
+      }
+    }
+    
+    // Update flying arrow animation
+    if (flyingArrow && arrowTrail && flightPath && !prefersReducedMotion) {
+      const pathLength = flightPath.getTotalLength();
       
-      progressLine.style.left = left + 'px';
-      progressLine.style.width = width + 'px';
+      // Show arrow after small scroll delay (starts flying after you begin scrolling)
+      if (scrollProgress > 0.02) {
+        flyingArrow.style.opacity = '1';
+        arrowTrail.style.opacity = '1';
+        
+        // Move arrow along path
+        const point = flightPath.getPointAtLength(scrollProgress * pathLength);
+        flyingArrow.setAttribute('transform', `translate(${point.x - 12}, ${point.y - 12})`);
+        
+        // Draw trail behind arrow
+        const trailLength = scrollProgress * pathLength;
+        arrowTrail.style.strokeDasharray = trailLength;
+        arrowTrail.style.strokeDashoffset = 0;
+      } else {
+        // Hide arrow and trail when at the very beginning
+        flyingArrow.style.opacity = '0';
+        arrowTrail.style.opacity = '0';
+      }
     }
   }
   
@@ -164,8 +192,8 @@
             console.log('[HS-Scroller] Progress:', progress.toFixed(3), 'Active panel:', activePanel, 'Panel ID:', getPanelId(activePanel), 'Target X:', targetX + 'px');
           }
           
-          // Update navigation progress
-          updateNavProgress(activePanel);
+          // Update navigation progress and flying arrow
+          updateProgressAndArrow(activePanel, progress);
           
           // Update browser hash without triggering scroll
           updateHashWithoutScroll(getPanelId(activePanel));

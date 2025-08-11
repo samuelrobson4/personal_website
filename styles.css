@@ -388,6 +388,26 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
   /* Height will be set by GSAP */
 }
 
+/* Flying arrow animation */
+.flying-arrow-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 3; /* Above content but below nav */
+}
+
+.flying-arrow {
+  opacity: 0; /* Hidden initially, will be animated */
+  transform-origin: center;
+}
+
+.arrow-trail {
+  opacity: 0; /* Hidden initially, will be drawn progressively */
+}
+
 .hs-stage {
   position: relative;
   height: 100vh;
@@ -530,14 +550,13 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
   transition: opacity 0.3s ease;
 }
 
-/* Reduced motion: show full path, disable animations */
+/* Reduced motion: disable animations */
 @media (prefers-reduced-motion: reduce) {
-  .hs-path {
-    stroke-dasharray: none !important;
-    stroke-dashoffset: 0 !important;
+  .flying-arrow {
+    opacity: 0 !important;
   }
   
-  #hs-arrow-dot {
+  .arrow-trail {
     opacity: 0 !important;
   }
   

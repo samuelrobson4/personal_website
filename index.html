@@ -32,7 +32,21 @@
         <!-- hs- horizontal scroller (GSAP + ScrollTrigger) -->
         <section class="hs-section">
           <div class="hs-stage">
-
+            <!-- Flying arrow animation -->
+            <svg class="flying-arrow-svg" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+              <!-- Path that the arrow will follow (invisible) -->
+              <path id="arrow-flight-path" d="M 100 700 L 300 500 L 500 350 L 700 250 L 900 200 L 1100 150" fill="none" stroke="none"/>
+              
+              <!-- Line that draws behind the arrow -->
+              <path id="arrow-trail" class="arrow-trail" d="M 100 700 L 300 500 L 500 350 L 700 250 L 900 200 L 1100 150" 
+                    fill="none" stroke="#ccc" stroke-width="2" stroke-linecap="round" 
+                    stroke-dasharray="0" stroke-dashoffset="0"/>
+              
+              <!-- Flying arrow -->
+              <g id="flying-arrow" class="flying-arrow">
+                <path d="M12 5v14M19 12l-7 7-7-7" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </g>
+            </svg>
             
             <!-- Horizontal track with panels -->
             <div class="hs-track">
