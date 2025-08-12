@@ -162,9 +162,31 @@
       const isIndex = /index\.html$/.test(location.pathname) || location.pathname === '/' || location.pathname === '';
       if (!isIndex) return;
       const hs = window.hsDebug;
-      if (!hs || !hs.mainTimeline) return;
-      const tl = hs.mainTimeline;
-      const p = tl.progress(); // 0..1 across all panels
+      let p = null;
+      if (hs && hs.mainTimeline) {
+        // Desktop GSAP timeline
+        p = hs.mainTimeline.progress();
+      } else {
+        // Mobile/native scroll: compute from stage scrollLeft
+        const stage = document.querySelector('.hs-stage');
+        const track = document.querySelector('.hs-track');
+        if (stage && track && stage.scrollWidth > stage.clientWidth) {
+          const maxX = track.scrollWidth - stage.clientWidth; // sometimes equals stage.scrollWidth
+          const sl = stage.scrollLeft || 0;
+          p = Math.max(0, Math.min(1, sl / Math.max(1, maxX)));
+        } else {
+          // Fallback: estimate using panel centers
+          const panels = Array.from(document.querySelectorAll('.hs-panel'));
+          if (panels.length > 1) {
+            const centers = panels.map((el, idx) => el.getBoundingClientRect().left + el.clientWidth / 2);
+            const viewportCenter = window.innerWidth / 2;
+            let nearest = 0; let best = Infinity;
+            centers.forEach((c, i) => { const d = Math.abs(c - viewportCenter); if (d < best) { best = d; nearest = i; } });
+            p = nearest / (panels.length - 1);
+          }
+        }
+      }
+      if (p == null) return;
       const span = dots.length - 1;
       const pos = p * span; // continuous position
       const i = Math.floor(pos);

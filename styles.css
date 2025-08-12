@@ -440,6 +440,7 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
 
 /* Ensure 3D blog shelf containers are visible */
 #blog-bouncy, #hs-blog-bouncy { min-height: 480px; width: 100%; display: block; position: relative; }
+@media (max-width: 768px) { #blog-bouncy, #hs-blog-bouncy { min-height: 420px; } }
 
 /* Full-bleed utility to escape centered containers */
 .full-bleed { width: 100vw; margin-left: calc(50% - 50vw); }

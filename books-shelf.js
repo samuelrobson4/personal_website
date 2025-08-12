@@ -75,6 +75,8 @@ window.mountBooksShelf = async function mountBooksShelf(container, cards=[]) {
   const scene = new THREE.Scene(); const cam = new THREE.PerspectiveCamera(45, renderer.domElement.width/renderer.domElement.height, 0.1, 1000);
   cam.position.set(14, 10, 22);
   const orbit = new OrbitControls(cam, renderer.domElement); orbit.enableDamping = true; orbit.dampingFactor = 0.08; orbit.minDistance=10; orbit.maxDistance=60; orbit.target.set(0,3.5,0);
+  // Mobile-friendly: disable right-click/pan inertia issues and allow touch
+  orbit.enablePan = true; orbit.touches = { ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_PAN };
   scene.add(new THREE.AmbientLight(0xffffff, 0.55)); const dir = new THREE.DirectionalLight(0xffffff, 0.85); dir.position.set(6,12,8); scene.add(dir);
 
   const world = new C.World({ gravity: new C.Vec3(0,-9.82,0) }); world.broadphase = new C.SAPBroadphase(world); world.allowSleep = true;
@@ -118,7 +120,7 @@ window.mountBooksShelf = async function mountBooksShelf(container, cards=[]) {
   function loop(){ const dt=Math.min(0.033, clock.getDelta()); world.step(1/60, dt, 3); pickables.forEach(m=>__syncFromBody__(m, m.userData.__body)); renderer.render(scene, cam); requestAnimationFrame(loop); }
   loop();
 
-  const ro = new ResizeObserver(()=>{ const w=container.offsetWidth || container.clientWidth || (container.parentElement && container.parentElement.clientWidth) || window.innerWidth; const h=Math.max(420, w*0.5); renderer.setSize(w,h); cam.aspect=w/h; cam.updateProjectionMatrix(); }); ro.observe(container);
+  const ro = new ResizeObserver(()=>{ const w=container.offsetWidth || container.clientWidth || (container.parentElement && container.parentElement.clientWidth) || window.innerWidth; const h=Math.max(360, w*0.75); renderer.setSize(w,h); cam.aspect=w/h; cam.updateProjectionMatrix(); }); ro.observe(container);
 };
 
 
