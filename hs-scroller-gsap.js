@@ -432,12 +432,27 @@
             console.log('[HS-Scroller] Using GSAP navigation for:', panelId);
             seekToPanel(panelId);
           } else {
-            log('Using fallback scroll navigation');
-            // Fallback: use native scroll behavior
+            log('Using mobile/fallback scroll navigation');
             const targetPanel = document.getElementById(panelId);
             if (targetPanel) {
-              targetPanel.scrollIntoView({ behavior: 'smooth' });
-              log('Fallback scroll to panel:', panelId);
+              // On mobile, scroll the stage horizontally
+              const stage = document.querySelector('.hs-stage');
+              if (stage && isMobile()) {
+                const panels = Array.from(document.querySelectorAll('.hs-panel'));
+                const index = panels.indexOf(targetPanel);
+                if (index !== -1) {
+                  const scrollX = index * window.innerWidth;
+                  stage.scrollTo({
+                    left: scrollX,
+                    behavior: 'smooth'
+                  });
+                  log('Mobile scroll to:', scrollX);
+                }
+              } else {
+                // Fallback vertical scroll for non-mobile
+                targetPanel.scrollIntoView({ behavior: 'smooth' });
+                log('Fallback vertical scroll to panel:', panelId);
+              }
             } else {
               log('Target panel not found:', panelId);
             }

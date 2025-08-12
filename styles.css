@@ -302,10 +302,19 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    .nav { padding: 1rem; }
-    .nav-container { top: 14px; right: 14px; gap: 8px; }
-    .nav-item { width: 10px; height: 10px; }
-    .nav-stack-label { font-size: 10px; top: calc(100% + 6px); }
+  .nav { padding: 1rem; }
+  .nav-container { top: 14px; right: 14px; gap: 8px; }
+  .nav-item { width: 10px; height: 10px; }
+  .nav-stack-label { font-size: 10px; top: calc(100% + 6px); }
+  
+  /* Ensure content doesn't go under nav */
+  .hs-panel .hs-inner {
+    padding-top: 60px !important;
+  }
+  
+  .hs-panel--hero .hs-inner {
+    padding-top: 40px !important;
+  }
     
     .hero {
         padding: 3rem 1rem 4rem;
@@ -608,6 +617,24 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
   }
   60% {
     transform: translateY(-2px);
+  }
+}
+
+@media (max-width: 768px) {
+  /* Rotate arrow to point east on mobile */
+  .hs-hero__scroll-hint svg {
+    transform: rotate(-90deg);
+  }
+  @keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+      transform: rotate(-90deg) translateY(0);
+    }
+    40% {
+      transform: rotate(-90deg) translateY(-4px);
+    }
+    60% {
+      transform: rotate(-90deg) translateY(-2px);
+    }
   }
 }
 
