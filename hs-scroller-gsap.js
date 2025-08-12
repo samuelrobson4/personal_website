@@ -134,7 +134,7 @@
    * Update navigation progress line - grows like status indicator
    */
   function updateNavProgress(activePanel) {
-    if (!progressLine || !navItems.length) return;
+    if (!navItems.length) return;
 
     // Remove and set active state
     navItems.forEach(item => item.classList.remove('active'));
@@ -142,16 +142,41 @@
     const activeNavItem = document.querySelector(`[data-panel="${panelId}"]`);
     if (activeNavItem) activeNavItem.classList.add('active');
 
-    // Status growth: grow from left edge up to the end of the active item
-    const parentEl = progressLine.parentElement;
-    if (!parentEl || !activeNavItem) return;
+    // Update optional label near the stack and moving focus outline
+    const parentEl = document.querySelector('.nav-container');
+    if (!parentEl) return;
 
-    const offsetLeft = (activeNavItem).offsetLeft;
-    const offsetWidth = (activeNavItem).offsetWidth;
-    const totalWidthToActiveRight = offsetLeft + offsetWidth;
+    let label = document.querySelector('.nav-stack-label');
+    if (!label) {
+      label = document.createElement('div');
+      label.className = 'nav-stack-label';
+      parentEl.appendChild(label);
+    }
+    label.textContent = panelId;
+    // Default label color matches clock text; keep highlight logic simple
+    label.style.color = '#666';
 
-    progressLine.style.left = '0px';
-    progressLine.style.width = totalWidthToActiveRight + 'px';
+    // Ensure focus square exists
+    let focus = document.querySelector('.nav-focus');
+    if (!focus) {
+      focus = document.createElement('div');
+      focus.className = 'nav-focus';
+      parentEl.appendChild(focus);
+    }
+    if (!activeNavItem) return; // no DOM anchors (gooey nav in use) → skip
+    const targetRect = activeNavItem.getBoundingClientRect();
+    const parentRect = parentEl.getBoundingClientRect();
+    const x = targetRect.left - parentRect.left - 4;
+    const y = targetRect.top - parentRect.top - 4;
+    focus.style.transform = `translate(${x}px, ${y}px)`;
+
+    // Align label horizontally centered under the active dot (row at top-right)
+    const labelX = targetRect.left - parentRect.left + targetRect.width / 2;
+    const labelEl = label;
+    const labelWidth = labelEl.getBoundingClientRect().width;
+    labelEl.style.transform = `translate(${labelX - labelWidth / 2}px, 0)`;
+    // Ensure color remains the standard dark grey under the active dot
+    labelEl.style.color = '#666';
   }
   
   /**
@@ -464,15 +489,44 @@
       mountProjectsIfReady();
     }
     
-    // Blog (bubbles)
+    // Blog: prefer 3D books shelf if available
     const blogEl = document.getElementById('hs-blog-bouncy');
     if (blogEl) {
-      // If React bubble mount is available, use it; otherwise fallback to cards loader
-      if (window.mountBlogBubbles) {
-        window.mountBlogBubbles(blogEl);
-      } else {
-        loadBlogContent(blogEl);
-      }
+      (async () => {
+        // Build cards first
+        let cards = [];
+        try {
+          const res = await fetch('dist/substack.json', { cache: 'no-store' });
+          const posts = res.ok ? await res.json() : [];
+          cards = posts.slice(0, 12).map((p, i) => ({
+            id: String(i + 1),
+            title: (p.title || '').toLowerCase(),
+            subtitle: new Date(p.date || Date.now()).toLocaleDateString(),
+            url: p.url || '#',
+          }));
+        } catch (e) {
+          cards = [
+            { id: 'b1', title: 'designing for delight', subtitle: 'writing', url: '#' },
+            { id: 'b2', title: 'simple > complex', subtitle: 'writing', url: '#' },
+            { id: 'b3', title: 'human-first tech', subtitle: 'writing', url: '#' },
+          ];
+        }
+
+        const mountShelf = () => window.mountBooksShelf?.(blogEl, cards);
+
+        if (window.mountBooksShelf) {
+          mountShelf();
+        } else {
+          // Wait until after window load (script order) then try
+          window.addEventListener('load', () => {
+            setTimeout(() => {
+              if (window.mountBooksShelf) mountShelf();
+              else if (window.mountBlogBubbles) window.mountBlogBubbles(blogEl);
+              else loadBlogContent(blogEl);
+            }, 0);
+          }, { once: true });
+        }
+      })();
     }
     
     // Contact form

@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Blog – Samuel Robson</title>
-  <link rel="stylesheet" href="styles.css?v=1755025140880" />
+  <link rel="stylesheet" href="styles.css?v=1755033535944" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Baskervville:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
@@ -31,32 +31,37 @@
     <p class="lead">New thoughts and ideas related to my work...</p>
     <div id="blog-bouncy" style="margin-top:12px"></div>
   </main>
-  <script src="dist/bundle.js?v=1755025140880"></script>
+  <script src="books-shelf.js"></script>
   <script>
-    async function mountBlog() {
+    async function mountBlogAsBooks() {
       try {
         const res = await fetch('dist/substack.json', { cache: 'no-store' });
-        if (res.ok) {
-          const posts = await res.json();
-          const cards = posts.slice(0, 8).map((p, i) => ({
-            id: String(i + 1),
-            title: (p.title || '').toLowerCase(),
-            subtitle: new Date(p.date || Date.now()).toLocaleDateString(),
-            url: p.url
-          }));
-          window.bouncyMount?.(document.getElementById('blog-bouncy'), cards);
-        } else { throw new Error('no feed'); }
+        const posts = res.ok ? await res.json() : [];
+        const cards = posts.slice(0, 12).map((p, i) => ({
+          id: String(i + 1),
+          title: (p.title || '').toLowerCase(),
+          subtitle: new Date(p.date || Date.now()).toLocaleDateString(),
+          url: p.url || '#'
+        }));
+        const el = document.getElementById('blog-bouncy');
+        if (window.mountBooksShelf) window.mountBooksShelf(el, cards);
+        else el.textContent = 'loading 3D shelf…';
       } catch (e) {
         const fallback = [
           { id: 'b1', title: 'designing for delight', subtitle: 'writing', url: '#' },
           { id: 'b2', title: 'simple > complex', subtitle: 'writing', url: '#' },
           { id: 'b3', title: 'human-first tech', subtitle: 'writing', url: '#' }
         ];
-        window.bouncyMount?.(document.getElementById('blog-bouncy'), fallback);
+        const el = document.getElementById('blog-bouncy');
+        if (window.mountBooksShelf) window.mountBooksShelf(el, fallback);
       }
     }
-    mountBlog();
+    mountBlogAsBooks();
   </script>
+  <script src="gooey-water.js"></script>
+  <script src="title-wiggle.js"></script>
+  <script src="site-loader.js"></script>
+  <script src="gooey-nav.js"></script>
 </body>
 </html>
 

@@ -1,3 +1,24 @@
+/* Site loading overlay */
+.site-loader {
+  position: fixed; inset: 0; background: var(--bg); display: flex;
+  align-items: center; justify-content: center; z-index: 2000; opacity: 0;
+  transition: opacity 0.35s ease;
+}
+.site-loader__counter {
+  font-family: 'Baskervville', Georgia, 'Times New Roman', serif;
+  font-size: 25pt; color: #000; letter-spacing: -0.02em;
+}
+/* Gooey water band (SVG) */
+.gooey-band { position: fixed; left: 0; right: 0; bottom: 0; height: 96px; width: 100vw; z-index: 900; pointer-events: none; }
+/* Water dots canvas fixed to bottom */
+.water-dots-canvas {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 900; /* below header/nav (1000+) but above content */
+  pointer-events: none; /* mouse moves read globally */
+}
 * {
     margin: 0;
     padding: 0;
@@ -72,46 +93,70 @@ body {
     padding: 1.5rem 2rem;
 }
 
+/* Nav as vertical stepper in top-right */
 .nav-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    transform: none;
     display: flex;
-    gap: 1.25rem;
-    max-width: 1200px;
-    margin: 0 auto;
-    justify-content: flex-end;
-    position: relative;
-    font-size: 14px; /* Smaller text */
+    flex-direction: row; /* horizontal row of dots */
+    align-items: center;
+    gap: 10px;
+    z-index: 1100;
 }
 
+/* Each nav item renders as a small square; text is visually hidden */
 .nav-item {
-    font-size: 14px; /* Smaller text */
-    font-weight: 300;
-    color: #999; /* Lighter grey */
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+    background: #000; /* black dots */
+    border: 1px solid #000;
+    display: block;
+    text-indent: -9999px;
+    overflow: hidden;
+    padding: 0;
     cursor: pointer;
-    transition: color 0.3s ease;
-    user-select: none;
-    text-decoration: none;
-    padding: 0.25rem 0.5rem;
-    position: relative;
-    display: inline-block; /* Ensure proper click area */
+    transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+    transform-origin: center; /* ensure growth from both sides */
 }
 
-.nav-item:hover {
-    color: var(--blue); /* Light blue on hover */
-}
+.nav-item:hover { background: #111; border-color: #111; }
 
-.nav-item.active {
-    color: #333;
-}
+.nav-item.active { background: #000; border-color: #000; box-shadow: 0 0 0 1px #000 inset; transform: scaleX(1.5); }
 
 /* Progress line that moves under active nav item */
-.nav-progress-line {
+/* Hide horizontal progress line in the new stepper UI */
+.nav-progress-line { display: none; }
+
+/* Label for current section shown left of the stack */
+.nav-stack-label {
     position: absolute;
-    bottom: -8px;
-    height: 2px;
-    background: #ccc;
-    transition: all 0.3s ease;
-    width: 0;
+    top: calc(100% + 6px); /* label below the row, closer */
     left: 0;
+    transform: translateX(0);
+    font-family: 'Inter', sans-serif;
+    font-size: 11px; /* smaller */
+    font-weight: 400;
+    color: #666; /* match clock text */
+    white-space: nowrap;
+    transition: transform 0.25s ease;
+}
+
+/* Older iOS safe-area fallback */
+.nav-container { bottom: calc(20px + constant(safe-area-inset-bottom, 0px)); }
+
+/* Moving focus square that follows the active dot */
+.nav-focus {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    border: 2px solid #fff;
+    border-radius: 4px;
+    pointer-events: none;
+    transform: translate(-9999px, -9999px);
+    transition: transform 0.25s ease;
 }
 
 /* Headings: Baskervville semibold, black. Only links inside headings turn blue on hover */
@@ -257,18 +302,10 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    .nav {
-        padding: 1rem;
-    }
-    
-    .nav-container {
-        gap: 2rem;
-        justify-content: center;
-    }
-    
-    .nav-item {
-        font-size: 14px;
-    }
+    .nav { padding: 1rem; }
+    .nav-container { top: 14px; right: 14px; gap: 8px; }
+    .nav-item { width: 10px; height: 10px; }
+    .nav-stack-label { font-size: 10px; top: calc(100% + 6px); }
     
     .hero {
         padding: 3rem 1rem 4rem;
@@ -400,6 +437,9 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
 }
 .blog-bubble-title { font-family: 'Baskervville', serif; font-size: 20px; font-weight: 600; color: #000; line-height: 1.1; letter-spacing: -0.02em; }
 .blog-bubble-sub { font-size: 14px; color: var(--text); }
+
+/* Ensure 3D blog shelf containers are visible */
+#blog-bouncy, #hs-blog-bouncy { min-height: 480px; width: 100%; display: block; position: relative; }
 
 /* Full-bleed utility to escape centered containers */
 .full-bleed { width: 100vw; margin-left: calc(50% - 50vw); }
