@@ -127,37 +127,31 @@
   let mainTimeline;
   let svgLength;
   let activePanel = 0;
+  let heroOffsetPx = 140; // target top offset to match inner pages
+  let heroStartOffsetPx = 0; // center-aligned start
   
   /**
    * Update navigation progress line - grows like status indicator
    */
   function updateNavProgress(activePanel) {
     if (!progressLine || !navItems.length) return;
-    
-    // Remove active class from all nav items
+
+    // Remove and set active state
     navItems.forEach(item => item.classList.remove('active'));
-    
-    // Calculate total progress across all nav items
-    const totalPanels = navItems.length;
-    const currentPanelIndex = activePanel;
-    const progressPercent = ((currentPanelIndex + 1) / totalPanels) * 100;
-    
-    // Find the active nav item for styling
     const panelId = getPanelId(activePanel);
     const activeNavItem = document.querySelector(`[data-panel="${panelId}"]`);
-    
-    if (activeNavItem) {
-      // Add active class
-      activeNavItem.classList.add('active');
-    }
-    
-    // Update progress line to grow from left, showing overall progress
-    const containerRect = progressLine.parentElement.getBoundingClientRect();
-    const totalWidth = containerRect.width;
-    const progressWidth = (progressPercent / 100) * totalWidth;
-    
+    if (activeNavItem) activeNavItem.classList.add('active');
+
+    // Status growth: grow from left edge up to the end of the active item
+    const parentEl = progressLine.parentElement;
+    if (!parentEl || !activeNavItem) return;
+
+    const offsetLeft = (activeNavItem).offsetLeft;
+    const offsetWidth = (activeNavItem).offsetWidth;
+    const totalWidthToActiveRight = offsetLeft + offsetWidth;
+
     progressLine.style.left = '0px';
-    progressLine.style.width = progressWidth + 'px';
+    progressLine.style.width = totalWidthToActiveRight + 'px';
   }
   
   /**
@@ -201,6 +195,19 @@
     const correctedRect = track.getBoundingClientRect();
     log('After correction - track position:', correctedRect.x);
     
+    // Compute hero vertical offsets
+    const heroPanel = document.querySelector('.hs-panel--hero .hs-inner');
+    const stageRect = stage.getBoundingClientRect();
+    const heroRect = heroPanel ? heroPanel.getBoundingClientRect() : null;
+    // center start: (viewportH - heroHeight)/2 relative to stage top
+    if (heroRect) {
+      const viewportH = window.innerHeight;
+      const heroHeight = heroRect.height;
+      heroStartOffsetPx = Math.max(0, (viewportH - heroHeight) / 2);
+    } else {
+      heroStartOffsetPx = 0;
+    }
+
     // Create main timeline
     mainTimeline = gsap.timeline({
       scrollTrigger: {
@@ -219,6 +226,18 @@
           const scrollOffset = -(progress * (panelCount - 1) * window.innerWidth);
           const targetX = correctionOffset + scrollOffset;
           gsap.set(track, { x: targetX, force3D: true });
+
+          // During the first panel portion of progress, ease hero from centered to 140px top
+          if (heroPanel) {
+            const panelsSpan = (panelCount - 1);
+            const perPanelProgress = panelsSpan > 0 ? (progress * panelsSpan) : 0; // 0..N panels
+            const heroPhase = Math.max(0, Math.min(1, perPanelProgress)); // clamp to first panel [0,1]
+            const eased = gsap.parseEase('power2.out')(heroPhase);
+            const currentTop = heroStartOffsetPx + (heroOffsetPx - heroStartOffsetPx) * eased;
+            gsap.set(heroPanel, { paddingTop: 0 });
+            gsap.set(heroPanel.parentElement, { alignItems: 'flex-start' });
+            gsap.set(heroPanel, { y: currentTop });
+          }
           
           if (window.__HS_DEBUG__) {
             console.log('[HS-Scroller] Progress:', progress.toFixed(3), 'Active panel:', activePanel, 'Panel ID:', getPanelId(activePanel), 'Target X:', targetX + 'px');
@@ -239,6 +258,17 @@
           correctionOffset = -refreshOffset;
           gsap.set(track, { x: correctionOffset, force3D: true });
           log('Refresh correction applied:', correctionOffset);
+
+          // Recalculate hero start offset on resize/refresh
+          const heroPanelNow = document.querySelector('.hs-panel--hero .hs-inner');
+          const heroRectNow = heroPanelNow ? heroPanelNow.getBoundingClientRect() : null;
+          if (heroRectNow) {
+            const viewportH = window.innerHeight;
+            const heroHeight = heroRectNow.height;
+            heroStartOffsetPx = Math.max(0, (viewportH - heroHeight) / 2);
+          } else {
+            heroStartOffsetPx = 0;
+          }
         }
       }
     });
@@ -285,41 +315,34 @@
       mainTimelineExists: !!mainTimeline,
       panelsLength: panels ? panels.length : 0
     });
-    
-    if (isMobile() || prefersReducedMotion || !mainTimeline) {
-      console.log('[HS-Scroller] Seeking disabled - using fallback scroll');
-      const targetPanel = document.getElementById(panelId);
-      if (targetPanel) {
-        targetPanel.scrollIntoView({ behavior: 'smooth' });
-      }
-      return;
-    }
-    
+
     const index = getPanelIndex(panelId);
-    const progress = index / (panels.length - 1);
-    
-    console.log('[HS-Scroller] Seeking to panel:', panelId, 'Index:', index, 'Progress:', progress);
-    console.log('[HS-Scroller] Current timeline progress:', mainTimeline.progress());
-    
-    if (animate) {
-      console.log('[HS-Scroller] Starting GSAP animation...');
-      gsap.to(mainTimeline, {
-        progress: progress,
-        duration: CONFIG.snapDuration,
-        ease: 'power2.inOut',
-        onStart: () => {
-          console.log('[HS-Scroller] GSAP animation started to', panelId);
-        },
-        onComplete: () => {
-          console.log('[HS-Scroller] GSAP animation to', panelId, 'completed');
-        }
-      });
-    } else {
-      console.log('[HS-Scroller] Setting timeline progress directly to:', progress);
-      mainTimeline.progress(progress);
+    const clampedIndex = Math.max(0, Math.min(panels.length - 1, index));
+    const totalPanels = Math.max(1, panels.length - 1);
+    const progress = clampedIndex / totalPanels;
+
+    // Compute the document Y position that corresponds to desired progress
+    const sectionRect = section.getBoundingClientRect();
+    const sectionTop = sectionRect.top + window.pageYOffset;
+    const scrollDistance = totalPanels * window.innerHeight; // matches ScrollTrigger end
+    const targetY = sectionTop + progress * scrollDistance;
+
+    console.log('[HS-Scroller] Calculated scroll targetY:', targetY, 'sectionTop:', sectionTop, 'scrollDistance:', scrollDistance);
+
+    // Always drive navigation by scrolling the document.
+    // This ensures ScrollTrigger's onUpdate runs and applies transforms.
+    try {
+      if (animate && !prefersReducedMotion) {
+        window.scrollTo({ top: targetY, behavior: 'smooth' });
+      } else {
+        window.scrollTo(0, targetY);
+      }
+    } catch (e) {
+      // Fallback for older browsers
+      window.scrollTo(0, targetY);
     }
-    
-    activePanel = index;
+
+    activePanel = clampedIndex;
   }
   
   // Expose seekToPanel for external access
@@ -337,8 +360,10 @@
         const panelId = item.getAttribute('data-panel');
         log('Nav item clicked:', panelId);
         
-        // Always prevent default navigation on index page
-        if (window.location.pathname.includes('index.html') || window.location.pathname === '/' || window.location.pathname === '') {
+        // Prevent default navigation when the horizontal scroller exists on the page
+        // (works regardless of hosting path, e.g. subfolders or static hosting)
+        const hasHorizontalScroller = !!document.querySelector('.hs-section');
+        if (hasHorizontalScroller) {
           e.preventDefault();
           
           // Update the URL hash first
@@ -383,8 +408,23 @@
     const hash = window.location.hash.slice(1);
     if (hash && CONFIG.panelMap.hasOwnProperty(hash)) {
       log('Deep link detected:', hash);
-      // Small delay to ensure GSAP is ready
-      gsap.delayedCall(0.1, () => seekToPanel(hash, false));
+      // Wait until the timeline is ready (or fall back to native)
+      const maxWaitMs = 2000;
+      const stepMs = 100;
+      let waited = 0;
+      const trySeek = () => {
+        if (mainTimeline || isMobile() || prefersReducedMotion) {
+          seekToPanel(hash, false);
+        } else if (waited < maxWaitMs) {
+          waited += stepMs;
+          setTimeout(trySeek, stepMs);
+        } else {
+          // Last resort fallback
+          const target = document.getElementById(hash);
+          target?.scrollIntoView({ behavior: 'smooth' });
+        }
+      };
+      trySeek();
     }
   }
   
@@ -424,10 +464,15 @@
       mountProjectsIfReady();
     }
     
-    // Blog
+    // Blog (bubbles)
     const blogEl = document.getElementById('hs-blog-bouncy');
     if (blogEl) {
-      loadBlogContent(blogEl);
+      // If React bubble mount is available, use it; otherwise fallback to cards loader
+      if (window.mountBlogBubbles) {
+        window.mountBlogBubbles(blogEl);
+      } else {
+        loadBlogContent(blogEl);
+      }
     }
     
     // Contact form

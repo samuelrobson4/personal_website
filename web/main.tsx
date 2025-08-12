@@ -1,6 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import BouncyProjectCards from '../components/BouncyProjectCards';
+import BouncyBlogBubbles from '../components/BouncyBlogBubbles';
 import type { Card } from '../types';
 
 declare global { interface Window { bouncyMount?: (el: HTMLElement, cards: Card[]) => void; renderSubstack?: (el: HTMLElement) => void; mountProjects?: (el: HTMLElement) => void } }
@@ -55,5 +56,23 @@ async function mountProjects(el: HTMLElement) {
 }
 
 window.mountProjects = mountProjects;
+
+// Public mount for blog bubbles
+(window as any).mountBlogBubbles = async (el: HTMLElement) => {
+  try {
+    const res = await fetch('dist/substack.json', { cache: 'no-store' });
+    const posts = await res.json();
+    const cards: Card[] = posts.slice(0, 8).map((p: any, i: number) => ({
+      id: String(i + 1),
+      title: p.title || '',
+      subtitle: new Date(p.date || Date.now()).toLocaleDateString(),
+      url: p.url || '#'
+    }));
+    const root = createRoot(el);
+    root.render(<BouncyBlogBubbles cards={cards} height={480} />);
+  } catch (e) {
+    el.innerHTML = '<p class="muted">Unable to load blog posts.</p>';
+  }
+};
 
 
