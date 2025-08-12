@@ -120,8 +120,32 @@
   // Check for reduced motion
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   
-  // Check if mobile
-  const isMobile = () => window.innerWidth <= CONFIG.mobileBreakpoint;
+  // Check if mobile and handle mobile initialization
+  const isMobile = () => {
+    const width = window.innerWidth;
+    const mobile = width <= CONFIG.mobileBreakpoint;
+    log('Mobile check:', { width, breakpoint: CONFIG.mobileBreakpoint, isMobile: mobile });
+    
+    if (mobile && stage) {
+      // Remove pinning and GSAP transforms for native scroll
+      stage.removeAttribute('data-pinned');
+      gsap.set(track, { clearProps: 'transform' });
+      
+      // Enable smooth scrolling
+      stage.style.overflowX = 'auto';
+      stage.style.webkitOverflowScrolling = 'touch';
+      
+      // Set up snap scrolling
+      track.style.scrollSnapType = 'x mandatory';
+      Array.from(panels).forEach(panel => {
+        panel.style.scrollSnapAlign = 'start';
+        panel.style.scrollSnapStop = 'always';
+        panel.style.minWidth = '100vw';
+      });
+    }
+    
+    return mobile;
+  };
   
   // Global references
   let mainTimeline;

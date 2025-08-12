@@ -66,11 +66,23 @@ window.mountBooksShelf = async function mountBooksShelf(container, cards=[]) {
 
   const renderer = new THREE.WebGLRenderer({ antialias:true, alpha:true });
   renderer.setPixelRatio(devicePixelRatio);
+  // Get container width, respecting parent constraints
   const cw = container.offsetWidth || container.clientWidth || (container.parentElement && container.parentElement.clientWidth) || window.innerWidth;
-  const height = Math.max(420, cw * 0.5);
-  renderer.setSize(cw, height); renderer.setClearAlpha(0);
-  container.innerHTML = ""; container.appendChild(renderer.domElement);
-  container.style.minHeight = height + 'px';
+  
+  // Mobile-friendly height calculation (taller on mobile for better interaction)
+  const isMobile = window.innerWidth <= 768;
+  const height = Math.max(isMobile ? 420 : 480, isMobile ? cw * 0.75 : cw * 0.5);
+  
+  // Set up container and renderer
+  container.style.minHeight = `${height}px`;
+  container.style.width = '100%';
+  container.style.display = 'block';
+  container.style.position = 'relative';
+  
+  renderer.setSize(cw, height);
+  renderer.setClearAlpha(0);
+  container.innerHTML = "";
+  container.appendChild(renderer.domElement);
 
   const scene = new THREE.Scene(); const cam = new THREE.PerspectiveCamera(45, renderer.domElement.width/renderer.domElement.height, 0.1, 1000);
   cam.position.set(14, 10, 22);
@@ -120,7 +132,25 @@ window.mountBooksShelf = async function mountBooksShelf(container, cards=[]) {
   function loop(){ const dt=Math.min(0.033, clock.getDelta()); world.step(1/60, dt, 3); pickables.forEach(m=>__syncFromBody__(m, m.userData.__body)); renderer.render(scene, cam); requestAnimationFrame(loop); }
   loop();
 
-  const ro = new ResizeObserver(()=>{ const w=container.offsetWidth || container.clientWidth || (container.parentElement && container.parentElement.clientWidth) || window.innerWidth; const h=Math.max(360, w*0.75); renderer.setSize(w,h); cam.aspect=w/h; cam.updateProjectionMatrix(); }); ro.observe(container);
+  const ro = new ResizeObserver(() => {
+    const w = container.offsetWidth || container.clientWidth || (container.parentElement && container.parentElement.clientWidth) || window.innerWidth;
+    const isMobile = window.innerWidth <= 768;
+    const h = Math.max(isMobile ? 420 : 480, isMobile ? w * 0.75 : w * 0.5);
+    
+    container.style.minHeight = `${h}px`;
+    renderer.setSize(w, h);
+    cam.aspect = w/h;
+    cam.updateProjectionMatrix();
+    
+    // Adjust camera for mobile view
+    if (isMobile) {
+      cam.position.set(16, 12, 24); // Slightly further back
+      orbit.target.set(0, 4, 0); // Look slightly higher
+    } else {
+      cam.position.set(14, 10, 22); // Default position
+      orbit.target.set(0, 3.5, 0); // Default target
+    }
+  }); ro.observe(container);
 };
 
 

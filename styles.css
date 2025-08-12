@@ -657,26 +657,39 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
 
 /* Mobile/tablet: native horizontal scroll with snap */
 @media (max-width: 768px) {
+  .hs-section {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+
   .hs-stage {
     position: relative;
     height: auto;
     overflow-x: auto;
     overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
   }
   
   .hs-track {
     scroll-snap-type: x mandatory;
-  }
-  
-  /* Only disable transforms when stage is not pinned (mobile/reduced motion) */
-  .hs-stage:not([data-pinned]) .hs-track {
     transform: none !important;
   }
   
   .hs-panel {
-    scroll-snap-align: center;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
     min-height: 100vh;
-    padding-top: 0; /* Use center alignment on mobile too */
+    min-width: 100vw;
+    padding-top: 0;
+  }
+
+  /* Ensure canvas elements scale properly */
+  #blog-bouncy canvas,
+  #hs-blog-bouncy canvas {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100vw;
   }
   
   .hs-hero__title {
