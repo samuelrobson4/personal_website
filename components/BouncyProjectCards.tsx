@@ -145,7 +145,18 @@ export const BouncyProjectCards = forwardRef<BouncyProjectCardsRef, Props>(funct
       }
     });
 
-    // Collision sounds removed: keep site to click-only SFX
+    // Collision sounds: listen to collisions and map impact to audio
+    Events.on(engine, 'collisionStart', (evt) => {
+      const pairs = (evt as any).pairs as Array<any>;
+      for (const p of pairs) {
+        const a: Body = p.bodyA; const b: Body = p.bodyB;
+        // Estimate impact intensity using relative velocity
+        const rvx = (a.velocity?.x || 0) - (b.velocity?.x || 0);
+        const rvy = (a.velocity?.y || 0) - (b.velocity?.y || 0);
+        const impact = Math.hypot(rvx, rvy);
+        if (impact > 1.0) audio.collision(Math.min(impact, 20));
+      }
+    });
 
     worldRef.current = { engine, runner, mouse, mouseConstraint, bodiesById };
 

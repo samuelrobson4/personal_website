@@ -29577,6 +29577,18 @@
           }
         }
       });
+      import_matter_js.Events.on(engine, "collisionStart", (evt) => {
+        const pairs = evt.pairs;
+        for (const p of pairs) {
+          const a = p.bodyA;
+          const b = p.bodyB;
+          const rvx = (a.velocity?.x || 0) - (b.velocity?.x || 0);
+          const rvy = (a.velocity?.y || 0) - (b.velocity?.y || 0);
+          const impact = Math.hypot(rvx, rvy);
+          if (impact > 1)
+            audio.collision(Math.min(impact, 20));
+        }
+      });
       worldRef.current = { engine, runner, mouse, mouseConstraint, bodiesById };
       return () => {
         if (worldRef.current) {

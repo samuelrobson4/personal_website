@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Projects – Samuel Robson</title>
-  <link rel="stylesheet" href="styles.css?v=1755200238986" />
+  <link rel="stylesheet" href="styles.css?v=1755209589472" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Baskervville:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
@@ -16,7 +16,21 @@
 </head>
 <body>
   <header class="header">
-    <button class="burger" aria-label="Open navigation" aria-expanded="false" aria-controls="mobile-nav"><span class="burger-bar"></span></button>
+    <div class="header-top">
+      <!-- World Clock in top left -->
+      <div class="world-clock">
+        <div class="clock-item">
+          <span class="city">SF</span>
+          <span class="time" id="time-sf">--:--:--</span>
+        </div>
+        <div class="clock-item">
+          <span class="city">LON</span>
+          <span class="time" id="time-london">--:--:--</span>
+        </div>
+      </div>
+
+      <button class="burger" aria-label="Open navigation" aria-expanded="false" aria-controls="mobile-nav"><span class="burger-bar"></span></button>
+    </div>
     <nav class="nav" aria-label="Primary">
       <div class="nav-container" role="navigation">
         <a class="nav-item" href="index.html">home</a>
@@ -39,10 +53,20 @@
     <p class="lead">A selection of my latest work...</p>
     <div id="react-bouncy"></div>
   </main>
-  <script src="dist/bundle.js?v=1755200238986"></script>
-  <script>
-    window.mountProjects?.(document.getElementById('react-bouncy'));
-  </script>
+  <script src="dist/bundle.js?v=1755209589472"></script>
+      <script>
+      window.mountProjects?.(document.getElementById('react-bouncy'));
+    </script>
+    <!-- Clock update script -->
+    <script>
+      function updateClocks() {
+        const now = new Date();
+        document.getElementById('time-sf').textContent = now.toLocaleTimeString('en-US', { timeZone: 'America/Los_Angeles', hour12: false });
+        document.getElementById('time-london').textContent = now.toLocaleTimeString('en-US', { timeZone: 'Europe/London', hour12: false });
+      }
+      updateClocks();
+      setInterval(updateClocks, 1000);
+    </script>
   <script src="gooey-water.js"></script>
   <script src="title-wiggle.js"></script>
   <script src="site-loader.js"></script>
