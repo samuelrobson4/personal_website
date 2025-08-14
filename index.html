@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Samuel Robson - Portfolio</title>
-    <link rel="stylesheet" href="styles.css?v=1755210554114">
+    <link rel="stylesheet" href="styles.css?v=1755212351399">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Baskervville:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
     
     <!-- GSAP Core + ScrollTrigger (local files to avoid CSP issues) -->
-    <script src="lib/gsap/gsap.min.js?v=1755210554114"></script>
-    <script src="lib/gsap/ScrollTrigger.min.js?v=1755210554114"></script>
+    <script src="lib/gsap/gsap.min.js?v=1755212351399"></script>
+    <script src="lib/gsap/ScrollTrigger.min.js?v=1755212351399"></script>
 </head>
 <body>
     <header class="header">
@@ -40,11 +40,31 @@
                 <div class="nav-progress-line"></div>
             </div>
             <div id="mobile-nav" class="mobile-nav" role="menu" aria-hidden="true">
-              <a role="menuitem" href="index.html#home">home</a>
-              <a role="menuitem" href="index.html#about">about</a>
-              <a role="menuitem" href="index.html#projects">projects</a>
-              <a role="menuitem" href="index.html#blog">blog</a>
-              <a role="menuitem" href="index.html#contact">contact</a>
+              <div class="mobile-nav-header">
+                <div class="world-clock">
+                  <div class="clock-item">
+                    <span class="city">SF</span>
+                    <span class="time" id="mobile-time-sf">--:--:--</span>
+                  </div>
+                  <div class="clock-item">
+                    <span class="city">LON</span>
+                    <span class="time" id="mobile-time-london">--:--:--</span>
+                  </div>
+                </div>
+                <button class="mobile-nav-close" aria-label="Close navigation">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </button>
+              </div>
+              <div class="mobile-nav-content">
+                <a role="menuitem" href="index.html#home">home</a>
+                <a role="menuitem" href="index.html#about">about</a>
+                <a role="menuitem" href="index.html#projects">projects</a>
+                <a role="menuitem" href="index.html#blog">blog</a>
+                <a role="menuitem" href="index.html#contact">contact</a>
+              </div>
             </div>
          </nav>
     </header>
@@ -139,9 +159,9 @@
     </main>
 
     <!-- Ensure bundle loads before hs-scroller to mount dynamic cards -->
-    <script src="dist/bundle.js?v=1755210554114"></script>
+    <script src="dist/bundle.js?v=1755212351399"></script>
     <!-- GSAP-powered horizontal scroller -->
-    <script src="hs-scroller-gsap.js?v=1755210554114"></script>
+    <script src="hs-scroller-gsap.js?v=1755212351399"></script>
     <!-- Gooey water droplets band -->
     <script src="gooey-water.js"></script>
     <!-- Title wiggle effect -->
@@ -154,27 +174,44 @@
       (function(){
         const btn = document.querySelector('.burger');
         const menu = document.getElementById('mobile-nav');
+        const closeBtn = document.querySelector('.mobile-nav-close');
         if(!btn || !menu) return;
+        
         function close(){ 
           menu.classList.remove('open'); 
           btn.classList.remove('open'); 
           menu.setAttribute('aria-hidden','true'); 
           btn.setAttribute('aria-expanded','false'); 
+          document.body.style.overflow = '';
         }
+        
+        function open(){
+          menu.classList.add('open'); 
+          btn.classList.add('open'); 
+          menu.setAttribute('aria-hidden','false'); 
+          btn.setAttribute('aria-expanded','true'); 
+          document.body.style.overflow = 'hidden';
+        }
+        
         function toggle(){ 
-          const open = !menu.classList.contains('open'); 
-          if(open){ 
-            menu.classList.add('open'); 
-            btn.classList.add('open'); 
-            menu.setAttribute('aria-hidden','false'); 
-            btn.setAttribute('aria-expanded','true'); 
-          } else { 
+          const isOpen = menu.classList.contains('open'); 
+          if(isOpen){ 
             close(); 
+          } else { 
+            open(); 
           } 
         }
+        
         btn.addEventListener('click', toggle);
-        document.addEventListener('click', (e)=>{ if(!menu.contains(e.target) && e.target !== btn){ close(); } });
+        closeBtn?.addEventListener('click', close);
         menu.querySelectorAll('a').forEach(a=> a.addEventListener('click', close));
+        
+        // Close on escape key
+        document.addEventListener('keydown', (e) => {
+          if(e.key === 'Escape' && menu.classList.contains('open')) {
+            close();
+          }
+        });
       })();
     </script>
     <!-- 3D Books shelf for blog (made available globally) -->
