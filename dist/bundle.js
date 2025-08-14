@@ -29880,13 +29880,29 @@
       tick();
       return () => cancelAnimationFrame(raf);
     }, [cards.length]);
-    return /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { ref: containerRef, className: "blog-bubbles", style: { width: "100%", height }, children: cards.map((c) => /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { "data-bubble-id": c.id, className: "blog-bubble", role: "link", tabIndex: 0, onClick: () => {
-      audio.click();
-      window.open(c.url, "_blank", "noopener");
-    }, children: [
-      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "blog-bubble-title", children: (c.title || "").toLowerCase() }),
-      c.subtitle ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "blog-bubble-sub", children: c.subtitle }) : null
-    ] }, c.id)) });
+    const scrollLeft = () => {
+      const container = containerRef.current;
+      if (container) {
+        container.scrollBy({ left: -200, behavior: "smooth" });
+      }
+    };
+    const scrollRight = () => {
+      const container = containerRef.current;
+      if (container) {
+        container.scrollBy({ left: 200, behavior: "smooth" });
+      }
+    };
+    return /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "blog-container", style: { position: "relative" }, children: [
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { ref: containerRef, className: "blog-bubbles", style: { width: "100%", height }, children: cards.map((c) => /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { "data-bubble-id": c.id, className: "blog-bubble", role: "link", tabIndex: 0, onClick: () => {
+        audio.click();
+        window.open(c.url, "_blank", "noopener");
+      }, children: [
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "blog-bubble-title", children: (c.title || "").toLowerCase() }),
+        c.subtitle ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "blog-bubble-sub", children: c.subtitle }) : null
+      ] }, c.id)) }),
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("button", { className: "blog-arrow blog-arrow-left", onClick: scrollLeft, "aria-label": "Scroll left", children: "\u2039" }),
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("button", { className: "blog-arrow blog-arrow-right", onClick: scrollRight, "aria-label": "Scroll right", children: "\u203A" })
+    ] });
   }
 
   // web/main.tsx

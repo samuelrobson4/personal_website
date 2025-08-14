@@ -439,8 +439,10 @@
             log('Using mobile/fallback scroll navigation');
             const targetPanel = document.getElementById(panelId);
             if (targetPanel) {
-              // On mobile (vertical stack), use vertical scrollIntoView
-              targetPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              // On mobile (vertical stack), use vertical scrollIntoView with offset for fixed header
+              const headerHeight = document.querySelector('.header')?.offsetHeight || 80;
+              const targetY = targetPanel.offsetTop - headerHeight;
+              window.scrollTo({ top: targetY, behavior: 'smooth' });
               log('Vertical scroll into view:', panelId);
             } else {
               log('Target panel not found:', panelId);
@@ -474,7 +476,11 @@
         } else {
           // Last resort fallback
           const target = document.getElementById(hash);
-          target?.scrollIntoView({ behavior: 'smooth' });
+          if (target) {
+            const headerHeight = document.querySelector('.header')?.offsetHeight || 80;
+            const targetY = target.offsetTop - headerHeight;
+            window.scrollTo({ top: targetY, behavior: 'smooth' });
+          }
         }
       };
       trySeek();

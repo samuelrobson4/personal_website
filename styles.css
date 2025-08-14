@@ -183,10 +183,10 @@ body {
 }
 
 /* Mobile burger menu */
-.burger { position: fixed; top: 14px; right: 14px; z-index: 1200; width: 36px; height: 30px; display: none; align-items: center; justify-content: center; background: #000; color: #fff; border-radius: 6px; border: none; cursor: pointer; transition: background 0.25s ease, transform 0.25s ease; }
+.burger { position: static; z-index: 1200; width: 36px; height: 30px; display: none; align-items: center; justify-content: center; background: transparent; color: #000; border: none; cursor: pointer; transition: background 0.25s ease, transform 0.25s ease; padding: 0; }
 .burger:focus { outline: 2px solid #0066ff; outline-offset: 2px; }
-.burger-bar { width: 18px; height: 2px; background: #fff; position: relative; display: block; transition: background 0.25s ease; }
-.burger-bar::before, .burger-bar::after { content: ''; position: absolute; left: 0; width: 18px; height: 2px; background: #fff; transition: transform 0.25s ease, top 0.25s ease; }
+.burger-bar { width: 18px; height: 2px; background: #000; position: relative; display: block; transition: background 0.25s ease; }
+.burger-bar::before, .burger-bar::after { content: ''; position: absolute; left: 0; width: 18px; height: 2px; background: #000; transition: transform 0.25s ease, top 0.25s ease; }
 .burger-bar::before { top: -6px; }
 .burger-bar::after { top: 6px; }
 .burger.open .burger-bar { background: transparent; }
@@ -510,7 +510,7 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
 .principles li { margin: 0.7rem 0; }
 
 /* About page typography to match large Baskerville intro + divider + smaller list */
-.about-intro { font-family: 'Baskervville', Georgia, 'Times New Roman', serif; font-weight: 400; color: #000; letter-spacing: -0.02em; line-height: 1.05; max-width: 1100px; font-size: clamp(36px, 8vw, 100px); word-break: keep-all; overflow-wrap: normal; hyphens: none; text-wrap: balance; }
+.about-intro { font-family: 'Baskervville', Georgia, 'Times New Roman', serif; font-weight: 400; color: #000; letter-spacing: -0.02em; line-height: 1.4; max-width: 1100px; font-size: clamp(18px, 2.2vw, 26px); word-break: keep-all; overflow-wrap: normal; hyphens: none; text-wrap: balance; }
 .about-divider { border: 0; border-top: 1px solid #cfcfcf; margin: 50px 0; }
 .about-principles { list-style: decimal inside; font-family: 'Baskervville', Georgia, 'Times New Roman', serif; color: #000; letter-spacing: -0.02em; margin-top: 10px; max-width: 900px; font-size: clamp(18px, 2.2vw, 26px); line-height: 1.4; padding-left: 0; }
 .about-principles li { margin: 0.5rem 0; }
@@ -534,7 +534,7 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
 }
 .bouncy-full { width: 100%; height: calc(100vh - 160px); }
 .bouncy-card.dragging { cursor: grabbing; z-index: 10; }
-.bouncy-title { font-family: 'Baskervville', Georgia, 'Times New Roman', serif; font-size: 20px; font-weight: 600; letter-spacing: -0.02em; line-height: 1em; color: #000; text-transform: lowercase; }
+.bouncy-title { font-family: 'Baskervville', Georgia, 'Times New Roman', serif; font-size: 16px; font-weight: 600; letter-spacing: -0.02em; line-height: 1em; color: #000; text-transform: lowercase; }
 .bouncy-subtitle { font-size: 10px; color: var(--text); }
 .sr-only { position: absolute; left: -10000px; top: auto; width: 1px; height: 1px; overflow: hidden; }
 
@@ -557,8 +557,8 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
   }
   
   .blog-bubble {
-    flex: 0 0 250px;
-    height: 200px;
+    flex: 0 0 180px;
+    height: 270px;
     border-radius: 12px !important;
     scroll-snap-align: start;
     scroll-snap-stop: always;
@@ -603,6 +603,40 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
 #blog-bouncy, #hs-blog-bouncy { min-height: 480px; width: 100%; display: block; position: relative; }
 @media (max-width: 768px) { #blog-bouncy, #hs-blog-bouncy { min-height: 420px; } }
 
+/* Blog scroll arrows (mobile only) */
+.blog-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.1);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 24px;
+  color: #000;
+  cursor: pointer;
+  z-index: 10;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+}
+.blog-arrow:hover {
+  background: rgba(0, 0, 0, 0.2);
+}
+.blog-arrow-left {
+  left: 10px;
+}
+.blog-arrow-right {
+  right: 10px;
+}
+@media (max-width: 768px) {
+  .blog-arrow {
+    display: flex;
+  }
+}
+
 /* Full-bleed utility to escape centered containers */
 .full-bleed { width: 100vw; margin-left: calc(50% - 50vw); }
 
@@ -612,14 +646,14 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
   .bouncy-title { font-size: 22px; }
 }
 @media (max-width: 768px) {
-  .bouncy-container { --card-w: 260px; --card-h: 120px; }
-  .bouncy-title { font-size: 21px; }
+  .bouncy-container { --card-w: 220px; --card-h: 100px; margin: 0 2rem; }
+  .bouncy-title { font-size: 15px; }
 }
 @media (max-width: 480px) {
-  .bouncy-container { --card-w: 190px; --card-h: 96px; }
-  .bouncy-card { padding: 10px 12px; }
-  .bouncy-title { font-size: 20px; }
-  .bouncy-subtitle { font-size: 14px; }
+  .bouncy-container { --card-w: 170px; --card-h: 80px; margin: 0 1.5rem; }
+  .bouncy-card { padding: 8px 10px; }
+  .bouncy-title { font-size: 14px; }
+  .bouncy-subtitle { font-size: 12px; }
 }
 
 /* Focus states for accessibility */
@@ -700,7 +734,7 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
   
   /* Hero panel needs more top space on mobile */
   .hs-panel--hero .hs-inner {
-    padding-top: 120px !important;
+    padding-top: 160px !important;
   }
   
   /* Non-hero panels need space for nav */
@@ -887,7 +921,7 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
   .hs-section { overflow: visible; }
   .hs-stage { position: relative; height: auto; overflow: visible; }
   .hs-track { display: block; width: auto; transform: none !important; }
-  .hs-panel { flex: none; width: auto; height: auto; min-height: auto; min-width: auto; padding: 0; margin: 0 0 56px 0; }
+  .hs-panel { flex: none; width: auto; height: auto; min-height: auto; min-width: auto; padding: 0; margin: 0 0 32px 0; }
   /* Padding handled by container approach above */
 
   /* Ensure canvas elements scale properly */

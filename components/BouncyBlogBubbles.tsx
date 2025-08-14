@@ -107,14 +107,32 @@ export default function BouncyBlogBubbles({ cards, height = 420 }: Props) {
     return () => cancelAnimationFrame(raf);
   }, [cards.length]);
 
+  const scrollLeft = () => {
+    const container = containerRef.current;
+    if (container) {
+      container.scrollBy({ left: -200, behavior: 'smooth' });
+    }
+  };
+
+  const scrollRight = () => {
+    const container = containerRef.current;
+    if (container) {
+      container.scrollBy({ left: 200, behavior: 'smooth' });
+    }
+  };
+
   return (
-    <div ref={containerRef} className="blog-bubbles" style={{ width: '100%', height }}>
-      {cards.map((c) => (
-        <div key={c.id} data-bubble-id={c.id} className="blog-bubble" role="link" tabIndex={0} onClick={() => { audio.click(); window.open(c.url, '_blank', 'noopener'); } }>
-          <div className="blog-bubble-title">{(c.title || '').toLowerCase()}</div>
-          {c.subtitle ? <div className="blog-bubble-sub">{c.subtitle}</div> : null}
-        </div>
-      ))}
+    <div className="blog-container" style={{ position: 'relative' }}>
+      <div ref={containerRef} className="blog-bubbles" style={{ width: '100%', height }}>
+        {cards.map((c) => (
+          <div key={c.id} data-bubble-id={c.id} className="blog-bubble" role="link" tabIndex={0} onClick={() => { audio.click(); window.open(c.url, '_blank', 'noopener'); } }>
+            <div className="blog-bubble-title">{(c.title || '').toLowerCase()}</div>
+            {c.subtitle ? <div className="blog-bubble-sub">{c.subtitle}</div> : null}
+          </div>
+        ))}
+      </div>
+      <button className="blog-arrow blog-arrow-left" onClick={scrollLeft} aria-label="Scroll left">‹</button>
+      <button className="blog-arrow blog-arrow-right" onClick={scrollRight} aria-label="Scroll right">›</button>
     </div>
   );
 }
