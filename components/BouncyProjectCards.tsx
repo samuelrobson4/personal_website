@@ -1,6 +1,7 @@
 import React, { useEffect, useLayoutEffect, useRef, useImperativeHandle, forwardRef } from 'react';
 import Matter, { Engine, World, Bodies, Runner, Mouse, MouseConstraint, Body, Events, Composite } from 'matter-js';
 import type { Card } from '../types';
+import { audio } from '../web/audio';
 
 type Props = {
   cards: Card[];
@@ -29,8 +30,8 @@ export const BouncyProjectCards = forwardRef<BouncyProjectCardsRef, Props>(funct
     cards,
     width = '100%',
     height = 520,
-    restitution = 0.9,
-    airFriction = 0.02,
+    restitution = 0.98,
+    airFriction = 0.005,
     hoverScale = 1.03,
     onCardClick,
   },
@@ -75,7 +76,7 @@ export const BouncyProjectCards = forwardRef<BouncyProjectCardsRef, Props>(funct
 
     function nextFreePosition(index: number) {
       // Centered default layout: two rows around vertical middle, columns centered horizontally
-      const gapX = 40;
+      const gapX = 28;
       const rows = 2;
       const columns = Math.ceil(cards.length / rows);
       const usedWidth = columns * (cardSize.w + gapX) - gapX;
@@ -87,7 +88,7 @@ export const BouncyProjectCards = forwardRef<BouncyProjectCardsRef, Props>(funct
       // Vertical positioning uses a percentage of container height (not fixed px)
       const topBandPercent = 0.14; // 14% from the top for the first row
       const topBand = bounds.height * topBandPercent;
-      const rowGapY = cardSize.h + 12;
+      const rowGapY = cardSize.h + 6;
       const startY = topBand; // row 0
       const yBase = startY + row * rowGapY; // row 1 slightly below
       const margin = Math.max(20, Math.min(60, bounds.height * 0.08));
@@ -101,9 +102,9 @@ export const BouncyProjectCards = forwardRef<BouncyProjectCardsRef, Props>(funct
       const body = Bodies.rectangle(pos.x, pos.y, cardSize.w, cardSize.h, {
         restitution,
         frictionAir: airFriction,
-        angle: (Math.random() - 0.5) * 0.1,
+        angle: (Math.random() - 0.5) * 0.28,
       });
-      Body.setVelocity(body, { x: (Math.random() - 0.5) * 1.5, y: (Math.random() - 0.5) * 1.5 });
+      Body.setVelocity(body, { x: (Math.random() - 0.5) * 15, y: (Math.random() - 0.5) * 15 });
       bodiesById.set(card.id, body);
       World.add(engine.world, body);
     });
@@ -144,6 +145,19 @@ export const BouncyProjectCards = forwardRef<BouncyProjectCardsRef, Props>(funct
       }
     });
 
+    // Collision sounds: listen to collisions and map impact to audio
+    Events.on(engine, 'collisionStart', (evt) => {
+      const pairs = (evt as any).pairs as Array<any>;
+      for (const p of pairs) {
+        const a: Body = p.bodyA; const b: Body = p.bodyB;
+        // Estimate impact intensity using relative velocity
+        const rvx = (a.velocity?.x || 0) - (b.velocity?.x || 0);
+        const rvy = (a.velocity?.y || 0) - (b.velocity?.y || 0);
+        const impact = Math.hypot(rvx, rvy);
+        if (impact > 1.2) audio.collision(Math.min(impact * 1.2, 20));
+      }
+    });
+
     worldRef.current = { engine, runner, mouse, mouseConstraint, bodiesById };
 
     // Clean up
@@ -155,6 +169,24 @@ export const BouncyProjectCards = forwardRef<BouncyProjectCardsRef, Props>(funct
         (worldRef.current as any) = null;
       }
     };
+  }, []);
+
+  // Even livelier idle motion so cards feel lively by default
+  useEffect(() => {
+    const interval = window.setInterval(() => {
+      const ref = worldRef.current; if (!ref) return;
+      for (const [id, body] of ref.bodiesById.entries()) {
+        if (ref.isDraggingId === id) continue;
+        const speed = Math.hypot(body.velocity.x, body.velocity.y);
+        if (speed < 3.0) {
+          const angle = Math.random() * Math.PI * 2;
+          const magnitude = 0.0036; // stronger nudge
+          Body.applyForce(body, body.position, { x: Math.cos(angle) * magnitude, y: Math.sin(angle) * magnitude });
+          Body.setAngularVelocity(body, body.angularVelocity + (Math.random() - 0.5) * 0.012);
+        }
+      }
+    }, 450);
+    return () => window.clearInterval(interval);
   }, []);
 
   // Sync DOM with bodies
@@ -173,8 +205,8 @@ export const BouncyProjectCards = forwardRef<BouncyProjectCardsRef, Props>(funct
         const body = ref.bodiesById.get(id);
         if (!body) return;
         // Cap velocities a bit
-        body.velocity.x = Math.max(Math.min(body.velocity.x, 20), -20);
-        body.velocity.y = Math.max(Math.min(body.velocity.y, 20), -20);
+        body.velocity.x = Math.max(Math.min(body.velocity.x, 40), -40);
+        body.velocity.y = Math.max(Math.min(body.velocity.y, 40), -40);
         // Clamp bodies strictly inside bounds to avoid drifting off-page
         const halfW = size.w / 2; const halfH = size.h / 2;
         let px = body.position.x; let py = body.position.y;
@@ -237,8 +269,8 @@ export const BouncyProjectCards = forwardRef<BouncyProjectCardsRef, Props>(funct
     shuffle() {
       const refW = worldRef.current; if (!refW) return;
       for (const body of refW.bodiesById.values()) {
-        Body.setVelocity(body, { x: (Math.random() - 0.5) * 10, y: (Math.random() - 0.5) * 10 });
-        Body.setAngularVelocity(body, (Math.random() - 0.5) * 0.1);
+        Body.setVelocity(body, { x: (Math.random() - 0.5) * 20, y: (Math.random() - 0.5) * 20 });
+        Body.setAngularVelocity(body, (Math.random() - 0.5) * 0.2);
       }
     },
     addCard(card) {
@@ -272,6 +304,7 @@ export const BouncyProjectCards = forwardRef<BouncyProjectCardsRef, Props>(funct
       const dt = performance.now() - d.t;
       const dist = Math.hypot(e.clientX - d.x, e.clientY - d.y);
       if (dt < 180 && dist < 5) {
+        audio.click();
         const card = cards.find((c) => c.id === id);
         if (!card) return;
         if (onCardClick) onCardClick(card);

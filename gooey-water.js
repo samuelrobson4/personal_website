@@ -23,7 +23,7 @@
     svg.setAttribute('aria-label', 'Gooey water band');
     Object.assign(svg.style, {
       position: 'fixed', left: '0', right: '0', bottom: '0', height: H + 'px', width: '100vw',
-      zIndex: String(Z_INDEX), pointerEvents: 'none'
+      zIndex: String(Z_INDEX), pointerEvents: 'auto'
     });
     document.body.appendChild(svg);
 
@@ -96,7 +96,22 @@
     }
 
     // Interactions
-    // Disable mouse gravity & stirring; droplets react only to scroll/tilt
+    // Enable mouse interaction: gentle repulsion around pointer
+    let mouseX = -9999, mouseY = -9999; // offscreen by default
+    let mouseDown = false;
+    const interactRadius = 60; // px influence radius
+    const maxForce = 0.002;    // force strength
+
+    function setMouseFromEvent(e) {
+      const rect = svg.getBoundingClientRect();
+      mouseX = Math.max(0, Math.min(rect.width, e.clientX - rect.left));
+      mouseY = Math.max(0, Math.min(rect.height, e.clientY - rect.top));
+    }
+
+    svg.addEventListener('pointermove', (e) => { setMouseFromEvent(e); try { window.audio && window.audio.waterPlop(0.15); } catch {} });
+    svg.addEventListener('pointerdown', (e) => { mouseDown = true; setMouseFromEvent(e); try { window.audio && window.audio.waterPlop(0.4); } catch {} });
+    svg.addEventListener('pointerup', () => { mouseDown = false; });
+    svg.addEventListener('pointerleave', () => { mouseX = -9999; mouseY = -9999; mouseDown = false; });
 
     // Scroll slosh (wheel + scroll delta)
     let scrollT, scrollTX; let lastSY = window.pageYOffset || 0;
@@ -107,8 +122,8 @@
       clearTimeout(scrollT); scrollT = setTimeout(() => (engine.world.gravity.y = 1), 160);
       clearTimeout(scrollTX); scrollTX = setTimeout(() => (engine.world.gravity.x = 0), 160);
     }
-    window.addEventListener('wheel', (e) => sloshFromDelta(e.deltaY), { passive: true });
-    window.addEventListener('scroll', () => { const y = window.pageYOffset || 0; sloshFromDelta(y - lastSY); lastSY = y; }, { passive: true });
+    window.addEventListener('wheel', (e) => { sloshFromDelta(e.deltaY); try { window.audio && window.audio.scrollWhoosh(e.deltaY); } catch {} }, { passive: true });
+    window.addEventListener('scroll', () => { const y = window.pageYOffset || 0; const dy = y - lastSY; sloshFromDelta(dy); lastSY = y; try { window.audio && window.audio.scrollWhoosh(dy); } catch {} }, { passive: true });
 
     window.addEventListener('deviceorientation', (e) => {
       if (e.beta == null || e.gamma == null) return;
@@ -139,6 +154,23 @@
           }
         }
       }
+      // Mouse interaction forces
+      if (mouseX > -1000 && mouseY > -1000) {
+        for (let i = 0; i < bodies.length; i++) {
+          const b = bodies[i];
+          const dx = b.position.x - mouseX;
+          const dy = b.position.y - mouseY;
+          const d2 = dx * dx + dy * dy;
+          const r = interactRadius + b.circleRadius * 2;
+          if (d2 > 0 && d2 < r * r) {
+            const d = Math.max(8, Math.sqrt(d2));
+            const strength = (mouseDown ? 1.0 : 0.6) * (1 - d / r);
+            const fx = (dx / d) * maxForce * strength;
+            const fy = (dy / d) * maxForce * strength;
+            Body.applyForce(b, b.position, { x: fx, y: fy });
+          }
+        }
+      }
       for (let i = 0; i < bodies.length; i++) {
         const b = bodies[i], n = nodes[i];
         n.setAttribute('cx', b.position.x.toFixed(1));
@@ -154,6 +186,14 @@
       W = window.innerWidth; svg.setAttribute('viewBox', `0 0 ${W} ${H}`); makeWalls();
     }
     window.addEventListener('resize', onResize);
+
+    // Resume animation after BFCache restore or when tab becomes visible
+    window.addEventListener('pageshow', (e) => {
+      if (e.persisted) { Runner.run(runner, engine); requestAnimationFrame(render); }
+    });
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) { Runner.run(runner, engine); requestAnimationFrame(render); }
+    });
   }
 
   if (document.readyState === 'loading') {

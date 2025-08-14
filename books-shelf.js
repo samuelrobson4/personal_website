@@ -1,156 +1,123 @@
-/* books-shelf.js — 3D glass books on a shelf (Three.js + cannon-es)
-   Usage: window.mountBooksShelf(containerEl, [{title, url, id, subtitle}...]) */
+/* books-shelf.js — Drag carousel of blog cards with 3D wireframe hover */
 
-const __THREE_MODULE__ = "https://unpkg.com/three@0.160.0/build/three.module.js";
-const __ORBIT_MODULE__ = "https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js";
-const __CANNON_MODULE__ = "https://unpkg.com/cannon-es@0.20.0/dist/cannon-es.js";
-
-async function __loadShelfDeps__() {
-  const THREE = await import(__THREE_MODULE__);
-  const { OrbitControls } = await import(__ORBIT_MODULE__);
-  const C = await import(__CANNON_MODULE__);
-  return { THREE, OrbitControls, C };
+function __ensureCarouselStyles__() {
+  if (document.getElementById('blog-carousel-styles')) return;
+  const css = `
+  :root{--page-bg: transparent}
+  .bc-wrap{position:relative;overflow:hidden;padding:72px 0;perspective:900px}
+  .bc-stage{transform-style:preserve-3d;will-change:transform;transition:transform .18s ease}
+  .bc-track{display:flex;gap:24px;will-change:transform;padding:0 16px}
+  /* drag strip at bottom */
+  .bc-dragstrip{position:absolute;left:0;right:0;bottom:0;height:88px;cursor:grab}
+  .bc-dragstrip.dragging{cursor:grabbing}
+  /* 1:1.5 ratio (width:height), default as 2D black rectangle */
+  .bc-card{position:relative;flex:0 0 var(--card-w,200px);aspect-ratio:2/3;background:var(--page-bg);color:#111;border:1px solid #111;border-radius:0;padding:12px 14px;display:flex;flex-direction:column;justify-content:center;transform-style:preserve-3d;transition:transform .2s ease;--d:22px;--bw:1px;--dx: calc(-1 * var(--d)); --dy: calc(-1 * var(--d)); --len: calc(var(--d) * 1.41421356); text-decoration:none}
+  /* back face for wireframe (appears on hover) */
+  .bc-card::before{content:'';position:absolute;inset:0;border:1px solid #111;border-radius:0;transform:translate(calc(var(--dx) + var(--bw)), calc(var(--dy) + var(--bw)));opacity:0;transition:opacity .15s ease}
+  /* connecting edges (appear on hover) */
+  .bc-edges{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .15s ease}
+  .bc-edges .e{position:absolute;height:var(--bw);width:var(--len);background:#111;border-radius:0}
+  .bc-edges .e.tl{top:calc(-1 * var(--bw));left:calc(-1 * var(--bw));transform-origin:left center;transform:rotate(45deg)}
+  .bc-edges .e.tr{top:calc(-1 * var(--bw));right:calc(-1 * var(--bw));transform-origin:right center;transform:rotate(-45deg)}
+  .bc-edges .e.bl{bottom:calc(-1 * var(--bw));left:calc(-1 * var(--bw));transform-origin:left center;transform:rotate(-45deg)}
+  .bc-edges .e.br{bottom:calc(-1 * var(--bw));right:calc(-1 * var(--bw));transform-origin:right center;transform:rotate(45deg)}
+  .bc-card h3{font-family:'Baskervville',serif;font-size:20px;line-height:1.12;margin:0 0 4px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}
+  .bc-card p{margin:0;color:#333;font-size:12px;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+  /* hover: show 3D wireframe box */
+  .bc-card:hover{transform:translateZ(22px) rotateX(16deg) rotateY(14deg)}
+  .bc-card:hover::before{opacity:1}
+  .bc-card:hover .bc-edges{opacity:1}
+  /* arrows removed */
+  `;
+  const style = document.createElement('style'); style.id='blog-carousel-styles'; style.textContent = css; document.head.appendChild(style);
 }
 
-function __makeLabelTexture__(THREE, renderer, title, subtitle) {
-  const c = document.createElement("canvas"); c.width = 512; c.height = 512;
-  const ctx = c.getContext("2d");
-  ctx.fillStyle = "#ffffff"; ctx.fillRect(0,0,c.width,c.height);
-  ctx.fillStyle = "#111"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
-  ctx.font = "bold 44px Inter, system-ui, sans-serif";
-  const t = (title || "Untitled").toUpperCase();
-  const words = t.split(" "); const lines = []; let line = "";
-  for (const w of words) {
-    if ((line + " " + w).trim().length > 18) { lines.push(line.trim()); line = w; }
-    else line += " " + w;
+window.mountBooksShelf = function mountBooksShelf(container, cards=[]) {
+  __ensureCarouselStyles__();
+
+  // Use exactly the articles provided (from RSS/Substack JSON); no placeholders
+  const list = Array.isArray(cards) ? cards.slice(0) : [];
+
+  const wrap = document.createElement('div'); wrap.className = 'bc-wrap';
+  const stage = document.createElement('div'); stage.className = 'bc-stage';
+  const track = document.createElement('div'); track.className = 'bc-track';
+
+  list.forEach((c)=>{
+    const a = document.createElement('a'); a.className='bc-card'; a.href=c.url||'#'; a.target='_blank'; a.rel='noopener noreferrer';
+    const h = document.createElement('h3'); h.textContent=(c.title||'Untitled').trim();
+    const p = document.createElement('p'); p.textContent=c.subtitle||'';
+    const edges = document.createElement('div'); edges.className='bc-edges';
+    ;['tl','tr','bl','br'].forEach(k=>{ const e=document.createElement('div'); e.className='e '+k; edges.appendChild(e); });
+    a.appendChild(h); if(p.textContent) a.appendChild(p);
+    a.appendChild(edges);
+    track.appendChild(a);
+  });
+
+  stage.appendChild(track);
+  wrap.appendChild(stage);
+  container.innerHTML='';
+  const bg = getComputedStyle(document.body).backgroundColor || '#fff';
+  document.documentElement.style.setProperty('--page-bg', bg);
+  container.appendChild(wrap);
+
+  // Dragging with momentum
+  let offset = 0; let startX = 0; let startOffset = 0; let moved = 0; let dragging=false;
+  let lastTime=0; let lastOffset=0; let velocity=0; let raf=null;
+
+  function trackWidth(){ return track.scrollWidth; }
+  function wrapWidth(){ return wrap.clientWidth; }
+  function bounds(){
+    const tw = trackWidth(); const ww = wrapWidth();
+    const maxOff = Math.max(0, tw - ww);
+    const overscroll = Math.max(40, Math.min(ww * 0.15, 120));
+    return { maxOff, overscroll };
   }
-  if (line) lines.push(line.trim());
-  const y0 = 256 - (lines.length-1) * 36;
-  lines.slice(0,3).forEach((ln,i)=> ctx.fillText(ln, 256, y0 + i*72));
-  if (subtitle) { ctx.fillStyle="#666"; ctx.font = "28px Inter, system-ui, sans-serif"; ctx.fillText(subtitle, 256, 400); }
-  const tex = new THREE.CanvasTexture(c);
-  tex.anisotropy = renderer?.capabilities?.getMaxAnisotropy?.() || 1; tex.needsUpdate = true; return tex;
-}
+  function clamp(v){ const { maxOff, overscroll } = bounds(); return Math.max(-overscroll, Math.min(v, maxOff + overscroll)); }
+  function apply(){ track.style.transform = `translateX(${-offset}px)`; }
+  function stop(){ if (raf) cancelAnimationFrame(raf), raf=null; }
+  function glide(){ stop(); const friction=0.92, min=0.02; function step(){ velocity*=friction; if (Math.abs(velocity)<min) return; offset=clamp(offset - velocity*16); apply(); raf=requestAnimationFrame(step);} raf=requestAnimationFrame(step); }
 
-function __makeGlassyBook__(THREE, renderer, { title, subtitle, url }) {
-  const w=4.5, h=7.2, d=0.7; // book dims
-  const geo = new THREE.BoxGeometry(w,h,d,1,1,1);
-  const glass = new THREE.MeshPhysicalMaterial({ color: 0xffffff, metalness:0, roughness:0.08, transmission:0.92, thickness:0.35, ior:1.45, clearcoat:1, clearcoatRoughness:0.05, transparent:true });
-  const cover = new THREE.Mesh(geo, glass);
-  const edges = new THREE.EdgesGeometry(geo); cover.add(new THREE.LineSegments(edges,new THREE.LineBasicMaterial({ color:0x111111, opacity:0.9, transparent:true })));
-  const plate = new THREE.Mesh(new THREE.PlaneGeometry(w*0.82,h*0.44), new THREE.MeshBasicMaterial({ map: __makeLabelTexture__(THREE, renderer, title, subtitle), transparent:true }));
-  plate.position.set(0,0,d/2 + 0.001); cover.add(plate);
-  const spine = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(0.5,h*0.9,d*0.98)), new THREE.LineBasicMaterial({ color:0x333333 })); spine.position.x = -w/2 + 0.3; cover.add(spine);
-  cover.userData = { url, title };
-  return { mesh: cover, size: { w, h, d } };
-}
-
-function __addShelf__(THREE, scene, C, world, y=0) {
-  const plank = new THREE.Mesh(new THREE.BoxGeometry(40,0.5,8), new THREE.MeshStandardMaterial({ color:0xdddddd, roughness:0.7, metalness:0.1 })); plank.position.set(0,y,0); scene.add(plank);
-  const wallMat = new THREE.MeshStandardMaterial({ color:0xcccccc, roughness:0.8 });
-  const back = new THREE.Mesh(new THREE.BoxGeometry(40,2.0,0.5), wallMat); back.position.set(0,y+1,-3.9); scene.add(back);
-  const left = new THREE.Mesh(new THREE.BoxGeometry(0.5,1.5,8), wallMat); left.position.set(-19.75,y+0.5,0); scene.add(left);
-  const right= new THREE.Mesh(new THREE.BoxGeometry(0.5,1.5,8), wallMat); right.position.set(19.75,y+0.5,0); scene.add(right);
-  const shelfBody = new C.Body({ mass:0, shape:new C.Box(new C.Vec3(20,0.25,4)), position:new C.Vec3(0,y,0)});
-  const backBody  = new C.Body({ mass:0, shape:new C.Box(new C.Vec3(20,1,0.25)), position:new C.Vec3(0,y+1,-3.75)});
-  const leftBody  = new C.Body({ mass:0, shape:new C.Box(new C.Vec3(0.25,0.75,4)), position:new C.Vec3(-19.75,y+0.5,0)});
-  const rightBody = new C.Body({ mass:0, shape:new C.Box(new C.Vec3(0.25,0.75,4)), position:new C.Vec3(19.75,y+0.5,0)});
-  world.addBody(shelfBody); world.addBody(backBody); world.addBody(leftBody); world.addBody(rightBody);
-  return { plank, bodies:[shelfBody, backBody, leftBody, rightBody] };
-}
-
-function __syncFromBody__(mesh, body) { mesh.position.set(body.position.x, body.position.y, body.position.z); mesh.quaternion.set(body.quaternion.x, body.quaternion.y, body.quaternion.z, body.quaternion.w); }
-
-window.mountBooksShelf = async function mountBooksShelf(container, cards=[]) {
-  const { THREE, OrbitControls, C } = await __loadShelfDeps__();
-
-  const renderer = new THREE.WebGLRenderer({ antialias:true, alpha:true });
-  renderer.setPixelRatio(devicePixelRatio);
-  // Get container width, respecting parent constraints
-  const cw = container.offsetWidth || container.clientWidth || (container.parentElement && container.parentElement.clientWidth) || window.innerWidth;
-  
-  // Mobile-friendly height calculation (taller on mobile for better interaction)
-  const isMobile = window.innerWidth <= 768;
-  const height = Math.max(isMobile ? 420 : 480, isMobile ? cw * 0.75 : cw * 0.5);
-  
-  // Set up container and renderer
-  container.style.minHeight = `${height}px`;
-  container.style.width = '100%';
-  container.style.display = 'block';
-  container.style.position = 'relative';
-  
-  renderer.setSize(cw, height);
-  renderer.setClearAlpha(0);
-  container.innerHTML = "";
-  container.appendChild(renderer.domElement);
-
-  const scene = new THREE.Scene(); const cam = new THREE.PerspectiveCamera(45, renderer.domElement.width/renderer.domElement.height, 0.1, 1000);
-  cam.position.set(14, 10, 22);
-  const orbit = new OrbitControls(cam, renderer.domElement); orbit.enableDamping = true; orbit.dampingFactor = 0.08; orbit.minDistance=10; orbit.maxDistance=60; orbit.target.set(0,3.5,0);
-  // Mobile-friendly: disable right-click/pan inertia issues and allow touch
-  orbit.enablePan = true; orbit.touches = { ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_PAN };
-  scene.add(new THREE.AmbientLight(0xffffff, 0.55)); const dir = new THREE.DirectionalLight(0xffffff, 0.85); dir.position.set(6,12,8); scene.add(dir);
-
-  const world = new C.World({ gravity: new C.Vec3(0,-9.82,0) }); world.broadphase = new C.SAPBroadphase(world); world.allowSleep = true;
-  const matShelf = new C.Material("shelf"), matBook = new C.Material("book");
-  world.addContactMaterial(new C.ContactMaterial(matBook, matBook, { friction:0.35, restitution:0.05 }));
-  world.addContactMaterial(new C.ContactMaterial(matBook, matShelf, { friction:0.6, restitution:0.0 }));
-
-  __addShelf__(THREE, scene, C, world, 0);
-
-  const pickables = []; const spacing = 5.2; const originX = -Math.min(cards.length-1, 6) * (spacing/2);
-  cards.forEach((card, i) => {
-    const { mesh, size } = __makeGlassyBook__(THREE, renderer, card, i);
-    mesh.position.set(originX + i*spacing, 1.0 + (Math.random()*0.4), (Math.random()-0.5)*1.8); mesh.rotation.y = (Math.random()*0.6 - 0.3);
-    scene.add(mesh);
-    const shape = new C.Box(new C.Vec3(size.w/2, size.h/2, size.d/2));
-    const body = new C.Body({ mass:1.4, shape, material:matBook, position:new C.Vec3(mesh.position.x, mesh.position.y + size.h/2, mesh.position.z), angularDamping:0.2, linearDamping:0.06 });
-    body.quaternion.setFromEuler(mesh.rotation.x, mesh.rotation.y, mesh.rotation.z, "XYZ"); world.addBody(body);
-    mesh.userData.__body = body; mesh.userData.onClick = () => { const url = card.url || '#'; if (url !== '#') window.open(url,'_blank'); };
-    pickables.push(mesh);
-  });
-
-  const ray = new THREE.Raycaster(); const mouse = new THREE.Vector2(); let justDragged = false;
-  renderer.domElement.addEventListener('pointerup', (ev)=>{
-    if (justDragged) { justDragged=false; return; }
-    const r = renderer.domElement.getBoundingClientRect();
-    mouse.x = ((ev.clientX - r.left)/r.width)*2 - 1; mouse.y = -((ev.clientY - r.top)/r.height)*2 + 1; ray.setFromCamera(mouse, cam);
-    const hit = ray.intersectObjects(pickables, true)[0]; if (hit) { let root = hit.object; while (root && !root.userData?.__body && root.parent) root = root.parent; root?.userData?.onClick?.(); }
-  });
-
-  // drag helper
-  (function makeDraggable(){
-    const rayc = new THREE.Raycaster(); const mouse2 = new THREE.Vector2();
-    let active=null, grabLocal=new THREE.Vector3(), dragPlane=new THREE.Plane(), planeNormal=new THREE.Vector3();
-    function getIntersect(ev, objs){ const rect = renderer.domElement.getBoundingClientRect(); mouse2.x=((ev.clientX-rect.left)/rect.width)*2-1; mouse2.y=-((ev.clientY-rect.top)/rect.height)*2+1; rayc.setFromCamera(mouse2, cam); return rayc.intersectObjects(objs,true)[0]; }
-    renderer.domElement.addEventListener('pointerdown',(ev)=>{ const hit=getIntersect(ev,pickables); if(!hit) return; let root=hit.object; while(root && !root.userData?.__body && root.parent) root=root.parent; if(!root?.userData?.__body) return; active=root; const body=active.userData.__body; body.angularVelocity.set(0,0,0); body.angularDamping=1; planeNormal.copy(cam.getWorldDirection(new THREE.Vector3())).normalize(); dragPlane.setFromNormalAndCoplanarPoint(planeNormal, hit.point.clone()); grabLocal.copy(hit.point).sub(active.position); renderer.domElement.setPointerCapture(ev.pointerId); });
-    renderer.domElement.addEventListener('pointermove',(ev)=>{ if(!active) return; const rect=renderer.domElement.getBoundingClientRect(); mouse2.x=((ev.clientX-rect.left)/rect.width)*2-1; mouse2.y=-((ev.clientY-rect.top)/rect.height)*2+1; rayc.setFromCamera(mouse2, cam); const target=new THREE.Vector3(); if(rayc.ray.intersectPlane(dragPlane,target)){ target.sub(grabLocal); const body=active.userData.__body; body.velocity.set(0,0,0); body.angularVelocity.set(0,0,0); body.position.x += (target.x - body.position.x) * 0.35; body.position.y += (target.y - body.position.y) * 0.35; body.position.z += (target.z - body.position.z) * 0.35; justDragged=true; setTimeout(()=>justDragged=false,60);} });
-    renderer.domElement.addEventListener('pointerup',(ev)=>{ if(!active) return; const body=active.userData.__body; body.angularDamping=0.2; active=null; renderer.domElement.releasePointerCapture?.(ev.pointerId); });
-  })();
-
-  const clock=new THREE.Clock();
-  function loop(){ const dt=Math.min(0.033, clock.getDelta()); world.step(1/60, dt, 3); pickables.forEach(m=>__syncFromBody__(m, m.userData.__body)); renderer.render(scene, cam); requestAnimationFrame(loop); }
-  loop();
-
-  const ro = new ResizeObserver(() => {
-    const w = container.offsetWidth || container.clientWidth || (container.parentElement && container.parentElement.clientWidth) || window.innerWidth;
-    const isMobile = window.innerWidth <= 768;
-    const h = Math.max(isMobile ? 420 : 480, isMobile ? w * 0.75 : w * 0.5);
-    
-    container.style.minHeight = `${h}px`;
-    renderer.setSize(w, h);
-    cam.aspect = w/h;
-    cam.updateProjectionMatrix();
-    
-    // Adjust camera for mobile view
-    if (isMobile) {
-      cam.position.set(16, 12, 24); // Slightly further back
-      orbit.target.set(0, 4, 0); // Look slightly higher
-    } else {
-      cam.position.set(14, 10, 22); // Default position
-      orbit.target.set(0, 3.5, 0); // Default target
+  const dragstrip = document.createElement('div'); dragstrip.className='bc-dragstrip'; wrap.appendChild(dragstrip);
+  let preventClick = false;
+  function onDown(e){ dragging=true; moved=0; preventClick=false; startX=e.clientX; startOffset=offset; lastOffset=offset; lastTime=performance.now(); stop(); dragstrip.classList.add('dragging'); dragstrip.setPointerCapture(e.pointerId); }
+  function onMove(e){ if(!dragging) return; const dx=e.clientX-startX; moved=Math.max(moved,Math.abs(dx)); if (moved>3) preventClick=true; offset=clamp(startOffset - dx); const now=performance.now(), dt=Math.max(1, now-lastTime); velocity=(offset-lastOffset)/dt; lastOffset=offset; lastTime=now; apply(); }
+  function onUp(e){
+    dragstrip.releasePointerCapture?.(e.pointerId); dragging=false; dragstrip.classList.remove('dragging');
+    if (moved>6){
+      const { maxOff } = bounds();
+      if (offset < 0 || offset > maxOff) { tweenTo(Math.max(0, Math.min(offset, maxOff))); }
+      else { glide(); }
     }
-  }); ro.observe(container);
+  }
+  dragstrip.addEventListener('pointerdown', onDown);
+  dragstrip.addEventListener('pointermove', onMove);
+  dragstrip.addEventListener('pointerup', onUp);
+  // disable wheel scrolling of carousel per request
+
+  function gapPx(){ const g = getComputedStyle(track).gap || '24px'; return parseFloat(g) || 24; }
+  function cardWidth(){ const first = track.querySelector('.bc-card'); return first ? first.getBoundingClientRect().width : 200; }
+  function step(){ return cardWidth() + gapPx(); }
+  function tweenTo(target){ target = clamp(target); stop(); function stepper(){ const diff=target-offset; if (Math.abs(diff)<0.5){ offset=target; apply(); return; } offset += diff*0.18; apply(); raf=requestAnimationFrame(stepper);} stepper(); }
+
+  // 3D plane tilt based on pointer position (disabled while dragging)
+  let tiltX = 0, tiltY = 0; const maxTilt = 12;
+  function applyTilt(){ stage.style.transform = `rotateX(${tiltY}deg) rotateY(${tiltX}deg)`; }
+  wrap.addEventListener('mousemove',(e)=>{
+    if (dragging) return; const r = wrap.getBoundingClientRect();
+    const nx = ((e.clientX - r.left)/r.width - 0.5) * 2; // -1..1
+    const ny = ((e.clientY - r.top)/r.height - 0.5) * 2;
+    tiltX = Math.max(-maxTilt, Math.min(maxTilt, nx * maxTilt));
+    tiltY = Math.max(-maxTilt, Math.min(maxTilt, -ny * maxTilt));
+    applyTilt();
+  });
+  wrap.addEventListener('mouseleave',()=>{ tiltX=0; tiltY=0; applyTilt(); });
+
+  const ro = new ResizeObserver(()=>{ offset=clamp(offset); apply(); }); ro.observe(wrap);
+  // Custom cursor that shows the word DRAG when hovering the drag strip
+  const dragSvg = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"64\" height=\"64\" viewBox=\"0 0 64 64\"><circle cx=\"32\" cy=\"32\" r=\"22\" stroke=\"#111\" stroke-width=\"1\" fill=\"none\"/><text x=\"32\" y=\"38\" text-anchor=\"middle\" font-family=\"Baskervville, serif\" font-style=\"italic\" font-size=\"12\" fill=\"#111\">DRAG</text></svg>";
+  const dragCursorUrl = `url("data:image/svg+xml;utf8,${encodeURIComponent(dragSvg)}") 16 16, grab`;
+  dragstrip.addEventListener('mouseenter', ()=>{ dragstrip.style.cursor = dragCursorUrl; });
+  dragstrip.addEventListener('mouseleave', ()=>{ dragstrip.style.cursor = ''; });
 };
 
 

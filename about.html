@@ -4,16 +4,17 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>About – Samuel Robson</title>
-  <link rel="stylesheet" href="styles.css?v=1755034351840" />
+  <link rel="stylesheet" href="styles.css?v=1755130921223" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Baskervville:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
   <style>
     .page{max-width:1100px;margin:0 auto;padding:140px 2rem 4rem}
     .page h1{font-family:'Baskervville',serif;font-size:24px;font-weight:600;margin-bottom:1rem}
-    .muted{color:#777;font-weight:300;max-width:900px}
-    .section{margin-top:3rem}
-    .list{margin-top:1rem;color:#555}
+    .about-intro{font-family:'Baskervville',serif;font-weight:400;color:#000;letter-spacing:-0.02em;line-height:1.05;max-width:1100px;font-size:clamp(36px,8vw,100px);word-break:keep-all;overflow-wrap:normal;hyphens:none;text-wrap:balance}
+    .about-divider{border:0;border-top:1px solid #cfcfcf;margin:28px 0}
+    .about-principles{list-style:decimal inside;font-family:'Baskervville',serif;color:#000;letter-spacing:-0.02em;margin-top:10px;max-width:900px;font-size:clamp(18px,2.2vw,26px);line-height:1.2;padding-left:0}
+    .about-principles li{margin:0.5rem 0}
   </style>
 </head>
 <body>
@@ -30,20 +31,19 @@
   </header>
   <main class="main">
     <div class="page">
-      <h1>about</h1>
-      <p class="muted">As a product creator, I believe that technology should amplify what makes us human. My approach is rooted in a core set of principles that guide every project I work on.</p>
-      <div class="section">
-        <h2 style="font-family:'Baskervville',serif;font-size:24px;font-weight:600">product principles</h2>
-        <ol class="principles">
-          <li>simple → cut through the noise</li>
-          <li>impactful → solve real and important problems</li>
-          <li>human first → designed for people and our planet</li>
-          <li>elegant → refined, with intention and care</li>
-          <li>joyful → make it feel good to use</li>
-        </ol>
-      </div>
+      <h1 class="sr-only">about</h1>
+      <p class="about-intro">As a product creator, I believe that technology should amplify what makes us human. My approach is rooted in a core set of principles that guide every project I work on:</p>
+      <hr class="about-divider" />
+      <ol class="about-principles">
+        <li>simple → cut through the noise</li>
+        <li>impactful → solve real and important problems</li>
+        <li>human first → designed for people and our planet</li>
+        <li>elegant → refined, with intention and care</li>
+        <li>joyful → make it feel good to use</li>
+      </ol>
     </div>
   </main>
+  <script src="dist/bundle.js?v=1755130921223"></script>
   <script src="gooey-water.js"></script>
   <script src="title-wiggle.js"></script>
   <script src="site-loader.js"></script>

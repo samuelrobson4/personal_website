@@ -407,10 +407,16 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
 }
 .principles li { margin: 0.7rem 0; }
 
+/* About page typography to match large Baskerville intro + divider + smaller list */
+.about-intro { font-family: 'Baskervville', Georgia, 'Times New Roman', serif; font-weight: 400; color: #000; letter-spacing: -0.02em; line-height: 1.05; max-width: 1100px; font-size: clamp(36px, 8vw, 100px); word-break: keep-all; overflow-wrap: normal; hyphens: none; text-wrap: balance; }
+.about-divider { border: 0; border-top: 1px solid #cfcfcf; margin: 50px 0; }
+.about-principles { list-style: decimal inside; font-family: 'Baskervville', Georgia, 'Times New Roman', serif; color: #000; letter-spacing: -0.02em; margin-top: 10px; max-width: 900px; font-size: clamp(18px, 2.2vw, 26px); line-height: 1.4; padding-left: 0; }
+.about-principles li { margin: 0.5rem 0; }
+
 /* BouncyProjectCards (React-injected optional) */
 .bouncy-container { position: relative; width: 100%; overflow: hidden; user-select: none; 
   /* card size variables (synced to physics) */
-  --card-w: 260px; 
+  --card-w: 300px; 
   --card-h: 140px;
 }
 .bouncy-card {
@@ -421,12 +427,15 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
   background: transparent;
   display: flex; flex-direction: column; gap: 6px;
   padding: 12px 14px; box-shadow: none; transform-origin: center; will-change: transform; cursor: pointer;
+  transition: border-color 0.2s ease, border-width 0.2s ease;
 }
 .bouncy-full { width: 100%; height: calc(100vh - 160px); }
 .bouncy-card.dragging { cursor: grabbing; z-index: 10; }
 .bouncy-title { font-family: 'Baskervville', Georgia, 'Times New Roman', serif; font-size: 20px; font-weight: 600; letter-spacing: -0.02em; line-height: 1em; color: #000; text-transform: lowercase; }
 .bouncy-subtitle { font-size: 10px; color: var(--text); }
 .sr-only { position: absolute; left: -10000px; top: auto; width: 1px; height: 1px; overflow: hidden; }
+
+.bouncy-card:hover { border-width: 2px; }
 
 /* Blog bubbles bowl */
 .blog-bubbles { position: relative; width: 100%; height: 480px; overflow: hidden; }
@@ -456,15 +465,15 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
 
 /* Responsive sizes for bouncy cards */
 @media (max-width: 1024px) {
-  .bouncy-container { --card-w: 240px; --card-h: 128px; }
+  .bouncy-container { --card-w: 280px; --card-h: 128px; }
   .bouncy-title { font-size: 22px; }
 }
 @media (max-width: 768px) {
-  .bouncy-container { --card-w: 220px; --card-h: 120px; }
+  .bouncy-container { --card-w: 260px; --card-h: 120px; }
   .bouncy-title { font-size: 21px; }
 }
 @media (max-width: 480px) {
-  .bouncy-container { --card-w: 160px; --card-h: 96px; }
+  .bouncy-container { --card-w: 190px; --card-h: 96px; }
   .bouncy-card { padding: 10px 12px; }
   .bouncy-title { font-size: 20px; }
   .bouncy-subtitle { font-size: 14px; }
@@ -555,6 +564,19 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
   margin-bottom: 1.5rem;
 }
 
+/* Override default panel paragraph style for the large Baskerville intro */
+.hs-panel .about-intro {
+  font-family: 'Baskervville', Georgia, 'Times New Roman', serif;
+  font-weight: 400;
+  color: #000;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  max-width: 1100px;
+  font-size: clamp(15px, 8vw, 40px);
+  margin-bottom: 0; /* keep tight above divider */
+  word-break: keep-all; overflow-wrap: normal; hyphens: none; text-wrap: balance;
+}
+
 .hs-panel p.lead {
   font-size: clamp(1.125rem, 2.5vw, 1.25rem);
   color: #666;
@@ -570,7 +592,7 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
 
 .hs-hero__title {
   font-family: 'Baskervville', serif;
-  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-size: clamp(1rem, 5vw, 2rem);
   font-weight: 600;
   color: #000;
   line-height: 1.1;
@@ -580,7 +602,7 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
 
 .hs-hero__subtitle {
   font-family: 'Inter', sans-serif;
-  font-size: clamp(1.125rem, 2.5vw, 1.375rem);
+  font-size: clamp(0.5rem, 2.5vw, 0.7rem);
   color: #666;
   font-weight: 300;
   line-height: 1.4;
@@ -727,3 +749,11 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
     font-size: clamp(1rem, 4vw, 1.25rem);
   }
 }
+
+/* Gooey audio slider (bottom-right) */
+.audio-goo{position:fixed;right:18px;bottom:18px;z-index:1200;display:flex;flex-direction:column;align-items:center;gap:6px;justify-content:center;width:auto;height:auto;background:transparent;pointer-events:auto}
+.audio-goo-svg{display:block; touch-action:none; cursor: ns-resize;}
+.audio-goo-svg #ag-knob{pointer-events:auto}
+.audio-speaker{appearance:none;-webkit-appearance:none;border:none;background:transparent;color:#000;border-radius:0;width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0}
+.audio-speaker svg{display:block;fill:#000;color:#000}
+

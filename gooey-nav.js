@@ -95,6 +95,26 @@
     const aB = roundedRect(dots[0].x - actW/2, trackY - actW/2, actW, actW, actR, { fill: '#0b0b0b' });
     gooLayer.appendChild(aA); gooLayer.appendChild(aB);
 
+    // Determine initial active index from URL (hash on index, or page path)
+    function getInitialIndex() {
+      const keyFromHash = (location.hash || '').replace('#', '');
+      if (keyFromHash) {
+        const j = dots.findIndex(d => d.key === keyFromHash);
+        if (j >= 0) return j;
+      }
+      const p = location.pathname || '';
+      if (/about\.html$/i.test(p)) return 1;
+      if (/projects\.html$/i.test(p)) return 2;
+      if (/blog\.html$/i.test(p)) return 3;
+      if (/contact\.html$/i.test(p)) return 4;
+      return 0;
+    }
+    const initialIndex = getInitialIndex();
+    const initX = dots[initialIndex].x;
+    setCenter(aA, initX, trackY, actW, actW, actR);
+    setCenter(aB, initX, trackY, actW, actW, actR);
+    updateLabelAt(initX);
+
     function updateLabelAt(cx) {
       // Center label under the closest dot
       let nearest = 0; let best = 1e9;
@@ -155,17 +175,17 @@
     });
 
     let current = 0, lastTL = null;
-    updateLabelAt(dots[0].x);
+    current = initialIndex;
 
     // --- Scroll-driven sync (index page with GSAP scroller) ---
-    function syncFromScroll() {
+    function syncFromScroll(pOverride) {
       const isIndex = /index\.html$/.test(location.pathname) || location.pathname === '/' || location.pathname === '';
       if (!isIndex) return;
       const hs = window.hsDebug;
-      let p = null;
+      let p = (typeof pOverride === 'number') ? pOverride : null;
       if (hs && hs.mainTimeline) {
         // Desktop GSAP timeline
-        p = hs.mainTimeline.progress();
+        if (p == null) p = hs.mainTimeline.progress();
       } else {
         // Mobile/native scroll: compute from stage scrollLeft
         const stage = document.querySelector('.hs-stage');
@@ -197,26 +217,50 @@
       const actW = size + activePad;
       const maxStretch = Math.min(42, 16 + Math.abs(toX - fromX) * 0.35);
       const w = gsap.utils.interpolate(actW, maxStretch, Math.sin(frac * Math.PI));
+      const followerX = gsap.utils.interpolate(fromX, toX, Math.max(0, frac - 0.25));
+      // Lead blob stretches toward the next, follower lags to create a gooey bridge
       setCenter(aA, cx, trackY, w, actW, w / 2);
-      setCenter(aB, cx, trackY, w, actW, w / 2);
-      updateLabelAt(cx);
+      setCenter(aB, followerX, trackY, actW, actW, actR);
+      updateLabelAt((cx + followerX) / 2);
       // update current discrete index for click replays
       const nearest = Math.round(pos);
       current = Math.max(0, Math.min(dots.length - 1, nearest));
     }
     // Use a lightweight ticker so we stay in sync with GSAP even if
     // window scroll events are throttled or not firing while pinned.
+    // Prefer event-driven progress but keep a lightweight RAF as fallback
+    window.addEventListener('hs:scroll-progress', (e) => {
+      const p = e && e.detail && typeof e.detail.progress === 'number' ? e.detail.progress : undefined;
+      syncFromScroll(p);
+    });
     let lastP = -1;
     function tick() {
       const isIndex = /index\.html$/.test(location.pathname) || location.pathname === '/' || location.pathname === '';
       const hs = window.hsDebug;
       if (isIndex && hs && hs.mainTimeline) {
         const p = hs.mainTimeline.progress();
-        if (p !== lastP) { syncFromScroll(); lastP = p; }
+        if (p !== lastP) { syncFromScroll(p); lastP = p; }
       }
       requestAnimationFrame(tick);
     }
     requestAnimationFrame(tick);
+    
+    // Listen for external active-panel events from the horizontal scroller
+    window.addEventListener('hs:active-panel', (e) => {
+      const isIndex = /index\.html$/.test(location.pathname) || location.pathname === '/' || location.pathname === '';
+      const hs = window.hsDebug;
+      // On the index page with GSAP scroller, our own ticker + syncFromScroll
+      // already animates the blob with stretchy motion. Avoid overriding it.
+      if (isIndex && hs && hs.mainTimeline) return;
+
+      const idx = (e && e.detail && typeof e.detail.index === 'number') ? e.detail.index : current;
+      const safeIdx = Math.max(0, Math.min(dots.length - 1, idx));
+      const to = dots[safeIdx].x;
+      setCenter(aA, to, trackY, actW, actW, actR);
+      setCenter(aB, to, trackY, actW, actW, actR);
+      updateLabelAt(to);
+      current = safeIdx;
+    });
   }
 
   if (document.readyState === 'loading') {

@@ -187,7 +187,12 @@
       focus.className = 'nav-focus';
       parentEl.appendChild(focus);
     }
-    if (!activeNavItem) return; // no DOM anchors (gooey nav in use) → skip
+    // If the DOM anchors are the fancy gooey SVG, skip focus-box alignment but
+    // still broadcast the active panel so gooey nav can mirror it via window.hsDebug
+    if (!activeNavItem) {
+      try { window.dispatchEvent(new CustomEvent('hs:active-panel', { detail: { index: activePanel, id: panelId } })); } catch (e) {}
+      return;
+    }
     const targetRect = activeNavItem.getBoundingClientRect();
     const parentRect = parentEl.getBoundingClientRect();
     const x = targetRect.left - parentRect.left - 4;
@@ -201,6 +206,9 @@
     labelEl.style.transform = `translate(${labelX - labelWidth / 2}px, 0)`;
     // Ensure color remains the standard dark grey under the active dot
     labelEl.style.color = '#666';
+
+    // Notify external nav (gooey) about the active panel
+    try { window.dispatchEvent(new CustomEvent('hs:active-panel', { detail: { index: activePanel, id: panelId } })); } catch (e) {}
   }
   
   /**
@@ -294,6 +302,8 @@
           
           // Update navigation progress
           updateNavProgress(activePanel);
+          // Broadcast smooth progress for gooey nav animation
+          try { window.dispatchEvent(new CustomEvent('hs:scroll-progress', { detail: { progress } })); } catch (e) {}
           
           // Update browser hash without triggering scroll
           updateHashWithoutScroll(getPanelId(activePanel));

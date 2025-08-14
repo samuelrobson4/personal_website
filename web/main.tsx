@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import BouncyProjectCards from '../components/BouncyProjectCards';
 import BouncyBlogBubbles from '../components/BouncyBlogBubbles';
 import type { Card } from '../types';
+import { audio } from './audio';
 
 declare global { interface Window { bouncyMount?: (el: HTMLElement, cards: Card[]) => void; renderSubstack?: (el: HTMLElement) => void; mountProjects?: (el: HTMLElement) => void } }
 
@@ -13,8 +14,8 @@ function mount(el: HTMLElement, cards: Card[]) {
       cards={cards}
       width="100%"
       height={520}
-      restitution={0.9}
-      airFriction={0.02}
+      restitution={0.95}
+      airFriction={0.015}
       hoverScale={1.03}
     />
   );
@@ -74,5 +75,8 @@ window.mountProjects = mountProjects;
     el.innerHTML = '<p class="muted">Unable to load blog posts.</p>';
   }
 };
+
+// Initialize global audio UI on bundle load
+audio.initUI();
 
 

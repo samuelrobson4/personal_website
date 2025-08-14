@@ -25,7 +25,7 @@
   }
 
   function init() {
-    const headers = document.querySelectorAll('h1');
+    const headers = document.querySelectorAll('h1:not(.sr-only), .about-intro');
     headers.forEach(wrapLetters);
 
     let mouse = { x: 0, y: 0 };

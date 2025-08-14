@@ -1,6 +1,7 @@
 import React, { useEffect, useLayoutEffect, useRef } from 'react';
 import { Engine, World, Bodies, Runner, Mouse, MouseConstraint, Body, Composite, Events } from 'matter-js';
 import type { Card } from '../types';
+import { audio } from '../web/audio';
 
 type Props = {
   cards: Card[];
@@ -65,6 +66,18 @@ export default function BouncyBlogBubbles({ cards, height = 420 }: Props) {
     // Let page scroll with wheel inside container
     container.addEventListener('wheel', (e) => e.stopImmediatePropagation(), { capture: true });
 
+    // Collision sounds
+    Events.on(engine, 'collisionStart', (evt) => {
+      const pairs = (evt as any).pairs as Array<any>;
+      for (const p of pairs) {
+        const a: Body = p.bodyA; const b: Body = p.bodyB;
+        const rvx = (a.velocity?.x || 0) - (b.velocity?.x || 0);
+        const rvy = (a.velocity?.y || 0) - (b.velocity?.y || 0);
+        const impact = Math.hypot(rvx, rvy);
+        if (impact > 1.2) audio.collision(Math.min(impact, 20));
+      }
+    });
+
     worldRef.current = { engine, runner, bodiesById };
     return () => {
       Runner.stop(runner);
@@ -97,7 +110,7 @@ export default function BouncyBlogBubbles({ cards, height = 420 }: Props) {
   return (
     <div ref={containerRef} className="blog-bubbles" style={{ width: '100%', height }}>
       {cards.map((c) => (
-        <div key={c.id} data-bubble-id={c.id} className="blog-bubble" role="link" tabIndex={0} onClick={() => window.open(c.url, '_blank', 'noopener') }>
+        <div key={c.id} data-bubble-id={c.id} className="blog-bubble" role="link" tabIndex={0} onClick={() => { audio.click(); window.open(c.url, '_blank', 'noopener'); } }>
           <div className="blog-bubble-title">{(c.title || '').toLowerCase()}</div>
           {c.subtitle ? <div className="blog-bubble-sub">{c.subtitle}</div> : null}
         </div>
