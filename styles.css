@@ -62,6 +62,11 @@ body {
     background: var(--bg);
     border-bottom: 1px solid #e6e6e0;
     padding: 8px 0;
+    transition: height 0.35s ease;
+    overflow: hidden;
+  }
+  .header.nav-open {
+    height: auto;
   }
 }
 
@@ -177,17 +182,13 @@ body {
 .burger.open .burger-bar::before { top: 0; transform: rotate(45deg); }
 .burger.open .burger-bar::after { top: 0; transform: rotate(-45deg); }
 
-.mobile-nav { position: fixed; top: 56px; left: 0; right: 0; background: var(--bg); border-bottom: 1px solid #e6e6e0; box-shadow: 0 4px 20px rgba(0,0,0,0.06); z-index: 1199; display: block; overflow: hidden; max-height: 0; opacity: 0; transition: max-height 0.35s ease, opacity 0.25s ease; }
+.mobile-nav { position: static; background: var(--bg); overflow: hidden; max-height: 0; opacity: 0; transition: max-height 0.35s ease, opacity 0.25s ease; }
 .mobile-nav.open { max-height: 320px; opacity: 1; }
 .mobile-nav a { display: block; padding: 14px 24px; color: #000; text-decoration: none; font-family: 'Inter', sans-serif; font-size: 16px; text-align: left; border-bottom: 1px solid rgba(0,0,0,0.05); }
 .mobile-nav a:hover { background: rgba(0,0,0,0.035); }
 .mobile-nav a:last-child { border-bottom: none; }
 
-/* Body push when nav is open */
-body.nav-open { padding-top: 280px; transition: padding-top 0.35s ease; }
-@media (max-width: 768px) {
-  body.nav-open .main { transform: translateY(240px); transition: transform 0.35s ease; }
-}
+/* Remove body push - nav now grows instead */
 
 /* Headings: Baskervville semibold, black. Only links inside headings turn blue on hover */
 h1, h2, h3, h4, h5, h6 {
@@ -473,27 +474,12 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
 /* Blog bubbles bowl */
 .blog-bubbles { position: relative; width: 100%; height: 480px; overflow: hidden; touch-action: pan-y; }
 
-/* Mobile blog carousel */
+/* Mobile blog bubbles - same as desktop but without 3D physics */
 @media (max-width: 768px) {
   .blog-bubbles { 
-    height: 300px;
-    overflow-x: auto;
-    overflow-y: hidden;
-    display: flex;
-    gap: 16px;
-    padding: 20px 0;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
+    height: 420px;
+    overflow: visible;
   }
-  .blog-bubble {
-    flex: 0 0 220px;
-    height: 220px;
-    border-radius: 12px;
-    scroll-snap-align: start;
-    scroll-snap-stop: always;
-  }
-  .blog-bubble-title { font-size: 16px; }
-  .blog-bubble-sub { font-size: 12px; }
 }
 .blog-bubble {
   position: absolute;
@@ -587,8 +573,12 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
   padding: 0 2rem; /* default gutters */
   text-align: left;
 }
+/* Force mobile padding on all containers */
 @media (max-width: 768px) {
-  .hs-inner { padding: 0 2.5rem; } /* stronger gutters on mobile */
+  .hs-inner { padding: 0 2.5rem !important; } /* stronger gutters on mobile */
+  .page { padding-left: 2.5rem !important; padding-right: 2.5rem !important; }
+  body { padding-left: 1rem; padding-right: 1rem; }
+  .main { padding-left: 1rem; padding-right: 1rem; }
 }
 
 /* Ensure consistent top offset for section headers across panels */

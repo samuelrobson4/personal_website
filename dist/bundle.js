@@ -29352,29 +29352,85 @@
     }
     scrollWhoosh(amount) {
       const nowMs = performance.now();
-      if (nowMs - this.lastScrollAt < 30)
+      if (nowMs - this.lastScrollAt < 28)
         return;
       this.lastScrollAt = nowMs;
       this.ensureContext();
       if (!this.context || !this.sfxGain)
         return;
       const ctx = this.context;
+      const dir = Math.sign(amount) || 1;
+      const mag = Math.min(1, Math.abs(amount) / 250);
       const noise = this.createNoise();
+      const inputGain = ctx.createGain();
+      inputGain.gain.setValueAtTime(1e-5, ctx.currentTime);
       const bp = ctx.createBiquadFilter();
       bp.type = "bandpass";
-      bp.frequency.value = 800;
-      bp.Q.value = 0.6;
+      const bpStart = 500 + Math.random() * 200;
+      const bpEndBase = 1800 + Math.random() * 400;
+      const bpEnd = dir > 0 ? bpEndBase * (1 + mag * 0.6) : Math.max(400, bpEndBase * (1 - mag * 0.6));
+      bp.Q.value = 0.6 + Math.random() * 0.2;
+      const air = ctx.createBiquadFilter();
+      air.type = "highshelf";
+      air.frequency.value = 3500;
+      air.gain.value = 2.5 * mag;
+      const pan = ctx.createStereoPanner?.() ?? null;
+      if (pan)
+        pan.pan.setValueAtTime(0.12 * dir * (0.3 + 0.7 * mag), ctx.currentTime);
+      const split = ctx.createChannelSplitter(2);
+      const merge = ctx.createChannelMerger(2);
+      const haasSend = ctx.createGain();
+      haasSend.gain.value = 0.35;
+      const haasDelay = ctx.createDelay(0.02);
+      haasDelay.delayTime.setValueAtTime(8e-3 + 6e-3 * mag, ctx.currentTime);
       const g = ctx.createGain();
-      g.gain.value = 1e-4;
-      noise.connect(bp);
-      bp.connect(g);
-      g.connect(this.sfxGain);
       const t = ctx.currentTime;
-      const mag = Math.min(1, Math.abs(amount) / 200);
-      g.gain.linearRampToValueAtTime(0.04 + mag * 0.12, t + 5e-3);
-      g.gain.exponentialRampToValueAtTime(1e-5, t + 0.18 + mag * 0.12);
+      const attack = 7e-3;
+      const hold = 0.015 + mag * 0.015;
+      const decay = 0.16 + mag * 0.12;
+      g.gain.cancelScheduledValues(t);
+      g.gain.setValueAtTime(1e-5, t);
+      g.gain.linearRampToValueAtTime(0.05 + mag * 0.12, t + attack);
+      g.gain.setTargetAtTime(1e-5, t + attack + hold, decay);
+      bp.frequency.setValueAtTime(bpStart, t);
+      bp.frequency.exponentialRampToValueAtTime(Math.max(80, bpEnd), t + attack + hold + decay * 0.7);
+      noise.connect(inputGain);
+      inputGain.connect(bp);
+      bp.connect(air);
+      const postPanNode = pan ? pan : air;
+      air.connect(pan ?? g);
+      if (pan)
+        pan.connect(g);
+      (pan ?? air).connect(split);
+      split.connect(merge, 0, 0);
+      split.connect(haasSend, 1);
+      haasSend.connect(haasDelay);
+      haasDelay.connect(merge, 0, 1);
+      const haasMix = ctx.createGain();
+      haasMix.gain.value = 0.5;
+      merge.connect(haasMix);
+      haasMix.connect(g);
+      g.connect(this.sfxGain);
+      inputGain.gain.setValueAtTime(1, t);
+      const stopAt = t + attack + hold + decay + 0.12;
       noise.start(t);
-      noise.stop(t + 0.35);
+      noise.stop(stopAt);
+      noise.addEventListener("ended", () => {
+        try {
+          noise.disconnect();
+          inputGain.disconnect();
+          bp.disconnect();
+          air.disconnect();
+          pan?.disconnect();
+          split.disconnect();
+          merge.disconnect();
+          haasSend.disconnect();
+          haasDelay.disconnect();
+          haasMix.disconnect();
+          g.disconnect();
+        } catch {
+        }
+      });
     }
     waterPlop(strength) {
       const nowMs = performance.now();

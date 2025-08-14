@@ -59,15 +59,109 @@ class AudioManager {
   }
 
   scrollWhoosh(amount: number) {
-    const nowMs = performance.now(); if (nowMs - this.lastScrollAt < 30) return; this.lastScrollAt = nowMs;
-    this.ensureContext(); if (!this.context || !this.sfxGain) return;
-    const ctx = this.context; const noise = this.createNoise();
-    const bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 800; bp.Q.value = 0.6;
-    const g = ctx.createGain(); g.gain.value = 0.0001; noise.connect(bp); bp.connect(g); g.connect(this.sfxGain);
-    const t = ctx.currentTime; const mag = Math.min(1, Math.abs(amount) / 200);
-    g.gain.linearRampToValueAtTime(0.04 + mag * 0.12, t + 0.005);
-    g.gain.exponentialRampToValueAtTime(0.00001, t + 0.18 + mag * 0.12);
-    noise.start(t); noise.stop(t + 0.35);
+    const nowMs = performance.now();
+    if (nowMs - this.lastScrollAt < 28) return; // tiny throttle
+    this.lastScrollAt = nowMs;
+  
+    this.ensureContext();
+    if (!this.context || !this.sfxGain) return;
+  
+    const ctx = this.context;
+  
+    // Magnitude & direction
+    const dir = Math.sign(amount) || 1;
+    const mag = Math.min(1, Math.abs(amount) / 250); // slightly softer scaling
+  
+    // --- Source: white noise burst ---
+    const noise = this.createNoise(); // AudioBufferSourceNode (mono or stereo)
+    const inputGain = ctx.createGain();
+    inputGain.gain.setValueAtTime(0.00001, ctx.currentTime);
+  
+    // --- Tone shaping: bandpass + subtle highshelf "air" ---
+    const bp = ctx.createBiquadFilter();
+    bp.type = "bandpass";
+    // slight randomization so repeats aren’t identical
+    const bpStart = 500 + Math.random() * 200;   // Hz
+    const bpEndBase = 1800 + Math.random() * 400;
+    const bpEnd = dir > 0 ? bpEndBase * (1 + mag * 0.6)  // sweep up
+                          : Math.max(400, bpEndBase * (1 - mag * 0.6)); // sweep down
+    bp.Q.value = 0.6 + Math.random() * 0.2;
+  
+    const air = ctx.createBiquadFilter();
+    air.type = "highshelf";
+    air.frequency.value = 3500;
+    air.gain.value = 2.5 * mag; // subtle sparkle with velocity
+  
+    // --- Width: stereo pan + Haas delay on a side-chain ---
+    const pan = ctx.createStereoPanner?.() ?? null;
+    if (pan) pan.pan.setValueAtTime(0.12 * dir * (0.3 + 0.7 * mag), ctx.currentTime);
+  
+    const split = ctx.createChannelSplitter(2);
+    const merge = ctx.createChannelMerger(2);
+    const haasSend = ctx.createGain(); haasSend.gain.value = 0.35; // send amount
+    const haasDelay = ctx.createDelay(0.02); // 20ms max; we’ll set < 15ms
+    haasDelay.delayTime.setValueAtTime(0.008 + 0.006 * mag, ctx.currentTime); // 8–14ms
+  
+    // --- Envelope: fast attack, eased decay (no clicks) ---
+    const g = ctx.createGain();
+    const t = ctx.currentTime;
+    const attack = 0.007;
+    const hold = 0.015 + mag * 0.015;
+    const decay = 0.16 + mag * 0.12;
+  
+    // start very low to avoid click, then ramp
+    g.gain.cancelScheduledValues(t);
+    g.gain.setValueAtTime(0.00001, t);
+    g.gain.linearRampToValueAtTime(0.05 + mag * 0.12, t + attack);
+    g.gain.setTargetAtTime(0.00001, t + attack + hold, decay); // smooth tail
+  
+    // --- Filter sweep automation ---
+    bp.frequency.setValueAtTime(bpStart, t);
+    bp.frequency.exponentialRampToValueAtTime(Math.max(80, bpEnd), t + attack + hold + decay * 0.7);
+  
+    // --- Wiring ---
+    // Noise -> inputGain -> bp -> air -> pan? -> g -> sfxGain
+    noise.connect(inputGain);
+    inputGain.connect(bp);
+    bp.connect(air);
+  
+    const postPanNode = pan ? pan : air; // if no StereoPanner support, just use air
+    air.connect(pan ?? g);
+    if (pan) pan.connect(g);
+  
+    // Haas side path (split after air or pan)
+    (pan ?? air).connect(split);
+    // Left dry (0) straight through
+    split.connect(merge, 0, 0);
+    // Right channel gets a delayed copy for width
+    split.connect(haasSend, 1);
+    haasSend.connect(haasDelay);
+    haasDelay.connect(merge, 0, 1);
+  
+    // Mix Haas path under the main signal
+    const haasMix = ctx.createGain(); haasMix.gain.value = 0.5;
+    merge.connect(haasMix);
+    haasMix.connect(g);
+  
+    g.connect(this.sfxGain);
+  
+    // Prime input gain quickly to avoid initial click
+    inputGain.gain.setValueAtTime(1, t);
+  
+    // Lifecycle
+    const stopAt = t + attack + hold + decay + 0.12;
+    noise.start(t);
+    noise.stop(stopAt);
+    noise.addEventListener("ended", () => {
+      // defensive cleanup
+      try {
+        noise.disconnect(); inputGain.disconnect();
+        bp.disconnect(); air.disconnect();
+        pan?.disconnect(); split.disconnect(); merge.disconnect();
+        haasSend.disconnect(); haasDelay.disconnect();
+        haasMix.disconnect(); g.disconnect();
+      } catch {}
+    });
   }
 
   waterPlop(strength: number) {
