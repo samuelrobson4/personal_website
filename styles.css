@@ -96,8 +96,8 @@ body {
 /* Nav as vertical stepper in top-right */
 .nav-container {
     position: fixed;
-    top: 20px;
-    right: 20px;
+    top: 28px;
+    right: 24px;
     transform: none;
     display: flex;
     flex-direction: row; /* horizontal row of dots */
@@ -160,16 +160,20 @@ body {
 }
 
 /* Mobile burger menu */
-.burger { position: fixed; top: 14px; right: 14px; z-index: 1200; width: 36px; height: 30px; display: none; align-items: center; justify-content: center; background: #000; color: #fff; border-radius: 6px; border: none; cursor: pointer; }
+.burger { position: fixed; top: 14px; right: 14px; z-index: 1200; width: 36px; height: 30px; display: none; align-items: center; justify-content: center; background: #000; color: #fff; border-radius: 6px; border: none; cursor: pointer; transition: background 0.25s ease, transform 0.25s ease; }
 .burger:focus { outline: 2px solid #0066ff; outline-offset: 2px; }
-.burger-bar { width: 18px; height: 2px; background: #fff; position: relative; display: block; }
-.burger-bar::before, .burger-bar::after { content: ''; position: absolute; left: 0; width: 18px; height: 2px; background: #fff; }
+.burger-bar { width: 18px; height: 2px; background: #fff; position: relative; display: block; transition: background 0.25s ease; }
+.burger-bar::before, .burger-bar::after { content: ''; position: absolute; left: 0; width: 18px; height: 2px; background: #fff; transition: transform 0.25s ease, top 0.25s ease; }
 .burger-bar::before { top: -6px; }
 .burger-bar::after { top: 6px; }
-.mobile-nav { position: fixed; top: 56px; right: 14px; background: #fff; border: 1px solid #cfcfcf; border-radius: 8px; box-shadow: 0 6px 18px rgba(0,0,0,0.08); padding: 8px 0; z-index: 1199; display: none; min-width: 180px; }
-.mobile-nav.open { display: block; }
-.mobile-nav a { display: block; padding: 10px 14px; color: #000; text-decoration: none; font-family: 'Inter', sans-serif; font-size: 15px; }
-.mobile-nav a:hover { background: #f5f5f5; }
+.burger.open .burger-bar { background: transparent; }
+.burger.open .burger-bar::before { top: 0; transform: rotate(45deg); }
+.burger.open .burger-bar::after { top: 0; transform: rotate(-45deg); }
+
+.mobile-nav { position: fixed; top: 56px; left: 0; right: 0; background: var(--bg); border-top: 1px solid #e6e6e0; border-bottom: 1px solid #e6e6e0; box-shadow: 0 10px 30px rgba(0,0,0,0.06); z-index: 1199; display: block; overflow: hidden; max-height: 0; opacity: 0; transform: translateY(-8px); transition: max-height 0.35s ease, opacity 0.25s ease, transform 0.25s ease; }
+.mobile-nav.open { max-height: 320px; opacity: 1; transform: translateY(0); }
+.mobile-nav a { display: block; padding: 12px 18px; color: #000; text-decoration: none; font-family: 'Inter', sans-serif; font-size: 15px; text-align: left; }
+.mobile-nav a:hover { background: rgba(0,0,0,0.035); }
 
 /* Headings: Baskervville semibold, black. Only links inside headings turn blue on hover */
 h1, h2, h3, h4, h5, h6 {
@@ -432,7 +436,7 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
   /* card size variables (synced to physics) */
   --card-w: 300px; 
   --card-h: 140px;
-  touch-action: none;
+  touch-action: pan-y;
 }
 .bouncy-card {
   position: absolute;
@@ -454,7 +458,7 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
 
 /* Blog bubbles bowl */
 .blog-bubbles { position: relative; width: 100%; height: 480px; overflow: hidden; }
-.blog-bubbles { touch-action: none; }
+.blog-bubbles { touch-action: pan-y; }
 .blog-bubble {
   position: absolute;
   border-radius: 50%;
@@ -550,7 +554,7 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
 
 /* Ensure consistent top offset for section headers across panels */
 .hs-panel:not(.hs-panel--hero) .hs-inner {
-  padding-top: 140px; /* match static pages' top padding */
+  padding-top: 160px; /* match static pages' top padding (more room for nav) */
 }
 
 /* Keep hero visually prominent */
@@ -727,8 +731,8 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
   .hs-stage { position: relative; height: auto; overflow: visible; }
   .hs-track { display: block; width: auto; transform: none !important; }
   .hs-panel { flex: none; width: auto; height: auto; min-height: auto; min-width: auto; padding: 0; margin: 0 0 48px 0; }
-  .hs-panel .hs-inner { padding-top: 100px !important; }
-  .hs-panel--hero .hs-inner { padding-top: 80px !important; }
+  .hs-panel .hs-inner { padding-top: 120px !important; }
+  .hs-panel--hero .hs-inner { padding-top: 96px !important; }
 
   /* Ensure canvas elements scale properly */
   #blog-bouncy canvas,

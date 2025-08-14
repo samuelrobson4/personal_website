@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Samuel Robson - Portfolio</title>
-    <link rel="stylesheet" href="styles.css?v=1755192223873">
+    <link rel="stylesheet" href="styles.css?v=1755193286408">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Baskervville:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
     
     <!-- GSAP Core + ScrollTrigger (local files to avoid CSP issues) -->
-    <script src="lib/gsap/gsap.min.js?v=1755192223873"></script>
-    <script src="lib/gsap/ScrollTrigger.min.js?v=1755192223873"></script>
+    <script src="lib/gsap/gsap.min.js?v=1755193286408"></script>
+    <script src="lib/gsap/ScrollTrigger.min.js?v=1755193286408"></script>
 </head>
 <body>
     <header class="header">
@@ -137,9 +137,9 @@
     </main>
 
     <!-- Ensure bundle loads before hs-scroller to mount dynamic cards -->
-    <script src="dist/bundle.js?v=1755192223873"></script>
+    <script src="dist/bundle.js?v=1755193286408"></script>
     <!-- GSAP-powered horizontal scroller -->
-    <script src="hs-scroller-gsap.js?v=1755192223873"></script>
+    <script src="hs-scroller-gsap.js?v=1755193286408"></script>
     <!-- Gooey water droplets band -->
     <script src="gooey-water.js"></script>
     <!-- Title wiggle effect -->
@@ -153,8 +153,8 @@
         const btn = document.querySelector('.burger');
         const menu = document.getElementById('mobile-nav');
         if(!btn || !menu) return;
-        function close(){ menu.classList.remove('open'); menu.setAttribute('aria-hidden','true'); btn.setAttribute('aria-expanded','false'); }
-        function toggle(){ const open = !menu.classList.contains('open'); if(open){ menu.classList.add('open'); menu.setAttribute('aria-hidden','false'); btn.setAttribute('aria-expanded','true'); } else { close(); } }
+        function close(){ menu.classList.remove('open'); btn.classList.remove('open'); menu.setAttribute('aria-hidden','true'); btn.setAttribute('aria-expanded','false'); }
+        function toggle(){ const open = !menu.classList.contains('open'); if(open){ menu.classList.add('open'); btn.classList.add('open'); menu.setAttribute('aria-hidden','false'); btn.setAttribute('aria-expanded','true'); } else { close(); } }
         btn.addEventListener('click', toggle);
         document.addEventListener('click', (e)=>{ if(!menu.contains(e.target) && e.target !== btn){ close(); } });
         menu.querySelectorAll('a').forEach(a=> a.addEventListener('click', close));
