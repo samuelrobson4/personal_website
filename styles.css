@@ -19,6 +19,12 @@
   z-index: 900; /* below header/nav (1000+) but above content */
   pointer-events: none; /* mouse moves read globally */
 }
+
+@media (max-width: 768px) {
+  .water-dots-canvas {
+    display: none;
+  }
+}
 * {
     margin: 0;
     padding: 0;
@@ -189,10 +195,10 @@ body {
 }
 
 /* Mobile burger menu */
-.burger { position: static; z-index: 1200; width: 40px; height: 40px; display: none; align-items: center; justify-content: center; background: #000; color: #fff; border: none; border-radius: 50%; cursor: pointer; transition: background 0.25s ease, transform 0.25s ease; padding: 0; }
+.burger { position: static; z-index: 1200; width: 40px; height: 40px; display: none; align-items: center; justify-content: center; background: transparent; color: #000; border: none; cursor: pointer; transition: background 0.25s ease, transform 0.25s ease; padding: 0; }
 .burger:focus { outline: 2px solid #0066ff; outline-offset: 2px; }
-.burger-bar { width: 18px; height: 2px; background: #fff; position: relative; display: block; transition: background 0.25s ease; }
-.burger-bar::before, .burger-bar::after { content: ''; position: absolute; left: 0; width: 18px; height: 2px; background: #fff; transition: transform 0.25s ease, top 0.25s ease; }
+.burger-bar { width: 18px; height: 2px; background: #000; position: relative; display: block; transition: background 0.25s ease; }
+.burger-bar::before, .burger-bar::after { content: ''; position: absolute; left: 0; width: 18px; height: 2px; background: #000; transition: transform 0.25s ease, top 0.25s ease; }
 .burger-bar::before { top: -6px; }
 .burger-bar::after { top: 6px; }
 .burger.open .burger-bar { background: transparent; }
@@ -683,11 +689,11 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
   .bouncy-title { font-size: 22px; }
 }
 @media (max-width: 768px) {
-  .bouncy-container { --card-w: 220px; --card-h: 100px; margin: 0 2rem; }
+  .bouncy-container { --card-w: 200px; --card-h: 100px; margin: 0 2rem; }
   .bouncy-title { font-size: 15px; }
 }
 @media (max-width: 480px) {
-  .bouncy-container { --card-w: 170px; --card-h: 80px; margin: 0 1.5rem; }
+  .bouncy-container { --card-w: 150px; --card-h: 80px; margin: 0 1.5rem; }
   .bouncy-card { padding: 8px 10px; }
   .bouncy-title { font-size: 14px; }
   .bouncy-subtitle { font-size: 12px; }
@@ -758,9 +764,10 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
   /* Wrap all content in mobile containers with proper padding */
   .hs-panel > .hs-inner {
     margin: 0 auto;
-    padding: 2rem 1.5rem;
+    padding: 2rem 2rem;
     max-width: 28rem;
-    text-align: left;
+    width: 100%;
+    box-sizing: border-box;
   }
   
   .page {
@@ -992,8 +999,8 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
     color: #666;
   }
   
-  /* Mobile scroll hint positioning */
-  .hs-hero__scroll-hint {
+  /* Mobile scroll hint positioning - move to hero section */
+  .hs-panel--hero .hs-hero__scroll-hint {
     position: absolute;
     bottom: 2rem;
     left: 50%;
