@@ -540,8 +540,18 @@
           ];
         }
         const mobile = isMobile();
-        if (mobile && window.mountBlogBubbles) {
-          window.mountBlogBubbles(blogEl);
+        if (mobile) {
+          // On mobile, create horizontal carousel of blog cards
+          const carousel = document.createElement('div');
+          carousel.className = 'blog-bubbles';
+          cards.forEach(card => {
+            const bubble = document.createElement('div');
+            bubble.className = 'blog-bubble';
+            bubble.innerHTML = `<div class="blog-bubble-title">${card.title}</div><div class="blog-bubble-sub">${card.subtitle}</div>`;
+            bubble.addEventListener('click', () => window.open(card.url, '_blank', 'noopener'));
+            carousel.appendChild(bubble);
+          });
+          blogEl.appendChild(carousel);
           return;
         }
         if (!mobile) {

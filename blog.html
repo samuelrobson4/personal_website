@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Blog – Samuel Robson</title>
-  <link rel="stylesheet" href="styles.css?v=1755196397366" />
+  <link rel="stylesheet" href="styles.css?v=1755199517557" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Baskervville:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
@@ -39,7 +39,7 @@
     <p class="lead">New thoughts and ideas related to my work...</p>
     <div id="blog-bouncy" style="margin-top:12px"></div>
   </main>
-  <script src="dist/bundle.js?v=1755196397366"></script>
+  <script src="dist/bundle.js?v=1755199517557"></script>
   <script src="books-shelf.js"></script>
   <script>
     async function mountBlogAsBooks() {
@@ -76,8 +76,25 @@
       const btn = document.querySelector('.burger');
       const menu = document.getElementById('mobile-nav');
       if(!btn || !menu) return;
-      function close(){ menu.classList.remove('open'); btn.classList.remove('open'); menu.setAttribute('aria-hidden','true'); btn.setAttribute('aria-expanded','false'); }
-      function toggle(){ const open = !menu.classList.contains('open'); if(open){ menu.classList.add('open'); btn.classList.add('open'); menu.setAttribute('aria-hidden','false'); btn.setAttribute('aria-expanded','true'); } else { close(); } }
+      function close(){ 
+        menu.classList.remove('open'); 
+        btn.classList.remove('open'); 
+        document.body.classList.remove('nav-open');
+        menu.setAttribute('aria-hidden','true'); 
+        btn.setAttribute('aria-expanded','false'); 
+      }
+      function toggle(){ 
+        const open = !menu.classList.contains('open'); 
+        if(open){ 
+          menu.classList.add('open'); 
+          btn.classList.add('open'); 
+          document.body.classList.add('nav-open');
+          menu.setAttribute('aria-hidden','false'); 
+          btn.setAttribute('aria-expanded','true'); 
+        } else { 
+          close(); 
+        } 
+      }
       btn.addEventListener('click', toggle);
       document.addEventListener('click', (e)=>{ if(!menu.contains(e.target) && e.target !== btn){ close(); } });
       menu.querySelectorAll('a').forEach(a=> a.addEventListener('click', close));
