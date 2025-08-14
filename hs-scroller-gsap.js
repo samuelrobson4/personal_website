@@ -517,7 +517,7 @@
       mountProjectsIfReady();
     }
     
-    // Blog: prefer 3D books shelf if available
+    // Blog: on mobile, always mount bubbles (scrollable and draggable). On desktop, prefer 3D shelf if available
     const blogEl = document.getElementById('hs-blog-bouncy');
     if (blogEl) {
       (async () => {
@@ -539,20 +539,25 @@
             { id: 'b3', title: 'human-first tech', subtitle: 'writing', url: '#' },
           ];
         }
-
-        const mountShelf = () => window.mountBooksShelf?.(blogEl, cards);
-
-        if (window.mountBooksShelf) {
-          mountShelf();
-        } else {
-          // Wait until after window load (script order) then try
-          window.addEventListener('load', () => {
-            setTimeout(() => {
-              if (window.mountBooksShelf) mountShelf();
-              else if (window.mountBlogBubbles) window.mountBlogBubbles(blogEl);
-              else loadBlogContent(blogEl);
-            }, 0);
-          }, { once: true });
+        const mobile = isMobile();
+        if (mobile && window.mountBlogBubbles) {
+          window.mountBlogBubbles(blogEl);
+          return;
+        }
+        if (!mobile) {
+          const mountShelf = () => window.mountBooksShelf?.(blogEl, cards);
+          if (window.mountBooksShelf) {
+            mountShelf();
+          } else {
+            // Wait until after window load (script order) then try
+            window.addEventListener('load', () => {
+              setTimeout(() => {
+                if (window.mountBooksShelf) mountShelf();
+                else if (window.mountBlogBubbles) window.mountBlogBubbles(blogEl);
+                else loadBlogContent(blogEl);
+              }, 0);
+            }, { once: true });
+          }
         }
       })();
     }
