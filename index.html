@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Samuel Robson - Portfolio</title>
-    <link rel="stylesheet" href="styles.css?v=1755199870835">
+    <link rel="stylesheet" href="styles.css?v=1755200238986">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Baskervville:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
     
     <!-- GSAP Core + ScrollTrigger (local files to avoid CSP issues) -->
-    <script src="lib/gsap/gsap.min.js?v=1755199870835"></script>
-    <script src="lib/gsap/ScrollTrigger.min.js?v=1755199870835"></script>
+    <script src="lib/gsap/gsap.min.js?v=1755200238986"></script>
+    <script src="lib/gsap/ScrollTrigger.min.js?v=1755200238986"></script>
 </head>
 <body>
     <header class="header">
@@ -137,9 +137,9 @@
     </main>
 
     <!-- Ensure bundle loads before hs-scroller to mount dynamic cards -->
-    <script src="dist/bundle.js?v=1755199870835"></script>
+    <script src="dist/bundle.js?v=1755200238986"></script>
     <!-- GSAP-powered horizontal scroller -->
-    <script src="hs-scroller-gsap.js?v=1755199870835"></script>
+    <script src="hs-scroller-gsap.js?v=1755200238986"></script>
     <!-- Gooey water droplets band -->
     <script src="gooey-water.js"></script>
     <!-- Title wiggle effect -->
@@ -152,12 +152,10 @@
       (function(){
         const btn = document.querySelector('.burger');
         const menu = document.getElementById('mobile-nav');
-        const header = document.querySelector('.header');
-        if(!btn || !menu || !header) return;
+        if(!btn || !menu) return;
         function close(){ 
           menu.classList.remove('open'); 
           btn.classList.remove('open'); 
-          header.classList.remove('nav-open');
           menu.setAttribute('aria-hidden','true'); 
           btn.setAttribute('aria-expanded','false'); 
         }
@@ -166,7 +164,6 @@
           if(open){ 
             menu.classList.add('open'); 
             btn.classList.add('open'); 
-            header.classList.add('nav-open');
             menu.setAttribute('aria-hidden','false'); 
             btn.setAttribute('aria-expanded','true'); 
           } else { 

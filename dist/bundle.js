@@ -29541,9 +29541,9 @@
         const body = import_matter_js.Bodies.rectangle(pos.x, pos.y, cardSize.w, cardSize.h, {
           restitution,
           frictionAir: airFriction,
-          angle: (Math.random() - 0.5) * 0.28
+          angle: (Math.random() - 0.5) * 0.06
         });
-        import_matter_js.Body.setVelocity(body, { x: (Math.random() - 0.5) * 15, y: (Math.random() - 0.5) * 15 });
+        import_matter_js.Body.setVelocity(body, { x: (Math.random() - 0.5) * 2.2, y: (Math.random() - 0.5) * 2.2 });
         bodiesById.set(card.id, body);
         import_matter_js.World.add(engine.world, body);
       });
@@ -29577,18 +29577,6 @@
           }
         }
       });
-      import_matter_js.Events.on(engine, "collisionStart", (evt) => {
-        const pairs = evt.pairs;
-        for (const p of pairs) {
-          const a = p.bodyA;
-          const b = p.bodyB;
-          const rvx = (a.velocity?.x || 0) - (b.velocity?.x || 0);
-          const rvy = (a.velocity?.y || 0) - (b.velocity?.y || 0);
-          const impact = Math.hypot(rvx, rvy);
-          if (impact > 1.2)
-            audio.collision(Math.min(impact * 1.2, 20));
-        }
-      });
       worldRef.current = { engine, runner, mouse, mouseConstraint, bodiesById };
       return () => {
         if (worldRef.current) {
@@ -29608,14 +29596,14 @@
           if (ref2.isDraggingId === id)
             continue;
           const speed = Math.hypot(body.velocity.x, body.velocity.y);
-          if (speed < 3) {
+          if (speed < 0.4) {
             const angle = Math.random() * Math.PI * 2;
-            const magnitude = 36e-4;
+            const magnitude = 6e-4;
             import_matter_js.Body.applyForce(body, body.position, { x: Math.cos(angle) * magnitude, y: Math.sin(angle) * magnitude });
-            import_matter_js.Body.setAngularVelocity(body, body.angularVelocity + (Math.random() - 0.5) * 0.012);
+            import_matter_js.Body.setAngularVelocity(body, body.angularVelocity + (Math.random() - 0.5) * 2e-3);
           }
         }
-      }, 450);
+      }, 1100);
       return () => window.clearInterval(interval);
     }, []);
     (0, import_react.useLayoutEffect)(() => {
@@ -29634,8 +29622,8 @@
           const body = ref2.bodiesById.get(id);
           if (!body)
             return;
-          body.velocity.x = Math.max(Math.min(body.velocity.x, 40), -40);
-          body.velocity.y = Math.max(Math.min(body.velocity.y, 40), -40);
+          body.velocity.x = Math.max(Math.min(body.velocity.x, 6), -6);
+          body.velocity.y = Math.max(Math.min(body.velocity.y, 6), -6);
           const halfW = size.w / 2;
           const halfH = size.h / 2;
           let px = body.position.x;

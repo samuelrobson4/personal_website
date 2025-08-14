@@ -102,9 +102,9 @@ export const BouncyProjectCards = forwardRef<BouncyProjectCardsRef, Props>(funct
       const body = Bodies.rectangle(pos.x, pos.y, cardSize.w, cardSize.h, {
         restitution,
         frictionAir: airFriction,
-        angle: (Math.random() - 0.5) * 0.28,
+        angle: (Math.random() - 0.5) * 0.06,
       });
-      Body.setVelocity(body, { x: (Math.random() - 0.5) * 15, y: (Math.random() - 0.5) * 15 });
+      Body.setVelocity(body, { x: (Math.random() - 0.5) * 2.2, y: (Math.random() - 0.5) * 2.2 });
       bodiesById.set(card.id, body);
       World.add(engine.world, body);
     });
@@ -145,18 +145,7 @@ export const BouncyProjectCards = forwardRef<BouncyProjectCardsRef, Props>(funct
       }
     });
 
-    // Collision sounds: listen to collisions and map impact to audio
-    Events.on(engine, 'collisionStart', (evt) => {
-      const pairs = (evt as any).pairs as Array<any>;
-      for (const p of pairs) {
-        const a: Body = p.bodyA; const b: Body = p.bodyB;
-        // Estimate impact intensity using relative velocity
-        const rvx = (a.velocity?.x || 0) - (b.velocity?.x || 0);
-        const rvy = (a.velocity?.y || 0) - (b.velocity?.y || 0);
-        const impact = Math.hypot(rvx, rvy);
-        if (impact > 1.2) audio.collision(Math.min(impact * 1.2, 20));
-      }
-    });
+    // Collision sounds removed: keep site to click-only SFX
 
     worldRef.current = { engine, runner, mouse, mouseConstraint, bodiesById };
 
@@ -171,21 +160,21 @@ export const BouncyProjectCards = forwardRef<BouncyProjectCardsRef, Props>(funct
     };
   }, []);
 
-  // Even livelier idle motion so cards feel lively by default
+  // Gentle idle motion so cards settle but remain draggable
   useEffect(() => {
     const interval = window.setInterval(() => {
       const ref = worldRef.current; if (!ref) return;
       for (const [id, body] of ref.bodiesById.entries()) {
         if (ref.isDraggingId === id) continue;
         const speed = Math.hypot(body.velocity.x, body.velocity.y);
-        if (speed < 3.0) {
+        if (speed < 0.4) {
           const angle = Math.random() * Math.PI * 2;
-          const magnitude = 0.0036; // stronger nudge
+          const magnitude = 0.0006; // tiny nudge
           Body.applyForce(body, body.position, { x: Math.cos(angle) * magnitude, y: Math.sin(angle) * magnitude });
-          Body.setAngularVelocity(body, body.angularVelocity + (Math.random() - 0.5) * 0.012);
+          Body.setAngularVelocity(body, body.angularVelocity + (Math.random() - 0.5) * 0.002);
         }
       }
-    }, 450);
+    }, 1100);
     return () => window.clearInterval(interval);
   }, []);
 
@@ -204,9 +193,9 @@ export const BouncyProjectCards = forwardRef<BouncyProjectCardsRef, Props>(funct
         const id = (node as HTMLElement).dataset.cardId!;
         const body = ref.bodiesById.get(id);
         if (!body) return;
-        // Cap velocities a bit
-        body.velocity.x = Math.max(Math.min(body.velocity.x, 40), -40);
-        body.velocity.y = Math.max(Math.min(body.velocity.y, 40), -40);
+        // Cap velocities tighter
+        body.velocity.x = Math.max(Math.min(body.velocity.x, 6), -6);
+        body.velocity.y = Math.max(Math.min(body.velocity.y, 6), -6);
         // Clamp bodies strictly inside bounds to avoid drifting off-page
         const halfW = size.w / 2; const halfH = size.h / 2;
         let px = body.position.x; let py = body.position.y;

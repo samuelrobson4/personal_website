@@ -62,10 +62,6 @@ body {
     background: var(--bg);
     border-bottom: 1px solid #e6e6e0;
     padding: 8px 0;
-    transition: height 0.35s ease;
-    overflow: hidden;
-  }
-  .header.nav-open {
     height: auto;
   }
 }
@@ -182,7 +178,7 @@ body {
 .burger.open .burger-bar::before { top: 0; transform: rotate(45deg); }
 .burger.open .burger-bar::after { top: 0; transform: rotate(-45deg); }
 
-.mobile-nav { position: static; background: var(--bg); overflow: hidden; max-height: 0; opacity: 0; transition: max-height 0.35s ease, opacity 0.25s ease; }
+.mobile-nav { position: fixed; top: 76px; left: 24px; background: var(--bg); overflow: hidden; max-height: 0; opacity: 0; transition: max-height 0.35s ease, opacity 0.25s ease; border: 1px solid #e6e6e0; border-radius: 6px; min-width: 120px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); z-index: 1150; }
 .mobile-nav.open { max-height: 320px; opacity: 1; }
 .mobile-nav a { display: block; padding: 14px 24px; color: #000; text-decoration: none; font-family: 'Inter', sans-serif; font-size: 16px; text-align: left; border-bottom: 1px solid rgba(0,0,0,0.05); }
 .mobile-nav a:hover { background: rgba(0,0,0,0.035); }
@@ -247,6 +243,13 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
     margin: 0 auto; 
     max-width: 1100px; 
     padding: 200px 2rem 0; /* match about page's .page top padding */
+}
+
+@media (max-width: 768px) {
+  .landing .hero {
+    padding: 120px 1.5rem 0 !important;
+    max-width: calc(100vw - 3rem);
+  }
 }
 .landing .hero-title a { color: #000; text-decoration: none; }
 .landing .hero-title a:hover { color: var(--blue); text-decoration: none; }
@@ -573,12 +576,39 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
   padding: 0 2rem; /* default gutters */
   text-align: left;
 }
-/* Force mobile padding on all containers */
+/* Standard page wrapper for static pages */
+.page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 160px 2rem 4rem 2rem; /* top, right, bottom, left */
+  text-align: left;
+}
+
+/* Mobile container approach */
 @media (max-width: 768px) {
-  .hs-inner { padding: 0 2.5rem !important; } /* stronger gutters on mobile */
-  .page { padding-left: 2.5rem !important; padding-right: 2.5rem !important; }
-  body { padding-left: 1rem; padding-right: 1rem; }
-  .main { padding-left: 1rem; padding-right: 1rem; }
+  /* Wrap all content in mobile containers with proper padding */
+  .hs-panel > .hs-inner {
+    margin: 0 auto;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    max-width: calc(100vw - 3rem);
+  }
+  
+  .page {
+    margin: 0 auto;
+    padding: 120px 1.5rem 3rem 1.5rem !important; /* top, right, bottom, left */
+    max-width: calc(100vw - 3rem);
+  }
+  
+  /* Hero panel needs more top space on mobile */
+  .hs-panel--hero .hs-inner {
+    padding-top: 120px !important;
+  }
+  
+  /* Non-hero panels need space for nav */
+  .hs-panel:not(.hs-panel--hero) .hs-inner {
+    padding-top: 140px !important;
+  }
 }
 
 /* Ensure consistent top offset for section headers across panels */
@@ -760,8 +790,7 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
   .hs-stage { position: relative; height: auto; overflow: visible; }
   .hs-track { display: block; width: auto; transform: none !important; }
   .hs-panel { flex: none; width: auto; height: auto; min-height: auto; min-width: auto; padding: 0; margin: 0 0 56px 0; }
-  .hs-panel .hs-inner { padding-top: 120px !important; padding-left: max(2.5rem, env(safe-area-inset-left)); padding-right: max(2.5rem, env(safe-area-inset-right)); }
-  .hs-panel--hero .hs-inner { padding-top: 96px !important; }
+  /* Padding handled by container approach above */
 
   /* Ensure canvas elements scale properly */
   #blog-bouncy canvas,

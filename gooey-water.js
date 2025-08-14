@@ -124,9 +124,9 @@
       } catch {}
     }
 
-    svg.addEventListener('pointermove', (e) => { setMouseFromEvent(e); try { window.audio && window.audio.waterPlop(0.15); } catch {} });
+    svg.addEventListener('pointermove', (e) => { setMouseFromEvent(e); });
     svg.addEventListener('pointerdown', async (e) => { 
-      mouseDown = true; setMouseFromEvent(e); try { window.audio && window.audio.waterPlop(0.4); } catch {}
+      mouseDown = true; setMouseFromEvent(e);
       if (!motionEnabled) await ensureMotionPermission();
     });
     svg.addEventListener('pointerup', () => { mouseDown = false; });
@@ -141,8 +141,8 @@
       clearTimeout(scrollT); scrollT = setTimeout(() => (engine.world.gravity.y = 1), 160);
       clearTimeout(scrollTX); scrollTX = setTimeout(() => (engine.world.gravity.x = 0), 160);
     }
-    window.addEventListener('wheel', (e) => { sloshFromDelta(e.deltaY); try { window.audio && window.audio.scrollWhoosh(e.deltaY); } catch {} }, { passive: true });
-    window.addEventListener('scroll', () => { const y = window.pageYOffset || 0; const dy = y - lastSY; sloshFromDelta(dy); lastSY = y; try { window.audio && window.audio.scrollWhoosh(dy); } catch {} }, { passive: true });
+    window.addEventListener('wheel', (e) => { sloshFromDelta(e.deltaY); }, { passive: true });
+    window.addEventListener('scroll', () => { const y = window.pageYOffset || 0; const dy = y - lastSY; sloshFromDelta(dy); lastSY = y; }, { passive: true });
 
     window.addEventListener('deviceorientation', (e) => {
       if (e.beta == null || e.gamma == null) return;
