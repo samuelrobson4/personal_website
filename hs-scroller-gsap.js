@@ -127,20 +127,14 @@
     log('Mobile check:', { width, breakpoint: CONFIG.mobileBreakpoint, isMobile: mobile });
     
     if (mobile && stage) {
-      // Remove pinning and GSAP transforms for native scroll
+      // Mobile: vertical stacking handled by CSS. Just clear transforms.
       stage.removeAttribute('data-pinned');
       gsap.set(track, { clearProps: 'transform' });
-      
-      // Enable smooth scrolling
-      stage.style.overflowX = 'auto';
-      stage.style.webkitOverflowScrolling = 'touch';
-      
-      // Set up snap scrolling
-      track.style.scrollSnapType = 'x mandatory';
+      track.style.scrollSnapType = '';
       Array.from(panels).forEach(panel => {
-        panel.style.scrollSnapAlign = 'start';
-        panel.style.scrollSnapStop = 'always';
-        panel.style.minWidth = '100vw';
+        panel.style.scrollSnapAlign = '';
+        panel.style.scrollSnapStop = '';
+        panel.style.minWidth = '';
       });
     }
     
@@ -445,24 +439,9 @@
             log('Using mobile/fallback scroll navigation');
             const targetPanel = document.getElementById(panelId);
             if (targetPanel) {
-              // On mobile, scroll the stage horizontally
-              const stage = document.querySelector('.hs-stage');
-              if (stage && isMobile()) {
-                const panels = Array.from(document.querySelectorAll('.hs-panel'));
-                const index = panels.indexOf(targetPanel);
-                if (index !== -1) {
-                  const scrollX = index * window.innerWidth;
-                  stage.scrollTo({
-                    left: scrollX,
-                    behavior: 'smooth'
-                  });
-                  log('Mobile scroll to:', scrollX);
-                }
-              } else {
-                // Fallback vertical scroll for non-mobile
-                targetPanel.scrollIntoView({ behavior: 'smooth' });
-                log('Fallback vertical scroll to panel:', panelId);
-              }
+              // On mobile (vertical stack), use vertical scrollIntoView
+              targetPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              log('Vertical scroll into view:', panelId);
             } else {
               log('Target panel not found:', panelId);
             }

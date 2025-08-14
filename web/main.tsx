@@ -3,9 +3,8 @@ import { createRoot } from 'react-dom/client';
 import BouncyProjectCards from '../components/BouncyProjectCards';
 import BouncyBlogBubbles from '../components/BouncyBlogBubbles';
 import type { Card } from '../types';
-import { audio } from './audio';
 
-declare global { interface Window { bouncyMount?: (el: HTMLElement, cards: Card[]) => void; renderSubstack?: (el: HTMLElement) => void; mountProjects?: (el: HTMLElement) => void } }
+declare global { interface Window { bouncyMount?: (el: HTMLElement, cards: Card[]) => void; renderSubstack?: (el: HTMLElement) => void; mountProjects?: (el: HTMLElement) => void; mountBlogBubbles?: (el: HTMLElement) => void } }
 
 function mount(el: HTMLElement, cards: Card[]) {
   const root = createRoot(el);
@@ -76,7 +75,6 @@ window.mountProjects = mountProjects;
   }
 };
 
-// Initialize global audio UI on bundle load
-audio.initUI();
+// Audio UI removed; interaction sounds only are kept within components
 
 

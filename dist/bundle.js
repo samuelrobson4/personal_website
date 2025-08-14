@@ -29274,43 +29274,15 @@
   var import_matter_js = __toESM(require_matter(), 1);
 
   // web/audio.ts
-  var DEFAULT_AMBIENT_URL = "audio/ambient.mp3";
   var AudioManager = class {
     constructor() {
       this.context = null;
-      this.masterGain = null;
       this.sfxGain = null;
-      this.musicGain = null;
-      this.started = false;
-      this.uiInited = false;
-      this.ambientNodes = {};
+      this.volume = 0.6;
+      this.muted = false;
       this.lastCollisionAt = 0;
       this.lastScrollAt = 0;
       this.lastWaterAt = 0;
-      this.beatNextTime = 0;
-      this.beatLookaheadMs = 25;
-      // scheduler tick
-      this.beatScheduleAheadSec = 0.12;
-      // how far to schedule ahead
-      this.beatTempo = 84;
-      // BPM
-      this.beatStep = 0;
-      // 16th steps
-      this.beatGain = null;
-      this.externalEl = null;
-      this.externalSrc = null;
-      this.volume = 0.6;
-      // default
-      this.muted = false;
-      try {
-        const saved = localStorage.getItem("audio.volume");
-        if (saved != null)
-          this.volume = Math.max(0, Math.min(1, parseFloat(saved)));
-        const m = localStorage.getItem("audio.muted");
-        if (m === "1")
-          this.muted = true;
-      } catch {
-      }
     }
     ensureContext() {
       if (this.context)
@@ -29319,195 +29291,22 @@
       if (!Ctx)
         return;
       const ctx = new Ctx();
-      const master = ctx.createGain();
       const sfx = ctx.createGain();
-      const music = ctx.createGain();
-      sfx.connect(master);
-      music.connect(master);
-      master.connect(ctx.destination);
-      master.gain.value = 1;
       sfx.gain.value = this.muted ? 0 : this.volume;
-      music.gain.value = this.muted ? 0 : this.volume;
+      sfx.connect(ctx.destination);
       this.context = ctx;
-      this.masterGain = master;
       this.sfxGain = sfx;
-      this.musicGain = music;
-    }
-    async resumeOnInteraction() {
-      this.ensureContext();
-      if (!this.context)
-        return;
-      if (this.context.state === "suspended") {
-        try {
-          await this.context.resume();
-        } catch {
-        }
-      }
-      if (!this.started) {
-        this.started = true;
-        this.startAmbient();
-      }
-    }
-    initUI() {
-      if (this.uiInited)
-        return;
-      this.uiInited = true;
-      const root = document.createElement("div");
-      root.className = "audio-goo";
-      root.setAttribute("role", "slider");
-      root.setAttribute("aria-valuemin", "0");
-      root.setAttribute("aria-valuemax", "100");
-      root.setAttribute("aria-label", "volume");
-      const H = 140;
-      const P = 12;
-      const usable = H - P * 2;
-      const cyFromVol = (v) => P + (1 - v) * usable;
-      const volFromCy = (cy) => Math.max(0, Math.min(1, 1 - (cy - P) / usable));
-      root.innerHTML = `
-      <button class="audio-speaker" aria-label="toggle sound" title="toggle sound">${this.iconSvg(this.muted)}</button>
-      <svg class="audio-goo-svg" viewBox="0 0 28 ${H}" width="28" height="${H}" aria-hidden="false">
-        <defs>
-          <filter id="ag-goo">
-            <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur" />
-            <feColorMatrix in="blur" mode="matrix" values="
-              1 0 0 0 0
-              0 1 0 0 0
-              0 0 1 0 0
-              0 0 0 18 -8" result="goo" />
-            <feComposite in="SourceGraphic" in2="goo" operator="atop" />
-          </filter>
-        </defs>
-        <g id="ag-group" filter="url(#ag-goo)">
-          <rect x="12" y="${P}" width="4" height="${usable}" rx="2" fill="#000"></rect>
-          <circle cx="14" cy="${cyFromVol(this.volume)}" r="8" fill="#000" id="ag-knob" style="pointer-events:auto"></circle>
-          <circle cx="14" cy="${Math.min(H - P - 4, cyFromVol(this.volume) + 16)}" r="5" fill="#000" opacity="0.9"></circle>
-          <circle cx="14" cy="${Math.max(P + 4, cyFromVol(this.volume) - 16)}" r="4" fill="#000" opacity="0.8"></circle>
-        </g>
-      </svg>
-    `;
-      document.body.appendChild(root);
-      const knob = root.querySelector("#ag-knob");
-      const svg = root.querySelector("svg");
-      const speakerBtn = root.querySelector(".audio-speaker");
-      const group = root.querySelector("#ag-group");
-      const setKnob = (v) => {
-        const clamped = Math.max(0, Math.min(1, v));
-        const cy = cyFromVol(clamped);
-        knob.setAttribute("cy", String(cy));
-        root.setAttribute("aria-valuenow", String(Math.round(clamped * 100)));
-      };
-      setKnob(this.volume);
-      let dragging = false;
-      let moved = false;
-      let startY = 0;
-      const onMove = (clientY) => {
-        const rect = svg.getBoundingClientRect();
-        const y = Math.max(rect.top + P, Math.min(rect.bottom - P, clientY));
-        const v = volFromCy(y - rect.top);
-        this.setVolume(v);
-        setKnob(v);
-        if (this.muted && this.volume > 0) {
-          this.muted = false;
-          this.applyMasterGain();
-          if (speakerBtn)
-            speakerBtn.innerHTML = this.iconSvg(false);
-        }
-        this.resumeOnInteraction();
-      };
-      const onPointerMove = (e) => {
-        if (!dragging)
-          return;
-        if (Math.abs(e.clientY - startY) > 2)
-          moved = true;
-        onMove(e.clientY);
-      };
-      const onPointerUp = (e) => {
-        if (!dragging)
-          return;
-        dragging = false;
-        window.removeEventListener("pointermove", onPointerMove);
-        window.removeEventListener("pointerup", onPointerUp);
-        if (!moved) {
-          this.toggleMute();
-          if (speakerBtn)
-            speakerBtn.innerHTML = this.iconSvg(this.muted);
-        }
-      };
-      const startDrag = (e) => {
-        dragging = true;
-        moved = false;
-        startY = e.clientY;
-        e.target.setPointerCapture?.(e.pointerId);
-        onMove(e.clientY);
-        window.addEventListener("pointermove", onPointerMove);
-        window.addEventListener("pointerup", onPointerUp);
-        e.preventDefault();
-      };
-      svg.addEventListener("pointerdown", startDrag);
-      group.addEventListener("pointerdown", startDrag);
-      knob.addEventListener("pointerdown", startDrag);
-      svg.addEventListener("wheel", (e) => {
-        e.preventDefault();
-        const dv = -Math.sign(e.deltaY) * 0.05;
-        const v = Math.max(0, Math.min(1, this.volume + dv));
-        this.setVolume(v);
-        setKnob(v);
-      }, { passive: false });
-      speakerBtn.addEventListener("click", () => {
-        this.toggleMute();
-        speakerBtn.innerHTML = this.iconSvg(this.muted);
-        this.resumeOnInteraction();
-      });
-      root.tabIndex = 0;
-      root.addEventListener("keydown", (e) => {
-        if (e.key === "ArrowUp") {
-          const v = Math.min(1, this.volume + 0.05);
-          this.setVolume(v);
-          setKnob(v);
-        }
-        if (e.key === "ArrowDown") {
-          const v = Math.max(0, this.volume - 0.05);
-          this.setVolume(v);
-          setKnob(v);
-        }
-        if (e.key === "m") {
-          this.toggleMute();
-        }
-      });
-      const resume = () => this.resumeOnInteraction();
-      window.addEventListener("pointerdown", resume, { passive: true });
-    }
-    iconSvg(muted) {
-      const waves = muted ? "" : '<path d="M15 8c1.5 1 2.5 2.5 2.5 4s-1 3-2.5 4" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" />\n<path d="M18 6c2.4 1.7 4 4 4 6s-1.6 4.3-4 6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" />';
-      return `
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-        <path d="M3 10v4h4l5 4V6L7 10H3z" />
-        ${waves}
-      </svg>`;
-    }
-    applyMasterGain() {
-      if (!this.masterGain)
-        return;
-      if (this.sfxGain)
-        this.sfxGain.gain.value = this.muted ? 0 : this.volume;
-      if (this.musicGain)
-        this.musicGain.gain.value = this.muted ? 0 : this.volume;
-      if (this.externalEl)
-        this.externalEl.volume = this.muted ? 0 : this.volume;
-      try {
-        localStorage.setItem("audio.volume", String(this.volume));
-        localStorage.setItem("audio.muted", this.muted ? "1" : "0");
-      } catch {
-      }
     }
     setVolume(v) {
       this.volume = Math.max(0, Math.min(1, v));
-      this.ensureContext();
-      this.applyMasterGain();
+      if (!this.sfxGain)
+        return;
+      this.sfxGain.gain.value = this.muted ? 0 : this.volume;
     }
     toggleMute() {
       this.muted = !this.muted;
-      this.applyMasterGain();
+      if (this.sfxGain)
+        this.sfxGain.gain.value = this.muted ? 0 : this.volume;
     }
     click() {
       this.ensureContext();
@@ -29521,17 +29320,17 @@
       g.gain.value = 1e-4;
       o.connect(g);
       g.connect(this.sfxGain);
-      const now = ctx.currentTime;
-      g.gain.exponentialRampToValueAtTime(0.08, now + 1e-3);
-      g.gain.exponentialRampToValueAtTime(1e-5, now + 0.08);
-      o.start(now);
-      o.stop(now + 0.1);
+      const t = ctx.currentTime;
+      g.gain.exponentialRampToValueAtTime(0.08, t + 1e-3);
+      g.gain.exponentialRampToValueAtTime(1e-5, t + 0.08);
+      o.start(t);
+      o.stop(t + 0.1);
     }
     collision(impact) {
-      const t = performance.now();
-      if (t - this.lastCollisionAt < 24)
+      const nowMs = performance.now();
+      if (nowMs - this.lastCollisionAt < 24)
         return;
-      this.lastCollisionAt = t;
+      this.lastCollisionAt = nowMs;
       this.ensureContext();
       if (!this.context || !this.sfxGain)
         return;
@@ -29544,12 +29343,12 @@
       g.gain.value = 1e-4;
       o.connect(g);
       g.connect(this.sfxGain);
-      const now = ctx.currentTime;
+      const t = ctx.currentTime;
       const peak = Math.min(0.22, 0.04 + impact / 20 * 0.18);
-      g.gain.exponentialRampToValueAtTime(peak, now + 5e-3);
-      g.gain.exponentialRampToValueAtTime(1e-5, now + 0.18);
-      o.start(now);
-      o.stop(now + 0.22);
+      g.gain.exponentialRampToValueAtTime(peak, t + 5e-3);
+      g.gain.exponentialRampToValueAtTime(1e-5, t + 0.18);
+      o.start(t);
+      o.stop(t + 0.22);
     }
     scrollWhoosh(amount) {
       const nowMs = performance.now();
@@ -29616,249 +29415,6 @@
       node.buffer = buffer;
       node.loop = true;
       return node;
-    }
-    startAmbient() {
-      this.ensureContext();
-      if (!this.context || !this.musicGain)
-        return;
-      if (this.ambientNodes.o1)
-        return;
-      const ctx = this.context;
-      const externalUrl = window.AMBIENT_URL;
-      if (externalUrl) {
-        try {
-          this.startExternalAmbient(externalUrl);
-        } catch {
-        }
-        return;
-      }
-      this.startExternalAmbient(DEFAULT_AMBIENT_URL);
-    }
-    startSynthAmbient() {
-      this.ensureContext();
-      if (!this.context || !this.musicGain)
-        return;
-      const ctx = this.context;
-      const lp = ctx.createBiquadFilter();
-      lp.type = "lowpass";
-      lp.frequency.value = 800;
-      lp.Q.value = 0.3;
-      lp.connect(this.musicGain);
-      const o1 = ctx.createOscillator();
-      o1.type = "triangle";
-      o1.frequency.value = 138.59;
-      const g1 = ctx.createGain();
-      g1.gain.value = 0.05;
-      o1.connect(g1);
-      g1.connect(lp);
-      const o2 = ctx.createOscillator();
-      o2.type = "triangle";
-      o2.frequency.value = 207.65;
-      const g2 = ctx.createGain();
-      g2.gain.value = 0.045;
-      o2.connect(g2);
-      g2.connect(lp);
-      o1.detune.value = -6;
-      o2.detune.value = 7;
-      const hiss = this.createNoise();
-      const hissGain = ctx.createGain();
-      hissGain.gain.value = 6e-3;
-      const hp = ctx.createBiquadFilter();
-      hp.type = "highpass";
-      hp.frequency.value = 500;
-      hiss.connect(hp);
-      hp.connect(hissGain);
-      hissGain.connect(this.musicGain);
-      const lfo = ctx.createOscillator();
-      lfo.type = "sine";
-      lfo.frequency.value = 0.06;
-      const lfoGain = ctx.createGain();
-      lfoGain.gain.value = 260;
-      lfo.connect(lfoGain);
-      lfoGain.connect(lp.frequency);
-      const pump = ctx.createOscillator();
-      pump.type = "sine";
-      pump.frequency.value = 0.45;
-      const pumpGain = ctx.createGain();
-      pumpGain.gain.value = 0.015;
-      pump.connect(pumpGain);
-      pumpGain.connect(this.musicGain.gain);
-      const now = ctx.currentTime;
-      o1.start(now);
-      o2.start(now);
-      lfo.start(now);
-      pump.start(now);
-      hiss.start(now);
-      this.ambientNodes = { o1, o2, lfo, lp };
-      this.startLofiBeat();
-    }
-    startExternalAmbient(url) {
-      this.ensureContext();
-      if (!this.context || !this.musicGain)
-        return;
-      if (this.externalEl)
-        return;
-      const el = new Audio();
-      el.src = url;
-      el.loop = true;
-      el.crossOrigin = "anonymous";
-      el.preload = "auto";
-      const src = this.context.createMediaElementSource(el);
-      const g = this.context.createGain();
-      g.gain.value = 1;
-      src.connect(g);
-      g.connect(this.musicGain);
-      this.externalEl = el;
-      this.externalSrc = src;
-      const tryPlay = () => {
-        el.play().catch(() => {
-        });
-      };
-      document.addEventListener("pointerdown", tryPlay, { once: true, passive: true });
-      el.onerror = () => {
-        this.stopAmbient();
-        this.startSynthAmbient();
-      };
-      el.play().catch(() => {
-      });
-    }
-    // Public helper: allow setting ambient URL from the outside (e.g., SoundCloud stream link)
-    setAmbientUrl(url) {
-      this.stopAmbient();
-      window.AMBIENT_URL = url;
-      this.startAmbient();
-    }
-    stopAmbient() {
-      try {
-        if (this.beatTimer) {
-          clearInterval(this.beatTimer);
-          this.beatTimer = void 0;
-        }
-        if (this.externalEl) {
-          this.externalEl.pause();
-          this.externalEl.src = "";
-          this.externalEl = null;
-        }
-        if (this.externalSrc) {
-          try {
-            this.externalSrc.disconnect();
-          } catch {
-          }
-          this.externalSrc = null;
-        }
-        const n = this.ambientNodes;
-        if (n.o1) {
-          try {
-            n.o1.stop();
-          } catch {
-          }
-        }
-        if (n.o2) {
-          try {
-            n.o2.stop();
-          } catch {
-          }
-        }
-        if (n.lfo) {
-          try {
-            n.lfo.stop();
-          } catch {
-          }
-        }
-        this.ambientNodes = {};
-      } catch {
-      }
-    }
-    startLofiBeat() {
-      this.ensureContext();
-      if (!this.context || !this.musicGain)
-        return;
-      if (this.beatTimer)
-        return;
-      const g = this.context.createGain();
-      g.gain.value = 0.28;
-      g.connect(this.musicGain);
-      this.beatGain = g;
-      this.beatNextTime = this.context.currentTime + 0.05;
-      this.beatStep = 0;
-      const tick = () => {
-        const secondsPerBeat = 60 / this.beatTempo;
-        while (this.beatNextTime < this.context.currentTime + this.beatScheduleAheadSec) {
-          this.scheduleBeatStep(this.beatStep, this.beatNextTime);
-          this.beatNextTime += secondsPerBeat / 4;
-          this.beatStep = (this.beatStep + 1) % 16;
-        }
-      };
-      this.beatTimer = window.setInterval(tick, this.beatLookaheadMs);
-    }
-    scheduleBeatStep(step, time) {
-      const v = 0.9;
-      if (step === 0 || step === 8)
-        this.makeKick(time, v);
-      if (step === 4 || step === 12)
-        this.makeSnare(time, 0.7);
-      if (step % 2 === 0)
-        this.makeHat(time, 0.25);
-      if (step === 3 || step === 11)
-        this.makeHat(time, 0.12);
-    }
-    makeKick(time, velocity) {
-      if (!this.context || !this.beatGain)
-        return;
-      const ctx = this.context;
-      const o = ctx.createOscillator();
-      o.type = "sine";
-      const g = ctx.createGain();
-      g.gain.value = 1e-4;
-      o.connect(g);
-      g.connect(this.beatGain);
-      o.frequency.setValueAtTime(120, time);
-      o.frequency.exponentialRampToValueAtTime(38, time + 0.12);
-      const peak = 0.8 * velocity;
-      g.gain.linearRampToValueAtTime(peak, time + 2e-3);
-      g.gain.exponentialRampToValueAtTime(1e-5, time + 0.22);
-      o.start(time);
-      o.stop(time + 0.24);
-    }
-    makeSnare(time, velocity) {
-      if (!this.context || !this.beatGain)
-        return;
-      const ctx = this.context;
-      const n = this.createNoise();
-      const bp = ctx.createBiquadFilter();
-      bp.type = "bandpass";
-      bp.frequency.value = 1900;
-      bp.Q.value = 0.6;
-      const g = ctx.createGain();
-      g.gain.value = 1e-4;
-      n.connect(bp);
-      bp.connect(g);
-      g.connect(this.beatGain);
-      const peak = 0.35 * velocity;
-      g.gain.linearRampToValueAtTime(peak, time + 5e-3);
-      g.gain.exponentialRampToValueAtTime(1e-5, time + 0.18);
-      n.start(time);
-      n.stop(time + 0.2);
-    }
-    makeHat(time, velocity) {
-      if (!this.context || !this.beatGain)
-        return;
-      const ctx = this.context;
-      const n = this.createNoise();
-      const hp = ctx.createBiquadFilter();
-      hp.type = "highpass";
-      hp.frequency.value = 6e3;
-      hp.Q.value = 0.7;
-      const g = ctx.createGain();
-      g.gain.value = 1e-4;
-      n.connect(hp);
-      hp.connect(g);
-      g.connect(this.beatGain);
-      const peak = 0.18 * velocity;
-      g.gain.linearRampToValueAtTime(peak, time + 1e-3);
-      g.gain.exponentialRampToValueAtTime(1e-5, time + 0.06);
-      n.start(time);
-      n.stop(time + 0.08);
     }
   };
   var audio = new AudioManager();
@@ -30344,7 +29900,6 @@
       el.innerHTML = '<p class="muted">Unable to load blog posts.</p>';
     }
   };
-  audio.initUI();
 })();
 /*! Bundled license information:
 

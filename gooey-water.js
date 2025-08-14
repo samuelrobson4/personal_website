@@ -108,8 +108,27 @@
       mouseY = Math.max(0, Math.min(rect.height, e.clientY - rect.top));
     }
 
+    // Request iOS motion permission on first user interaction
+    let motionEnabled = false;
+    async function ensureMotionPermission() {
+      try {
+        const D = window.DeviceOrientationEvent;
+        if (!D) return;
+        const needsPerm = typeof D.requestPermission === 'function';
+        if (needsPerm) {
+          const state = await D.requestPermission();
+          motionEnabled = state === 'granted';
+        } else {
+          motionEnabled = true;
+        }
+      } catch {}
+    }
+
     svg.addEventListener('pointermove', (e) => { setMouseFromEvent(e); try { window.audio && window.audio.waterPlop(0.15); } catch {} });
-    svg.addEventListener('pointerdown', (e) => { mouseDown = true; setMouseFromEvent(e); try { window.audio && window.audio.waterPlop(0.4); } catch {} });
+    svg.addEventListener('pointerdown', async (e) => { 
+      mouseDown = true; setMouseFromEvent(e); try { window.audio && window.audio.waterPlop(0.4); } catch {}
+      if (!motionEnabled) await ensureMotionPermission();
+    });
     svg.addEventListener('pointerup', () => { mouseDown = false; });
     svg.addEventListener('pointerleave', () => { mouseX = -9999; mouseY = -9999; mouseDown = false; });
 

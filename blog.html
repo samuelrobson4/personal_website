@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Blog – Samuel Robson</title>
-  <link rel="stylesheet" href="styles.css?v=1755130921223" />
+  <link rel="stylesheet" href="styles.css?v=1755192223873" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Baskervville:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
@@ -16,13 +16,21 @@
 </head>
 <body>
   <header class="header">
-    <nav class="nav">
-      <div class="nav-container">
+    <button class="burger" aria-label="Open navigation" aria-expanded="false" aria-controls="mobile-nav"><span class="burger-bar"></span></button>
+    <nav class="nav" aria-label="Primary">
+      <div class="nav-container" role="navigation">
         <a class="nav-item" href="index.html">home</a>
         <a class="nav-item" href="index.html#about">about</a>
         <a class="nav-item" href="index.html#projects">projects</a>
         <a class="nav-item" href="index.html#blog">blog</a>
         <a class="nav-item" href="index.html#contact">contact</a>
+      </div>
+      <div id="mobile-nav" class="mobile-nav" role="menu" aria-hidden="true">
+        <a role="menuitem" href="index.html#home">home</a>
+        <a role="menuitem" href="index.html#about">about</a>
+        <a role="menuitem" href="index.html#projects">projects</a>
+        <a role="menuitem" href="index.html#blog">blog</a>
+        <a role="menuitem" href="index.html#contact">contact</a>
       </div>
     </nav>
   </header>
@@ -31,7 +39,7 @@
     <p class="lead">New thoughts and ideas related to my work...</p>
     <div id="blog-bouncy" style="margin-top:12px"></div>
   </main>
-  <script src="dist/bundle.js?v=1755130921223"></script>
+  <script src="dist/bundle.js?v=1755192223873"></script>
   <script src="books-shelf.js"></script>
   <script>
     async function mountBlogAsBooks() {
@@ -63,6 +71,18 @@
   <script src="title-wiggle.js"></script>
   <script src="site-loader.js"></script>
   <script src="gooey-nav.js"></script>
+  <script>
+    (function(){
+      const btn = document.querySelector('.burger');
+      const menu = document.getElementById('mobile-nav');
+      if(!btn || !menu) return;
+      function close(){ menu.classList.remove('open'); menu.setAttribute('aria-hidden','true'); btn.setAttribute('aria-expanded','false'); }
+      function toggle(){ const open = !menu.classList.contains('open'); if(open){ menu.classList.add('open'); menu.setAttribute('aria-hidden','false'); btn.setAttribute('aria-expanded','true'); } else { close(); } }
+      btn.addEventListener('click', toggle);
+      document.addEventListener('click', (e)=>{ if(!menu.contains(e.target) && e.target !== btn){ close(); } });
+      menu.querySelectorAll('a').forEach(a=> a.addEventListener('click', close));
+    })();
+  </script>
 </body>
 </html>
 
