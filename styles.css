@@ -10,6 +10,12 @@
 }
 /* Gooey water band (SVG) */
 .gooey-band { position: fixed; left: 0; right: 0; bottom: 0; height: 96px; width: 100vw; z-index: 900; pointer-events: none; }
+
+@media (max-width: 768px) {
+  .gooey-band {
+    display: none;
+  }
+}
 /* Water dots canvas fixed to bottom */
 .water-dots-canvas {
   position: fixed;
@@ -196,7 +202,7 @@ body {
 
 /* Mobile burger menu */
 .burger { position: static; z-index: 1200; width: 40px; height: 40px; display: none; align-items: center; justify-content: center; background: transparent; color: #000; border: none; cursor: pointer; transition: background 0.25s ease, transform 0.25s ease; padding: 0; }
-.burger:focus { outline: 2px solid #0066ff; outline-offset: 2px; }
+.burger:focus { outline: none; }
 .burger-bar { width: 18px; height: 2px; background: #000; position: relative; display: block; transition: background 0.25s ease; }
 .burger-bar::before, .burger-bar::after { content: ''; position: absolute; left: 0; width: 18px; height: 2px; background: #000; transition: transform 0.25s ease, top 0.25s ease; }
 .burger-bar::before { top: -6px; }
@@ -592,7 +598,7 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
   
   .blog-bubble {
     flex: none;
-    width: 100%;
+    width: 80%;
     height: auto;
     border-radius: 0 !important;
     position: relative !important;
@@ -765,8 +771,8 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
   .hs-panel > .hs-inner {
     margin: 0 auto;
     padding: 2rem 2rem;
-    max-width: 28rem;
-    width: 100%;
+    max-width: 80%;
+    width: 80%;
     box-sizing: border-box;
   }
   
@@ -1027,7 +1033,7 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
   
   /* Mobile about section improvements */
   .about-intro {
-    font-size: 1.125rem;
+    display: flex;
     line-height: 1.6;
     margin-bottom: 3rem;
   }
