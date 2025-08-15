@@ -626,6 +626,7 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
   letter-spacing: -0.02em; 
   line-height: 1.1; 
   margin-bottom: 1.5rem;
+  font-size: clamp(2rem, 6vw, 3rem) !important;
 }
 .about-divider { border: 0; border-top: 1px solid #cfcfcf; margin: 50px 0; }
 .about-principles { list-style: decimal inside; font-family: 'Baskervville', Georgia, 'Times New Roman', serif; color: #000; letter-spacing: -0.02em; margin-top: 10px; max-width: 900px; font-size: clamp(18px, 2.2vw, 26px); line-height: 1.4; padding-left: 0; }
