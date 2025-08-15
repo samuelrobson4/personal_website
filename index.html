@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Samuel Robson - Portfolio</title>
-    <link rel="stylesheet" href="styles.css?v=1755292920623">
+    <link rel="stylesheet" href="styles.css?v=1755293021974">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Baskervville:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
     
     <!-- GSAP Core + ScrollTrigger (local files to avoid CSP issues) -->
-    <script src="lib/gsap/gsap.min.js?v=1755292920623"></script>
-    <script src="lib/gsap/ScrollTrigger.min.js?v=1755292920623"></script>
+    <script src="lib/gsap/gsap.min.js?v=1755293021974"></script>
+    <script src="lib/gsap/ScrollTrigger.min.js?v=1755293021974"></script>
 </head>
 <body>
     <header class="header">
@@ -131,26 +131,54 @@
               <!-- Panel 5: Contact -->
               <article id="contact" class="hs-panel">
                 <div class="hs-inner">
-                  <h1>contact</h1>
-                  <p class="muted">Send me a message and I'll reply soon.</p>
-                  <form id="hs-contact-form">
-                    <div>
-                      <label for="hs-name">name</label>
-                      <input id="hs-name" name="name" type="text" placeholder="your name" required />
+                  <section class="sr-threecol" id="about-samuel" aria-label="About Samuel Robson">
+                    <div class="sr-threecol__inner">
+                      <article class="sr-card">
+                        <h2 class="sr-h">History</h2>
+                        <div class="sr-block">
+                          <h3 class="sr-org">Accenture</h3>
+                          <p class="sr-meta">Strategy / Design Systems · London</p>
+                          <p class="sr-text">
+                            Design-led consulting: research, service blueprints, ops playbooks.
+                          </p>
+                        </div>
+                        <div class="sr-block">
+                          <h3 class="sr-org">TikTok — Monetization</h3>
+                          <p class="sr-meta">Global Biz Systems · New York</p>
+                          <p class="sr-text">
+                            Experimentation, reporting, GTM tooling; scaled creator/revenue integrity.
+                          </p>
+                        </div>
+                      </article>
+
+                      <article class="sr-card">
+                        <h2 class="sr-h">Skills</h2>
+                        <ul class="sr-list">
+                          <li>Product research & prototyping</li>
+                          <li>Model behavior & attribution UX</li>
+                          <li>Human–AI interaction (voice/gesture)</li>
+                          <li>System design & metrics</li>
+                          <li>Storytelling & stakeholder alignment</li>
+                        </ul>
+                      </article>
+
+                      <article class="sr-card">
+                        <h2 class="sr-h">Contact</h2>
+                        <div class="sr-contact">
+                          <a href="mailto:samuelrobsonj@gmail.com">samuelrobsonj@gmail.com</a>
+                          <a href="https://www.linkedin.com/in/samuelrobson1/" target="_blank" rel="noopener">
+                            linkedin.com/in/samuelrobson1
+                          </a>
+                        </div>
+                        <div class="sr-now">
+                          <h3 class="sr-sub">Now / Next</h3>
+                          <p class="sr-text">
+                            Aiming to be an <strong>Interpretability PM</strong>—shipping tools that surface model internals for better decisions.
+                          </p>
+                        </div>
+                      </article>
                     </div>
-                    <div>
-                      <label for="hs-email">email</label>
-                      <input id="hs-email" name="email" type="email" placeholder="your@email.com" required />
-                    </div>
-                    <div>
-                      <label for="hs-message">message</label>
-                      <textarea id="hs-message" name="message" placeholder="how can I help?" required></textarea>
-                    </div>
-                    <div class="actions">
-                      <button type="submit">send</button>
-                      <span id="hs-status" class="muted" aria-live="polite"></span>
-                    </div>
-                  </form>
+                  </section>
                 </div>
               </article>
             </div>
@@ -159,9 +187,9 @@
     </main>
 
     <!-- Ensure bundle loads before hs-scroller to mount dynamic cards -->
-    <script src="dist/bundle.js?v=1755292920623"></script>
+    <script src="dist/bundle.js?v=1755293021974"></script>
     <!-- GSAP-powered horizontal scroller -->
-    <script src="hs-scroller-gsap.js?v=1755292920623"></script>
+    <script src="hs-scroller-gsap.js?v=1755293021974"></script>
     <!-- Gooey water droplets band -->
     <script src="gooey-water.js"></script>
     <!-- Title wiggle effect -->
