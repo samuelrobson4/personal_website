@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Contact – Samuel Robson</title>
-  <link rel="stylesheet" href="styles.css?v=1755290496835" />
+  <link rel="stylesheet" href="styles.css?v=1755290824620" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Baskervville:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
@@ -57,42 +57,44 @@
   <main class="main page">
     <h1>contact</h1>
     <p class="muted">Send me a message and I’ll reply soon.</p>
-    <form id="contact-form">
-      <div>
-        <label for="name">name</label>
-        <input id="name" name="name" type="text" placeholder="your name" required />
+    <div class="contact-columns">
+      <div class="contact-column">
+        <h2>history</h2>
+        <div>
+          <h3>TikTok</h3>
+          <p>2023 - 2025</p>
+          <p>Product Manager</p>
+        </div>
+        <div>
+          <h3>Accenture</h3>
+          <p>2020 - 2023</p>
+          <p>Product Manager</p>
+        </div>
       </div>
-      <div>
-        <label for="email">email</label>
-        <input id="email" name="email" type="email" placeholder="your@email.com" required />
+      
+      <div class="contact-column">
+        <h2>skills</h2>
+        <ul>
+          <li>Model Behavior Analysis</li>
+          <li>AI Interpretability</li>
+          <li>Product Strategy</li>
+          <li>Machine Learning</li>
+          <li>Data Analysis</li>
+          <li>User Research</li>
+          <li>Cross-functional Leadership</li>
+          <li>Technical Product Management</li>
+        </ul>
       </div>
-      <div>
-        <label for="message">message</label>
-        <textarea id="message" name="message" placeholder="how can I help?" required></textarea>
+      
+      <div class="contact-column">
+        <h2>contact</h2>
+        <p><a href="mailto:samuelrobsonj@gmail.com">samuelrobsonj@gmail.com</a></p>
+        <p><a href="https://www.linkedin.com/in/samuelrobson1/" target="_blank" rel="noopener">LinkedIn</a></p>
       </div>
-      <div class="actions">
-        <button type="submit">send</button>
-        <span id="status" class="muted" aria-live="polite"></span>
-      </div>
-    </form>
+    </div>
   </main>
-  <script src="dist/bundle.js?v=1755290496835"></script>
-  <script>
-    const form = document.getElementById('contact-form');
-    const statusEl = document.getElementById('status');
-    form?.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      statusEl.textContent = 'sending…';
-      const data = new FormData(form);
-      const params = new URLSearchParams();
-      for (const [k, v] of data.entries()) params.append(k, String(v));
-      // Use mailto as a no-backend fallback
-      const subject = encodeURIComponent('Portfolio contact');
-      const body = encodeURIComponent(`name: ${data.get('name')}\nemail: ${data.get('email')}\n\n${data.get('message')}`);
-      window.location.href = `mailto:L28094@gmail.com?subject=${subject}&body=${body}`;
-      statusEl.textContent = 'opening your email app…';
-    });
-  </script>
+  <script src="dist/bundle.js?v=1755290824620"></script>
+
   <script src="gooey-water.js"></script>
   <script src="title-wiggle.js"></script>
   <script src="site-loader.js"></script>
