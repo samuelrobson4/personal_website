@@ -29640,15 +29640,26 @@
           const halfH = size.h / 2;
           let px = body.position.x;
           let py = body.position.y;
-          if (px < halfW)
+          let bounced = false;
+          if (px < halfW) {
             px = halfW;
-          else if (px > b.width - halfW)
+            body.velocity.x = Math.abs(body.velocity.x) * 0.8;
+            bounced = true;
+          } else if (px > b.width - halfW) {
             px = b.width - halfW;
-          if (py < halfH)
+            body.velocity.x = -Math.abs(body.velocity.x) * 0.8;
+            bounced = true;
+          }
+          if (py < halfH) {
             py = halfH;
-          else if (py > b.height - halfH)
+            body.velocity.y = Math.abs(body.velocity.y) * 0.8;
+            bounced = true;
+          } else if (py > b.height - halfH) {
             py = b.height - halfH;
-          if (px !== body.position.x || py !== body.position.y) {
+            body.velocity.y = -Math.abs(body.velocity.y) * 0.8;
+            bounced = true;
+          }
+          if (bounced) {
             import_matter_js.Body.setPosition(body, { x: px, y: py });
           }
           node.style.transform = `translate3d(${body.position.x - size.w / 2}px, ${body.position.y - size.h / 2}px, 0) rotate(${body.angle}rad)`;
@@ -29680,9 +29691,32 @@
           import_matter_js.Bodies.rectangle(b.width + half, b.height / 2, thickness, b.height, opts)
         ]);
         for (const [id, body] of ref2.bodiesById.entries()) {
-          const x = Math.min(Math.max(body.position.x, 20), b.width - 20);
-          const y = Math.min(Math.max(body.position.y, 20), b.height - 20);
-          import_matter_js.Body.setPosition(body, { x, y });
+          const halfW = size.w / 2;
+          const halfH = size.h / 2;
+          let px = body.position.x;
+          let py = body.position.y;
+          let bounced = false;
+          if (px < halfW) {
+            px = halfW;
+            body.velocity.x = Math.abs(body.velocity.x) * 0.8;
+            bounced = true;
+          } else if (px > b.width - halfW) {
+            px = b.width - halfW;
+            body.velocity.x = -Math.abs(body.velocity.x) * 0.8;
+            bounced = true;
+          }
+          if (py < halfH) {
+            py = halfH;
+            body.velocity.y = Math.abs(body.velocity.y) * 0.8;
+            bounced = true;
+          } else if (py > b.height - halfH) {
+            py = b.height - halfH;
+            body.velocity.y = -Math.abs(body.velocity.y) * 0.8;
+            bounced = true;
+          }
+          if (bounced) {
+            import_matter_js.Body.setPosition(body, { x: px, y: py });
+          }
           const currentW = body.bounds.max.x - body.bounds.min.x;
           const currentH = body.bounds.max.y - body.bounds.min.y;
           const sx = size.w / currentW;

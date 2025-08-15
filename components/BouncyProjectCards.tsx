@@ -204,17 +204,49 @@ export const BouncyProjectCards = forwardRef<BouncyProjectCardsRef, Props>(funct
         const id = (node as HTMLElement).dataset.cardId!;
         const body = ref.bodiesById.get(id);
         if (!body) return;
+        
         // Cap velocities tighter
         body.velocity.x = Math.max(Math.min(body.velocity.x, 6), -6);
         body.velocity.y = Math.max(Math.min(body.velocity.y, 6), -6);
-        // Clamp bodies strictly inside bounds to avoid drifting off-page
-        const halfW = size.w / 2; const halfH = size.h / 2;
-        let px = body.position.x; let py = body.position.y;
-        if (px < halfW) px = halfW; else if (px > b.width - halfW) px = b.width - halfW;
-        if (py < halfH) py = halfH; else if (py > b.height - halfH) py = b.height - halfH;
-        if (px !== body.position.x || py !== body.position.y) {
+        
+        // Immediate boundary detection and bouncing
+        const halfW = size.w / 2;
+        const halfH = size.h / 2;
+        let px = body.position.x;
+        let py = body.position.y;
+        let bounced = false;
+        
+        // Check left boundary
+        if (px < halfW) {
+          px = halfW;
+          body.velocity.x = Math.abs(body.velocity.x) * 0.8; // Bounce back with some energy loss
+          bounced = true;
+        }
+        // Check right boundary
+        else if (px > b.width - halfW) {
+          px = b.width - halfW;
+          body.velocity.x = -Math.abs(body.velocity.x) * 0.8; // Bounce back with some energy loss
+          bounced = true;
+        }
+        
+        // Check top boundary
+        if (py < halfH) {
+          py = halfH;
+          body.velocity.y = Math.abs(body.velocity.y) * 0.8; // Bounce back with some energy loss
+          bounced = true;
+        }
+        // Check bottom boundary
+        else if (py > b.height - halfH) {
+          py = b.height - halfH;
+          body.velocity.y = -Math.abs(body.velocity.y) * 0.8; // Bounce back with some energy loss
+          bounced = true;
+        }
+        
+        // Apply position correction immediately if bounced
+        if (bounced) {
           Body.setPosition(body, { x: px, y: py });
         }
+        
         (node as HTMLElement).style.transform = `translate3d(${body.position.x - size.w / 2}px, ${body.position.y - size.h / 2}px, 0) rotate(${body.angle}rad)`;
       });
     }
@@ -247,9 +279,37 @@ export const BouncyProjectCards = forwardRef<BouncyProjectCardsRef, Props>(funct
       ]);
       // Clamp bodies inside and update body sizes if CSS size changed
       for (const [id, body] of ref.bodiesById.entries()) {
-        const x = Math.min(Math.max(body.position.x, 20), b.width - 20);
-        const y = Math.min(Math.max(body.position.y, 20), b.height - 20);
-        Body.setPosition(body, { x, y });
+        const halfW = size.w / 2;
+        const halfH = size.h / 2;
+        let px = body.position.x;
+        let py = body.position.y;
+        let bounced = false;
+        
+        // Check boundaries with immediate bouncing
+        if (px < halfW) {
+          px = halfW;
+          body.velocity.x = Math.abs(body.velocity.x) * 0.8;
+          bounced = true;
+        } else if (px > b.width - halfW) {
+          px = b.width - halfW;
+          body.velocity.x = -Math.abs(body.velocity.x) * 0.8;
+          bounced = true;
+        }
+        
+        if (py < halfH) {
+          py = halfH;
+          body.velocity.y = Math.abs(body.velocity.y) * 0.8;
+          bounced = true;
+        } else if (py > b.height - halfH) {
+          py = b.height - halfH;
+          body.velocity.y = -Math.abs(body.velocity.y) * 0.8;
+          bounced = true;
+        }
+        
+        if (bounced) {
+          Body.setPosition(body, { x: px, y: py });
+        }
+        
         // Reset inertia when resizing approximation (cheap): set vertices via scale
         const currentW = body.bounds.max.x - body.bounds.min.x;
         const currentH = body.bounds.max.y - body.bounds.min.y;

@@ -864,17 +864,36 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
 }
 
 /* Full-bleed utility to escape centered containers */
-.full-bleed { width: 100vw; margin-left: calc(50% - 50vw); }
+.full-bleed {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  /* Mobile: scales up but stays compact */
+  height: clamp(200px, 45vw, 300px);
+}
+
+/* Tablet */
+@media (min-width: 768px) {
+  .full-bleed {
+    height: clamp(320px, 35vw, 400px);
+  }
+}
+
+/* Desktop */
+@media (min-width: 1200px) {
+  .full-bleed {
+    height: clamp(420px, 30vw, 500px);
+  }
+}
 
 /* Responsive sizes for bouncy cards */
 @media (max-width: 1024px) {
-  .bouncy-container { --card-w: 280px; --card-h: 128px; }
+  .bouncy-container { --card-w: 250px; --card-h: 110px; }
   .bouncy-title { font-size: 22px; }
 }
 @media (max-width: 768px) {
   .bouncy-container { 
     --card-w: 180px; 
-    --card-h: 70px; 
+    --card-h: 90px; 
     margin: 0 1rem;
     width: calc(100vw - 2rem);
     max-width: 100%;
@@ -885,7 +904,7 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
 @media (max-width: 480px) {
   .bouncy-container { 
     --card-w: 140px; 
-    --card-h: 50px; 
+    --card-h: 70px; 
     margin: 0 0.5rem;
     width: calc(100vw - 1rem);
   }
