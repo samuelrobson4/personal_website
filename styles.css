@@ -1259,7 +1259,7 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
 .sr-h{
   font-family:"Baskervville", Georgia, serif;
   font-weight:400;
-  font-size:clamp(1.4rem,3vw,1.75rem);
+  font-size:clamp(2rem,6vw,3rem);
   line-height:1.2;
   margin:0 0 .75rem;
   letter-spacing:0.005em;
