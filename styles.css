@@ -376,16 +376,6 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
     line-height: 1.3;
   }
   
-  /* Static page headings */
-  .page h1 {
-    font-size: 17px;
-    line-height: 1.6;
-  }
-  
-  .page p {
-    font-size: 10px;
-    line-height: 1.6;
-  }
 }
 .landing .hero-title a { color: #000; text-decoration: none; }
 .landing .hero-title a:hover { color: var(--blue); text-decoration: none; }
