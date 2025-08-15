@@ -1093,11 +1093,11 @@
             var dispatcher = resolveDispatcher();
             return dispatcher.useReducer(reducer, initialArg, init);
           }
-          function useRef3(initialValue) {
+          function useRef2(initialValue) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useRef(initialValue);
           }
-          function useEffect3(create, deps) {
+          function useEffect2(create, deps) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useEffect(create, deps);
           }
@@ -1105,7 +1105,7 @@
             var dispatcher = resolveDispatcher();
             return dispatcher.useInsertionEffect(create, deps);
           }
-          function useLayoutEffect3(create, deps) {
+          function useLayoutEffect2(create, deps) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useLayoutEffect(create, deps);
           }
@@ -1880,14 +1880,14 @@
           exports.useContext = useContext;
           exports.useDebugValue = useDebugValue;
           exports.useDeferredValue = useDeferredValue;
-          exports.useEffect = useEffect3;
+          exports.useEffect = useEffect2;
           exports.useId = useId;
           exports.useImperativeHandle = useImperativeHandle2;
           exports.useInsertionEffect = useInsertionEffect;
-          exports.useLayoutEffect = useLayoutEffect3;
+          exports.useLayoutEffect = useLayoutEffect2;
           exports.useMemo = useMemo;
           exports.useReducer = useReducer;
-          exports.useRef = useRef3;
+          exports.useRef = useRef2;
           exports.useState = useState;
           exports.useSyncExternalStore = useSyncExternalStore;
           exports.useTransition = useTransition;
@@ -2384,9 +2384,9 @@
           if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart === "function") {
             __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(new Error());
           }
-          var React3 = require_react();
+          var React2 = require_react();
           var Scheduler = require_scheduler();
-          var ReactSharedInternals = React3.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+          var ReactSharedInternals = React2.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
           var suppressWarning = false;
           function setSuppressWarning(newSuppressWarning) {
             {
@@ -3991,7 +3991,7 @@
             {
               if (props.value == null) {
                 if (typeof props.children === "object" && props.children !== null) {
-                  React3.Children.forEach(props.children, function(child) {
+                  React2.Children.forEach(props.children, function(child) {
                     if (child == null) {
                       return;
                     }
@@ -24284,8 +24284,8 @@
             /* 4 */
             /***/
             function(module2, exports2, __webpack_require__) {
-              var Body3 = {};
-              module2.exports = Body3;
+              var Body2 = {};
+              module2.exports = Body2;
               var Vertices = __webpack_require__(3);
               var Vector = __webpack_require__(2);
               var Sleeping = __webpack_require__(7);
@@ -24293,13 +24293,13 @@
               var Bounds = __webpack_require__(1);
               var Axes = __webpack_require__(11);
               (function() {
-                Body3._timeCorrection = true;
-                Body3._inertiaScale = 4;
-                Body3._nextCollidingGroupId = 1;
-                Body3._nextNonCollidingGroupId = -1;
-                Body3._nextCategory = 1;
-                Body3._baseDelta = 1e3 / 60;
-                Body3.create = function(options) {
+                Body2._timeCorrection = true;
+                Body2._inertiaScale = 4;
+                Body2._nextCollidingGroupId = 1;
+                Body2._nextNonCollidingGroupId = -1;
+                Body2._nextCategory = 1;
+                Body2._baseDelta = 1e3 / 60;
+                Body2.create = function(options) {
                   var defaults = {
                     id: Common.nextId(),
                     type: "body",
@@ -24366,18 +24366,18 @@
                   _initProperties(body, options);
                   return body;
                 };
-                Body3.nextGroup = function(isNonColliding) {
+                Body2.nextGroup = function(isNonColliding) {
                   if (isNonColliding)
-                    return Body3._nextNonCollidingGroupId--;
-                  return Body3._nextCollidingGroupId++;
+                    return Body2._nextNonCollidingGroupId--;
+                  return Body2._nextCollidingGroupId++;
                 };
-                Body3.nextCategory = function() {
-                  Body3._nextCategory = Body3._nextCategory << 1;
-                  return Body3._nextCategory;
+                Body2.nextCategory = function() {
+                  Body2._nextCategory = Body2._nextCategory << 1;
+                  return Body2._nextCategory;
                 };
                 var _initProperties = function(body, options) {
                   options = options || {};
-                  Body3.set(body, {
+                  Body2.set(body, {
                     bounds: body.bounds || Bounds.create(body.vertices),
                     positionPrev: body.positionPrev || Vector.clone(body.position),
                     anglePrev: body.anglePrev || body.angle,
@@ -24390,7 +24390,7 @@
                   Vertices.rotate(body.vertices, body.angle, body.position);
                   Axes.rotate(body.axes, body.angle);
                   Bounds.update(body.bounds, body.vertices, body.velocity);
-                  Body3.set(body, {
+                  Body2.set(body, {
                     axes: options.axes || body.axes,
                     area: options.area || body.area,
                     mass: options.mass || body.mass,
@@ -24403,7 +24403,7 @@
                   body.render.sprite.xOffset += -(body.bounds.min.x - body.position.x) / (body.bounds.max.x - body.bounds.min.x);
                   body.render.sprite.yOffset += -(body.bounds.min.y - body.position.y) / (body.bounds.max.y - body.bounds.min.y);
                 };
-                Body3.set = function(body, settings, value) {
+                Body2.set = function(body, settings, value) {
                   var property;
                   if (typeof settings === "string") {
                     property = settings;
@@ -24416,53 +24416,53 @@
                     value = settings[property];
                     switch (property) {
                       case "isStatic":
-                        Body3.setStatic(body, value);
+                        Body2.setStatic(body, value);
                         break;
                       case "isSleeping":
                         Sleeping.set(body, value);
                         break;
                       case "mass":
-                        Body3.setMass(body, value);
+                        Body2.setMass(body, value);
                         break;
                       case "density":
-                        Body3.setDensity(body, value);
+                        Body2.setDensity(body, value);
                         break;
                       case "inertia":
-                        Body3.setInertia(body, value);
+                        Body2.setInertia(body, value);
                         break;
                       case "vertices":
-                        Body3.setVertices(body, value);
+                        Body2.setVertices(body, value);
                         break;
                       case "position":
-                        Body3.setPosition(body, value);
+                        Body2.setPosition(body, value);
                         break;
                       case "angle":
-                        Body3.setAngle(body, value);
+                        Body2.setAngle(body, value);
                         break;
                       case "velocity":
-                        Body3.setVelocity(body, value);
+                        Body2.setVelocity(body, value);
                         break;
                       case "angularVelocity":
-                        Body3.setAngularVelocity(body, value);
+                        Body2.setAngularVelocity(body, value);
                         break;
                       case "speed":
-                        Body3.setSpeed(body, value);
+                        Body2.setSpeed(body, value);
                         break;
                       case "angularSpeed":
-                        Body3.setAngularSpeed(body, value);
+                        Body2.setAngularSpeed(body, value);
                         break;
                       case "parts":
-                        Body3.setParts(body, value);
+                        Body2.setParts(body, value);
                         break;
                       case "centre":
-                        Body3.setCentre(body, value);
+                        Body2.setCentre(body, value);
                         break;
                       default:
                         body[property] = value;
                     }
                   }
                 };
-                Body3.setStatic = function(body, isStatic) {
+                Body2.setStatic = function(body, isStatic) {
                   for (var i = 0; i < body.parts.length; i++) {
                     var part = body.parts[i];
                     part.isStatic = isStatic;
@@ -24499,7 +24499,7 @@
                     }
                   }
                 };
-                Body3.setMass = function(body, mass) {
+                Body2.setMass = function(body, mass) {
                   var moment = body.inertia / (body.mass / 6);
                   body.inertia = moment * (mass / 6);
                   body.inverseInertia = 1 / body.inertia;
@@ -24507,15 +24507,15 @@
                   body.inverseMass = 1 / body.mass;
                   body.density = body.mass / body.area;
                 };
-                Body3.setDensity = function(body, density) {
-                  Body3.setMass(body, density * body.area);
+                Body2.setDensity = function(body, density) {
+                  Body2.setMass(body, density * body.area);
                   body.density = density;
                 };
-                Body3.setInertia = function(body, inertia) {
+                Body2.setInertia = function(body, inertia) {
                   body.inertia = inertia;
                   body.inverseInertia = 1 / body.inertia;
                 };
-                Body3.setVertices = function(body, vertices) {
+                Body2.setVertices = function(body, vertices) {
                   if (vertices[0].body === body) {
                     body.vertices = vertices;
                   } else {
@@ -24523,14 +24523,14 @@
                   }
                   body.axes = Axes.fromVertices(body.vertices);
                   body.area = Vertices.area(body.vertices);
-                  Body3.setMass(body, body.density * body.area);
+                  Body2.setMass(body, body.density * body.area);
                   var centre = Vertices.centre(body.vertices);
                   Vertices.translate(body.vertices, centre, -1);
-                  Body3.setInertia(body, Body3._inertiaScale * Vertices.inertia(body.vertices, body.mass));
+                  Body2.setInertia(body, Body2._inertiaScale * Vertices.inertia(body.vertices, body.mass));
                   Vertices.translate(body.vertices, body.position);
                   Bounds.update(body.bounds, body.vertices, body.velocity);
                 };
-                Body3.setParts = function(body, parts, autoHull) {
+                Body2.setParts = function(body, parts, autoHull) {
                   var i;
                   parts = parts.slice(0);
                   body.parts.length = 0;
@@ -24553,21 +24553,21 @@
                     }
                     Vertices.clockwiseSort(vertices);
                     var hull = Vertices.hull(vertices), hullCentre = Vertices.centre(hull);
-                    Body3.setVertices(body, hull);
+                    Body2.setVertices(body, hull);
                     Vertices.translate(body.vertices, hullCentre);
                   }
-                  var total = Body3._totalProperties(body);
+                  var total = Body2._totalProperties(body);
                   body.area = total.area;
                   body.parent = body;
                   body.position.x = total.centre.x;
                   body.position.y = total.centre.y;
                   body.positionPrev.x = total.centre.x;
                   body.positionPrev.y = total.centre.y;
-                  Body3.setMass(body, total.mass);
-                  Body3.setInertia(body, total.inertia);
-                  Body3.setPosition(body, total.centre);
+                  Body2.setMass(body, total.mass);
+                  Body2.setInertia(body, total.inertia);
+                  Body2.setPosition(body, total.centre);
                 };
-                Body3.setCentre = function(body, centre, relative) {
+                Body2.setCentre = function(body, centre, relative) {
                   if (!relative) {
                     body.positionPrev.x = centre.x - (body.position.x - body.positionPrev.x);
                     body.positionPrev.y = centre.y - (body.position.y - body.positionPrev.y);
@@ -24580,7 +24580,7 @@
                     body.position.y += centre.y;
                   }
                 };
-                Body3.setPosition = function(body, position, updateVelocity) {
+                Body2.setPosition = function(body, position, updateVelocity) {
                   var delta = Vector.sub(position, body.position);
                   if (updateVelocity) {
                     body.positionPrev.x = body.position.x;
@@ -24600,7 +24600,7 @@
                     Bounds.update(part.bounds, part.vertices, body.velocity);
                   }
                 };
-                Body3.setAngle = function(body, angle, updateVelocity) {
+                Body2.setAngle = function(body, angle, updateVelocity) {
                   var delta = angle - body.angle;
                   if (updateVelocity) {
                     body.anglePrev = body.angle;
@@ -24620,58 +24620,58 @@
                     }
                   }
                 };
-                Body3.setVelocity = function(body, velocity) {
-                  var timeScale = body.deltaTime / Body3._baseDelta;
+                Body2.setVelocity = function(body, velocity) {
+                  var timeScale = body.deltaTime / Body2._baseDelta;
                   body.positionPrev.x = body.position.x - velocity.x * timeScale;
                   body.positionPrev.y = body.position.y - velocity.y * timeScale;
                   body.velocity.x = (body.position.x - body.positionPrev.x) / timeScale;
                   body.velocity.y = (body.position.y - body.positionPrev.y) / timeScale;
                   body.speed = Vector.magnitude(body.velocity);
                 };
-                Body3.getVelocity = function(body) {
-                  var timeScale = Body3._baseDelta / body.deltaTime;
+                Body2.getVelocity = function(body) {
+                  var timeScale = Body2._baseDelta / body.deltaTime;
                   return {
                     x: (body.position.x - body.positionPrev.x) * timeScale,
                     y: (body.position.y - body.positionPrev.y) * timeScale
                   };
                 };
-                Body3.getSpeed = function(body) {
-                  return Vector.magnitude(Body3.getVelocity(body));
+                Body2.getSpeed = function(body) {
+                  return Vector.magnitude(Body2.getVelocity(body));
                 };
-                Body3.setSpeed = function(body, speed) {
-                  Body3.setVelocity(body, Vector.mult(Vector.normalise(Body3.getVelocity(body)), speed));
+                Body2.setSpeed = function(body, speed) {
+                  Body2.setVelocity(body, Vector.mult(Vector.normalise(Body2.getVelocity(body)), speed));
                 };
-                Body3.setAngularVelocity = function(body, velocity) {
-                  var timeScale = body.deltaTime / Body3._baseDelta;
+                Body2.setAngularVelocity = function(body, velocity) {
+                  var timeScale = body.deltaTime / Body2._baseDelta;
                   body.anglePrev = body.angle - velocity * timeScale;
                   body.angularVelocity = (body.angle - body.anglePrev) / timeScale;
                   body.angularSpeed = Math.abs(body.angularVelocity);
                 };
-                Body3.getAngularVelocity = function(body) {
-                  return (body.angle - body.anglePrev) * Body3._baseDelta / body.deltaTime;
+                Body2.getAngularVelocity = function(body) {
+                  return (body.angle - body.anglePrev) * Body2._baseDelta / body.deltaTime;
                 };
-                Body3.getAngularSpeed = function(body) {
-                  return Math.abs(Body3.getAngularVelocity(body));
+                Body2.getAngularSpeed = function(body) {
+                  return Math.abs(Body2.getAngularVelocity(body));
                 };
-                Body3.setAngularSpeed = function(body, speed) {
-                  Body3.setAngularVelocity(body, Common.sign(Body3.getAngularVelocity(body)) * speed);
+                Body2.setAngularSpeed = function(body, speed) {
+                  Body2.setAngularVelocity(body, Common.sign(Body2.getAngularVelocity(body)) * speed);
                 };
-                Body3.translate = function(body, translation, updateVelocity) {
-                  Body3.setPosition(body, Vector.add(body.position, translation), updateVelocity);
+                Body2.translate = function(body, translation, updateVelocity) {
+                  Body2.setPosition(body, Vector.add(body.position, translation), updateVelocity);
                 };
-                Body3.rotate = function(body, rotation, point, updateVelocity) {
+                Body2.rotate = function(body, rotation, point, updateVelocity) {
                   if (!point) {
-                    Body3.setAngle(body, body.angle + rotation, updateVelocity);
+                    Body2.setAngle(body, body.angle + rotation, updateVelocity);
                   } else {
                     var cos = Math.cos(rotation), sin = Math.sin(rotation), dx = body.position.x - point.x, dy = body.position.y - point.y;
-                    Body3.setPosition(body, {
+                    Body2.setPosition(body, {
                       x: point.x + (dx * cos - dy * sin),
                       y: point.y + (dx * sin + dy * cos)
                     }, updateVelocity);
-                    Body3.setAngle(body, body.angle + rotation, updateVelocity);
+                    Body2.setAngle(body, body.angle + rotation, updateVelocity);
                   }
                 };
-                Body3.scale = function(body, scaleX, scaleY, point) {
+                Body2.scale = function(body, scaleX, scaleY, point) {
                   var totalArea = 0, totalInertia = 0;
                   point = point || body.position;
                   for (var i = 0; i < body.parts.length; i++) {
@@ -24679,9 +24679,9 @@
                     Vertices.scale(part.vertices, scaleX, scaleY, point);
                     part.axes = Axes.fromVertices(part.vertices);
                     part.area = Vertices.area(part.vertices);
-                    Body3.setMass(part, body.density * part.area);
+                    Body2.setMass(part, body.density * part.area);
                     Vertices.translate(part.vertices, { x: -part.position.x, y: -part.position.y });
-                    Body3.setInertia(part, Body3._inertiaScale * Vertices.inertia(part.vertices, part.mass));
+                    Body2.setInertia(part, Body2._inertiaScale * Vertices.inertia(part.vertices, part.mass));
                     Vertices.translate(part.vertices, { x: part.position.x, y: part.position.y });
                     if (i > 0) {
                       totalArea += part.area;
@@ -24694,8 +24694,8 @@
                   if (body.parts.length > 1) {
                     body.area = totalArea;
                     if (!body.isStatic) {
-                      Body3.setMass(body, body.density * totalArea);
-                      Body3.setInertia(body, totalInertia);
+                      Body2.setMass(body, body.density * totalArea);
+                      Body2.setInertia(body, totalInertia);
                     }
                   }
                   if (body.circleRadius) {
@@ -24706,9 +24706,9 @@
                     }
                   }
                 };
-                Body3.update = function(body, deltaTime) {
+                Body2.update = function(body, deltaTime) {
                   deltaTime = (typeof deltaTime !== "undefined" ? deltaTime : 1e3 / 60) * body.timeScale;
-                  var deltaTimeSquared = deltaTime * deltaTime, correction = Body3._timeCorrection ? deltaTime / (body.deltaTime || deltaTime) : 1;
+                  var deltaTimeSquared = deltaTime * deltaTime, correction = Body2._timeCorrection ? deltaTime / (body.deltaTime || deltaTime) : 1;
                   var frictionAir = 1 - body.frictionAir * (deltaTime / Common._baseDelta), velocityPrevX = (body.position.x - body.positionPrev.x) * correction, velocityPrevY = (body.position.y - body.positionPrev.y) * correction;
                   body.velocity.x = velocityPrevX * frictionAir + body.force.x / body.mass * deltaTimeSquared;
                   body.velocity.y = velocityPrevY * frictionAir + body.force.y / body.mass * deltaTimeSquared;
@@ -24737,21 +24737,21 @@
                     Bounds.update(part.bounds, part.vertices, body.velocity);
                   }
                 };
-                Body3.updateVelocities = function(body) {
-                  var timeScale = Body3._baseDelta / body.deltaTime, bodyVelocity = body.velocity;
+                Body2.updateVelocities = function(body) {
+                  var timeScale = Body2._baseDelta / body.deltaTime, bodyVelocity = body.velocity;
                   bodyVelocity.x = (body.position.x - body.positionPrev.x) * timeScale;
                   bodyVelocity.y = (body.position.y - body.positionPrev.y) * timeScale;
                   body.speed = Math.sqrt(bodyVelocity.x * bodyVelocity.x + bodyVelocity.y * bodyVelocity.y);
                   body.angularVelocity = (body.angle - body.anglePrev) * timeScale;
                   body.angularSpeed = Math.abs(body.angularVelocity);
                 };
-                Body3.applyForce = function(body, position, force) {
+                Body2.applyForce = function(body, position, force) {
                   var offset = { x: position.x - body.position.x, y: position.y - body.position.y };
                   body.force.x += force.x;
                   body.force.y += force.y;
                   body.torque += offset.x * force.y - offset.y * force.x;
                 };
-                Body3._totalProperties = function(body) {
+                Body2._totalProperties = function(body) {
                   var properties = {
                     mass: 0,
                     area: 0,
@@ -24773,11 +24773,11 @@
             /* 5 */
             /***/
             function(module2, exports2, __webpack_require__) {
-              var Events3 = {};
-              module2.exports = Events3;
+              var Events2 = {};
+              module2.exports = Events2;
               var Common = __webpack_require__(0);
               (function() {
-                Events3.on = function(object, eventNames, callback) {
+                Events2.on = function(object, eventNames, callback) {
                   var names = eventNames.split(" "), name;
                   for (var i = 0; i < names.length; i++) {
                     name = names[i];
@@ -24787,7 +24787,7 @@
                   }
                   return callback;
                 };
-                Events3.off = function(object, eventNames, callback) {
+                Events2.off = function(object, eventNames, callback) {
                   if (!eventNames) {
                     object.events = {};
                     return;
@@ -24808,7 +24808,7 @@
                     object.events[names[i]] = newCallbacks;
                   }
                 };
-                Events3.trigger = function(object, eventNames, event) {
+                Events2.trigger = function(object, eventNames, event) {
                   var names, name, callbacks, eventClone;
                   var events = object.events;
                   if (events && Common.keys(events).length > 0) {
@@ -24834,14 +24834,14 @@
             /* 6 */
             /***/
             function(module2, exports2, __webpack_require__) {
-              var Composite3 = {};
-              module2.exports = Composite3;
-              var Events3 = __webpack_require__(5);
+              var Composite2 = {};
+              module2.exports = Composite2;
+              var Events2 = __webpack_require__(5);
               var Common = __webpack_require__(0);
               var Bounds = __webpack_require__(1);
-              var Body3 = __webpack_require__(4);
+              var Body2 = __webpack_require__(4);
               (function() {
-                Composite3.create = function(options) {
+                Composite2.create = function(options) {
                   return Common.extend({
                     id: Common.nextId(),
                     type: "composite",
@@ -24859,7 +24859,7 @@
                     }
                   }, options);
                 };
-                Composite3.setModified = function(composite, isModified, updateParents, updateChildren) {
+                Composite2.setModified = function(composite, isModified, updateParents, updateChildren) {
                   composite.isModified = isModified;
                   if (isModified && composite.cache) {
                     composite.cache.allBodies = null;
@@ -24867,18 +24867,18 @@
                     composite.cache.allComposites = null;
                   }
                   if (updateParents && composite.parent) {
-                    Composite3.setModified(composite.parent, isModified, updateParents, updateChildren);
+                    Composite2.setModified(composite.parent, isModified, updateParents, updateChildren);
                   }
                   if (updateChildren) {
                     for (var i = 0; i < composite.composites.length; i++) {
                       var childComposite = composite.composites[i];
-                      Composite3.setModified(childComposite, isModified, updateParents, updateChildren);
+                      Composite2.setModified(childComposite, isModified, updateParents, updateChildren);
                     }
                   }
                 };
-                Composite3.add = function(composite, object) {
+                Composite2.add = function(composite, object) {
                   var objects = [].concat(object);
-                  Events3.trigger(composite, "beforeAdd", { object });
+                  Events2.trigger(composite, "beforeAdd", { object });
                   for (var i = 0; i < objects.length; i++) {
                     var obj = objects[i];
                     switch (obj.type) {
@@ -24887,116 +24887,116 @@
                           Common.warn("Composite.add: skipped adding a compound body part (you must add its parent instead)");
                           break;
                         }
-                        Composite3.addBody(composite, obj);
+                        Composite2.addBody(composite, obj);
                         break;
                       case "constraint":
-                        Composite3.addConstraint(composite, obj);
+                        Composite2.addConstraint(composite, obj);
                         break;
                       case "composite":
-                        Composite3.addComposite(composite, obj);
+                        Composite2.addComposite(composite, obj);
                         break;
                       case "mouseConstraint":
-                        Composite3.addConstraint(composite, obj.constraint);
+                        Composite2.addConstraint(composite, obj.constraint);
                         break;
                     }
                   }
-                  Events3.trigger(composite, "afterAdd", { object });
+                  Events2.trigger(composite, "afterAdd", { object });
                   return composite;
                 };
-                Composite3.remove = function(composite, object, deep) {
+                Composite2.remove = function(composite, object, deep) {
                   var objects = [].concat(object);
-                  Events3.trigger(composite, "beforeRemove", { object });
+                  Events2.trigger(composite, "beforeRemove", { object });
                   for (var i = 0; i < objects.length; i++) {
                     var obj = objects[i];
                     switch (obj.type) {
                       case "body":
-                        Composite3.removeBody(composite, obj, deep);
+                        Composite2.removeBody(composite, obj, deep);
                         break;
                       case "constraint":
-                        Composite3.removeConstraint(composite, obj, deep);
+                        Composite2.removeConstraint(composite, obj, deep);
                         break;
                       case "composite":
-                        Composite3.removeComposite(composite, obj, deep);
+                        Composite2.removeComposite(composite, obj, deep);
                         break;
                       case "mouseConstraint":
-                        Composite3.removeConstraint(composite, obj.constraint);
+                        Composite2.removeConstraint(composite, obj.constraint);
                         break;
                     }
                   }
-                  Events3.trigger(composite, "afterRemove", { object });
+                  Events2.trigger(composite, "afterRemove", { object });
                   return composite;
                 };
-                Composite3.addComposite = function(compositeA, compositeB) {
+                Composite2.addComposite = function(compositeA, compositeB) {
                   compositeA.composites.push(compositeB);
                   compositeB.parent = compositeA;
-                  Composite3.setModified(compositeA, true, true, false);
+                  Composite2.setModified(compositeA, true, true, false);
                   return compositeA;
                 };
-                Composite3.removeComposite = function(compositeA, compositeB, deep) {
+                Composite2.removeComposite = function(compositeA, compositeB, deep) {
                   var position = Common.indexOf(compositeA.composites, compositeB);
                   if (position !== -1) {
-                    Composite3.removeCompositeAt(compositeA, position);
+                    Composite2.removeCompositeAt(compositeA, position);
                   }
                   if (deep) {
                     for (var i = 0; i < compositeA.composites.length; i++) {
-                      Composite3.removeComposite(compositeA.composites[i], compositeB, true);
+                      Composite2.removeComposite(compositeA.composites[i], compositeB, true);
                     }
                   }
                   return compositeA;
                 };
-                Composite3.removeCompositeAt = function(composite, position) {
+                Composite2.removeCompositeAt = function(composite, position) {
                   composite.composites.splice(position, 1);
-                  Composite3.setModified(composite, true, true, false);
+                  Composite2.setModified(composite, true, true, false);
                   return composite;
                 };
-                Composite3.addBody = function(composite, body) {
+                Composite2.addBody = function(composite, body) {
                   composite.bodies.push(body);
-                  Composite3.setModified(composite, true, true, false);
+                  Composite2.setModified(composite, true, true, false);
                   return composite;
                 };
-                Composite3.removeBody = function(composite, body, deep) {
+                Composite2.removeBody = function(composite, body, deep) {
                   var position = Common.indexOf(composite.bodies, body);
                   if (position !== -1) {
-                    Composite3.removeBodyAt(composite, position);
+                    Composite2.removeBodyAt(composite, position);
                   }
                   if (deep) {
                     for (var i = 0; i < composite.composites.length; i++) {
-                      Composite3.removeBody(composite.composites[i], body, true);
+                      Composite2.removeBody(composite.composites[i], body, true);
                     }
                   }
                   return composite;
                 };
-                Composite3.removeBodyAt = function(composite, position) {
+                Composite2.removeBodyAt = function(composite, position) {
                   composite.bodies.splice(position, 1);
-                  Composite3.setModified(composite, true, true, false);
+                  Composite2.setModified(composite, true, true, false);
                   return composite;
                 };
-                Composite3.addConstraint = function(composite, constraint) {
+                Composite2.addConstraint = function(composite, constraint) {
                   composite.constraints.push(constraint);
-                  Composite3.setModified(composite, true, true, false);
+                  Composite2.setModified(composite, true, true, false);
                   return composite;
                 };
-                Composite3.removeConstraint = function(composite, constraint, deep) {
+                Composite2.removeConstraint = function(composite, constraint, deep) {
                   var position = Common.indexOf(composite.constraints, constraint);
                   if (position !== -1) {
-                    Composite3.removeConstraintAt(composite, position);
+                    Composite2.removeConstraintAt(composite, position);
                   }
                   if (deep) {
                     for (var i = 0; i < composite.composites.length; i++) {
-                      Composite3.removeConstraint(composite.composites[i], constraint, true);
+                      Composite2.removeConstraint(composite.composites[i], constraint, true);
                     }
                   }
                   return composite;
                 };
-                Composite3.removeConstraintAt = function(composite, position) {
+                Composite2.removeConstraintAt = function(composite, position) {
                   composite.constraints.splice(position, 1);
-                  Composite3.setModified(composite, true, true, false);
+                  Composite2.setModified(composite, true, true, false);
                   return composite;
                 };
-                Composite3.clear = function(composite, keepStatic, deep) {
+                Composite2.clear = function(composite, keepStatic, deep) {
                   if (deep) {
                     for (var i = 0; i < composite.composites.length; i++) {
-                      Composite3.clear(composite.composites[i], keepStatic, true);
+                      Composite2.clear(composite.composites[i], keepStatic, true);
                     }
                   }
                   if (keepStatic) {
@@ -25008,56 +25008,56 @@
                   }
                   composite.constraints.length = 0;
                   composite.composites.length = 0;
-                  Composite3.setModified(composite, true, true, false);
+                  Composite2.setModified(composite, true, true, false);
                   return composite;
                 };
-                Composite3.allBodies = function(composite) {
+                Composite2.allBodies = function(composite) {
                   if (composite.cache && composite.cache.allBodies) {
                     return composite.cache.allBodies;
                   }
                   var bodies = [].concat(composite.bodies);
                   for (var i = 0; i < composite.composites.length; i++)
-                    bodies = bodies.concat(Composite3.allBodies(composite.composites[i]));
+                    bodies = bodies.concat(Composite2.allBodies(composite.composites[i]));
                   if (composite.cache) {
                     composite.cache.allBodies = bodies;
                   }
                   return bodies;
                 };
-                Composite3.allConstraints = function(composite) {
+                Composite2.allConstraints = function(composite) {
                   if (composite.cache && composite.cache.allConstraints) {
                     return composite.cache.allConstraints;
                   }
                   var constraints = [].concat(composite.constraints);
                   for (var i = 0; i < composite.composites.length; i++)
-                    constraints = constraints.concat(Composite3.allConstraints(composite.composites[i]));
+                    constraints = constraints.concat(Composite2.allConstraints(composite.composites[i]));
                   if (composite.cache) {
                     composite.cache.allConstraints = constraints;
                   }
                   return constraints;
                 };
-                Composite3.allComposites = function(composite) {
+                Composite2.allComposites = function(composite) {
                   if (composite.cache && composite.cache.allComposites) {
                     return composite.cache.allComposites;
                   }
                   var composites = [].concat(composite.composites);
                   for (var i = 0; i < composite.composites.length; i++)
-                    composites = composites.concat(Composite3.allComposites(composite.composites[i]));
+                    composites = composites.concat(Composite2.allComposites(composite.composites[i]));
                   if (composite.cache) {
                     composite.cache.allComposites = composites;
                   }
                   return composites;
                 };
-                Composite3.get = function(composite, id, type) {
+                Composite2.get = function(composite, id, type) {
                   var objects, object;
                   switch (type) {
                     case "body":
-                      objects = Composite3.allBodies(composite);
+                      objects = Composite2.allBodies(composite);
                       break;
                     case "constraint":
-                      objects = Composite3.allConstraints(composite);
+                      objects = Composite2.allConstraints(composite);
                       break;
                     case "composite":
-                      objects = Composite3.allComposites(composite).concat(composite);
+                      objects = Composite2.allComposites(composite).concat(composite);
                       break;
                   }
                   if (!objects)
@@ -25067,51 +25067,51 @@
                   });
                   return object.length === 0 ? null : object[0];
                 };
-                Composite3.move = function(compositeA, objects, compositeB) {
-                  Composite3.remove(compositeA, objects);
-                  Composite3.add(compositeB, objects);
+                Composite2.move = function(compositeA, objects, compositeB) {
+                  Composite2.remove(compositeA, objects);
+                  Composite2.add(compositeB, objects);
                   return compositeA;
                 };
-                Composite3.rebase = function(composite) {
-                  var objects = Composite3.allBodies(composite).concat(Composite3.allConstraints(composite)).concat(Composite3.allComposites(composite));
+                Composite2.rebase = function(composite) {
+                  var objects = Composite2.allBodies(composite).concat(Composite2.allConstraints(composite)).concat(Composite2.allComposites(composite));
                   for (var i = 0; i < objects.length; i++) {
                     objects[i].id = Common.nextId();
                   }
                   return composite;
                 };
-                Composite3.translate = function(composite, translation, recursive) {
-                  var bodies = recursive ? Composite3.allBodies(composite) : composite.bodies;
+                Composite2.translate = function(composite, translation, recursive) {
+                  var bodies = recursive ? Composite2.allBodies(composite) : composite.bodies;
                   for (var i = 0; i < bodies.length; i++) {
-                    Body3.translate(bodies[i], translation);
+                    Body2.translate(bodies[i], translation);
                   }
                   return composite;
                 };
-                Composite3.rotate = function(composite, rotation, point, recursive) {
-                  var cos = Math.cos(rotation), sin = Math.sin(rotation), bodies = recursive ? Composite3.allBodies(composite) : composite.bodies;
+                Composite2.rotate = function(composite, rotation, point, recursive) {
+                  var cos = Math.cos(rotation), sin = Math.sin(rotation), bodies = recursive ? Composite2.allBodies(composite) : composite.bodies;
                   for (var i = 0; i < bodies.length; i++) {
                     var body = bodies[i], dx = body.position.x - point.x, dy = body.position.y - point.y;
-                    Body3.setPosition(body, {
+                    Body2.setPosition(body, {
                       x: point.x + (dx * cos - dy * sin),
                       y: point.y + (dx * sin + dy * cos)
                     });
-                    Body3.rotate(body, rotation);
+                    Body2.rotate(body, rotation);
                   }
                   return composite;
                 };
-                Composite3.scale = function(composite, scaleX, scaleY, point, recursive) {
-                  var bodies = recursive ? Composite3.allBodies(composite) : composite.bodies;
+                Composite2.scale = function(composite, scaleX, scaleY, point, recursive) {
+                  var bodies = recursive ? Composite2.allBodies(composite) : composite.bodies;
                   for (var i = 0; i < bodies.length; i++) {
                     var body = bodies[i], dx = body.position.x - point.x, dy = body.position.y - point.y;
-                    Body3.setPosition(body, {
+                    Body2.setPosition(body, {
                       x: point.x + dx * scaleX,
                       y: point.y + dy * scaleY
                     });
-                    Body3.scale(body, scaleX, scaleY);
+                    Body2.scale(body, scaleX, scaleY);
                   }
                   return composite;
                 };
-                Composite3.bounds = function(composite) {
-                  var bodies = Composite3.allBodies(composite), vertices = [];
+                Composite2.bounds = function(composite) {
+                  var bodies = Composite2.allBodies(composite), vertices = [];
                   for (var i = 0; i < bodies.length; i += 1) {
                     var body = bodies[i];
                     vertices.push(body.bounds.min, body.bounds.max);
@@ -25125,8 +25125,8 @@
             function(module2, exports2, __webpack_require__) {
               var Sleeping = {};
               module2.exports = Sleeping;
-              var Body3 = __webpack_require__(4);
-              var Events3 = __webpack_require__(5);
+              var Body2 = __webpack_require__(4);
+              var Events2 = __webpack_require__(5);
               var Common = __webpack_require__(0);
               (function() {
                 Sleeping._motionWakeThreshold = 0.18;
@@ -25135,7 +25135,7 @@
                 Sleeping.update = function(bodies, delta) {
                   var timeScale = delta / Common._baseDelta, motionSleepThreshold = Sleeping._motionSleepThreshold;
                   for (var i = 0; i < bodies.length; i++) {
-                    var body = bodies[i], speed = Body3.getSpeed(body), angularSpeed = Body3.getAngularSpeed(body), motion = speed * speed + angularSpeed * angularSpeed;
+                    var body = bodies[i], speed = Body2.getSpeed(body), angularSpeed = Body2.getAngularSpeed(body), motion = speed * speed + angularSpeed * angularSpeed;
                     if (body.force.x !== 0 || body.force.y !== 0) {
                       Sleeping.set(body, false);
                       continue;
@@ -25183,13 +25183,13 @@
                     body.angularSpeed = 0;
                     body.motion = 0;
                     if (!wasSleeping) {
-                      Events3.trigger(body, "sleepStart");
+                      Events2.trigger(body, "sleepStart");
                     }
                   } else {
                     body.isSleeping = false;
                     body.sleepCounter = 0;
                     if (wasSleeping) {
-                      Events3.trigger(body, "sleepEnd");
+                      Events2.trigger(body, "sleepEnd");
                     }
                   }
                 };
@@ -25648,15 +25648,15 @@
             /* 12 */
             /***/
             function(module2, exports2, __webpack_require__) {
-              var Bodies3 = {};
-              module2.exports = Bodies3;
+              var Bodies2 = {};
+              module2.exports = Bodies2;
               var Vertices = __webpack_require__(3);
               var Common = __webpack_require__(0);
-              var Body3 = __webpack_require__(4);
+              var Body2 = __webpack_require__(4);
               var Bounds = __webpack_require__(1);
               var Vector = __webpack_require__(2);
               (function() {
-                Bodies3.rectangle = function(x, y, width, height, options) {
+                Bodies2.rectangle = function(x, y, width, height, options) {
                   options = options || {};
                   var rectangle = {
                     label: "Rectangle Body",
@@ -25674,9 +25674,9 @@
                     );
                     delete options.chamfer;
                   }
-                  return Body3.create(Common.extend({}, rectangle, options));
+                  return Body2.create(Common.extend({}, rectangle, options));
                 };
-                Bodies3.trapezoid = function(x, y, width, height, slope, options) {
+                Bodies2.trapezoid = function(x, y, width, height, slope, options) {
                   options = options || {};
                   slope *= 0.5;
                   var roof = (1 - slope * 2) * width;
@@ -25702,9 +25702,9 @@
                     );
                     delete options.chamfer;
                   }
-                  return Body3.create(Common.extend({}, trapezoid, options));
+                  return Body2.create(Common.extend({}, trapezoid, options));
                 };
-                Bodies3.circle = function(x, y, radius, options, maxSides) {
+                Bodies2.circle = function(x, y, radius, options, maxSides) {
                   options = options || {};
                   var circle = {
                     label: "Circle Body",
@@ -25714,12 +25714,12 @@
                   var sides = Math.ceil(Math.max(10, Math.min(maxSides, radius)));
                   if (sides % 2 === 1)
                     sides += 1;
-                  return Bodies3.polygon(x, y, sides, radius, Common.extend({}, circle, options));
+                  return Bodies2.polygon(x, y, sides, radius, Common.extend({}, circle, options));
                 };
-                Bodies3.polygon = function(x, y, sides, radius, options) {
+                Bodies2.polygon = function(x, y, sides, radius, options) {
                   options = options || {};
                   if (sides < 3)
-                    return Bodies3.circle(x, y, radius, options);
+                    return Bodies2.circle(x, y, radius, options);
                   var theta = 2 * Math.PI / sides, path = "", offset = theta * 0.5;
                   for (var i = 0; i < sides; i += 1) {
                     var angle = offset + i * theta, xx = Math.cos(angle) * radius, yy = Math.sin(angle) * radius;
@@ -25741,9 +25741,9 @@
                     );
                     delete options.chamfer;
                   }
-                  return Body3.create(Common.extend({}, polygon, options));
+                  return Body2.create(Common.extend({}, polygon, options));
                 };
-                Bodies3.fromVertices = function(x, y, vertexSets, options, flagInternal, removeCollinear, minimumArea, removeDuplicatePoints) {
+                Bodies2.fromVertices = function(x, y, vertexSets, options, flagInternal, removeCollinear, minimumArea, removeDuplicatePoints) {
                   var decomp = Common.getDecomp(), canDecomp, body, parts, isConvex, isConcave, vertices, i, j, k, v, z;
                   canDecomp = Boolean(decomp && decomp.quickDecomp);
                   options = options || {};
@@ -25802,7 +25802,7 @@
                     }
                   }
                   for (i = 0; i < parts.length; i++) {
-                    parts[i] = Body3.create(Common.extend(parts[i], options));
+                    parts[i] = Body2.create(Common.extend(parts[i], options));
                   }
                   if (flagInternal) {
                     var coincident_max_dist = 5;
@@ -25826,8 +25826,8 @@
                     }
                   }
                   if (parts.length > 1) {
-                    body = Body3.create(Common.extend({ parts: parts.slice(0) }, options));
-                    Body3.setPosition(body, { x, y });
+                    body = Body2.create(Common.extend({ parts: parts.slice(0) }, options));
+                    Body2.setPosition(body, { x, y });
                     return body;
                   } else {
                     return parts[0];
@@ -25914,11 +25914,11 @@
             /* 14 */
             /***/
             function(module2, exports2, __webpack_require__) {
-              var Mouse3 = {};
-              module2.exports = Mouse3;
+              var Mouse2 = {};
+              module2.exports = Mouse2;
               var Common = __webpack_require__(0);
               (function() {
-                Mouse3.create = function(element) {
+                Mouse2.create = function(element) {
                   var mouse = {};
                   if (!element) {
                     Common.log("Mouse.create: element was undefined, defaulting to document.body", "warn");
@@ -25940,7 +25940,7 @@
                     mousewheel: null
                   };
                   mouse.mousemove = function(event) {
-                    var position = Mouse3._getRelativeMousePosition(event, mouse.element, mouse.pixelRatio), touches = event.changedTouches;
+                    var position = Mouse2._getRelativeMousePosition(event, mouse.element, mouse.pixelRatio), touches = event.changedTouches;
                     if (touches) {
                       mouse.button = 0;
                       event.preventDefault();
@@ -25952,7 +25952,7 @@
                     mouse.sourceEvents.mousemove = event;
                   };
                   mouse.mousedown = function(event) {
-                    var position = Mouse3._getRelativeMousePosition(event, mouse.element, mouse.pixelRatio), touches = event.changedTouches;
+                    var position = Mouse2._getRelativeMousePosition(event, mouse.element, mouse.pixelRatio), touches = event.changedTouches;
                     if (touches) {
                       mouse.button = 0;
                       event.preventDefault();
@@ -25968,7 +25968,7 @@
                     mouse.sourceEvents.mousedown = event;
                   };
                   mouse.mouseup = function(event) {
-                    var position = Mouse3._getRelativeMousePosition(event, mouse.element, mouse.pixelRatio), touches = event.changedTouches;
+                    var position = Mouse2._getRelativeMousePosition(event, mouse.element, mouse.pixelRatio), touches = event.changedTouches;
                     if (touches) {
                       event.preventDefault();
                     }
@@ -25985,10 +25985,10 @@
                     mouse.wheelDelta = Math.max(-1, Math.min(1, event.wheelDelta || -event.detail));
                     event.preventDefault();
                   };
-                  Mouse3.setElement(mouse, mouse.element);
+                  Mouse2.setElement(mouse, mouse.element);
                   return mouse;
                 };
-                Mouse3.setElement = function(mouse, element) {
+                Mouse2.setElement = function(mouse, element) {
                   mouse.element = element;
                   element.addEventListener("mousemove", mouse.mousemove);
                   element.addEventListener("mousedown", mouse.mousedown);
@@ -25999,26 +25999,26 @@
                   element.addEventListener("touchstart", mouse.mousedown);
                   element.addEventListener("touchend", mouse.mouseup);
                 };
-                Mouse3.clearSourceEvents = function(mouse) {
+                Mouse2.clearSourceEvents = function(mouse) {
                   mouse.sourceEvents.mousemove = null;
                   mouse.sourceEvents.mousedown = null;
                   mouse.sourceEvents.mouseup = null;
                   mouse.sourceEvents.mousewheel = null;
                   mouse.wheelDelta = 0;
                 };
-                Mouse3.setOffset = function(mouse, offset) {
+                Mouse2.setOffset = function(mouse, offset) {
                   mouse.offset.x = offset.x;
                   mouse.offset.y = offset.y;
                   mouse.position.x = mouse.absolute.x * mouse.scale.x + mouse.offset.x;
                   mouse.position.y = mouse.absolute.y * mouse.scale.y + mouse.offset.y;
                 };
-                Mouse3.setScale = function(mouse, scale) {
+                Mouse2.setScale = function(mouse, scale) {
                   mouse.scale.x = scale.x;
                   mouse.scale.y = scale.y;
                   mouse.position.x = mouse.absolute.x * mouse.scale.x + mouse.offset.x;
                   mouse.position.y = mouse.absolute.y * mouse.scale.y + mouse.offset.y;
                 };
-                Mouse3._getRelativeMousePosition = function(event, element, pixelRatio) {
+                Mouse2._getRelativeMousePosition = function(event, element, pixelRatio) {
                   var elementBounds = element.getBoundingClientRect(), rootNode = document.documentElement || document.body.parentNode || document.body, scrollX = window.pageXOffset !== void 0 ? window.pageXOffset : rootNode.scrollLeft, scrollY = window.pageYOffset !== void 0 ? window.pageYOffset : rootNode.scrollTop, touches = event.changedTouches, x, y;
                   if (touches) {
                     x = touches[0].pageX - elementBounds.left - scrollX;
@@ -26244,19 +26244,19 @@
             /* 17 */
             /***/
             function(module2, exports2, __webpack_require__) {
-              var Engine3 = {};
-              module2.exports = Engine3;
+              var Engine2 = {};
+              module2.exports = Engine2;
               var Sleeping = __webpack_require__(7);
               var Resolver = __webpack_require__(18);
               var Detector = __webpack_require__(13);
               var Pairs = __webpack_require__(19);
-              var Events3 = __webpack_require__(5);
-              var Composite3 = __webpack_require__(6);
+              var Events2 = __webpack_require__(5);
+              var Composite2 = __webpack_require__(6);
               var Constraint = __webpack_require__(10);
               var Common = __webpack_require__(0);
-              var Body3 = __webpack_require__(4);
+              var Body2 = __webpack_require__(4);
               (function() {
-                Engine3.create = function(options) {
+                Engine2.create = function(options) {
                   options = options || {};
                   var defaults = {
                     positionIterations: 6,
@@ -26278,7 +26278,7 @@
                     }
                   };
                   var engine = Common.extend(defaults, options);
-                  engine.world = options.world || Composite3.create({ label: "World" });
+                  engine.world = options.world || Composite2.create({ label: "World" });
                   engine.pairs = options.pairs || Pairs.create();
                   engine.detector = options.detector || Detector.create();
                   engine.grid = { buckets: [] };
@@ -26287,7 +26287,7 @@
                   engine.metrics = {};
                   return engine;
                 };
-                Engine3.update = function(engine, delta) {
+                Engine2.update = function(engine, delta) {
                   var startTime = Common.now();
                   var world = engine.world, detector = engine.detector, pairs = engine.pairs, timing = engine.timing, timestamp = timing.timestamp, i;
                   delta = typeof delta !== "undefined" ? delta : Common._baseDelta;
@@ -26298,17 +26298,17 @@
                     timestamp: timing.timestamp,
                     delta
                   };
-                  Events3.trigger(engine, "beforeUpdate", event);
-                  var allBodies = Composite3.allBodies(world), allConstraints = Composite3.allConstraints(world);
+                  Events2.trigger(engine, "beforeUpdate", event);
+                  var allBodies = Composite2.allBodies(world), allConstraints = Composite2.allConstraints(world);
                   if (world.isModified) {
                     Detector.setBodies(detector, allBodies);
-                    Composite3.setModified(world, false, false, true);
+                    Composite2.setModified(world, false, false, true);
                   }
                   if (engine.enableSleeping)
                     Sleeping.update(allBodies, delta);
-                  Engine3._bodiesApplyGravity(allBodies, engine.gravity);
+                  Engine2._bodiesApplyGravity(allBodies, engine.gravity);
                   if (delta > 0) {
-                    Engine3._bodiesUpdate(allBodies, delta);
+                    Engine2._bodiesUpdate(allBodies, delta);
                   }
                   Constraint.preSolveAll(allBodies);
                   for (i = 0; i < engine.constraintIterations; i++) {
@@ -26321,7 +26321,7 @@
                   if (engine.enableSleeping)
                     Sleeping.afterCollisions(pairs.list);
                   if (pairs.collisionStart.length > 0)
-                    Events3.trigger(engine, "collisionStart", { pairs: pairs.collisionStart });
+                    Events2.trigger(engine, "collisionStart", { pairs: pairs.collisionStart });
                   var positionDamping = Common.clamp(20 / engine.positionIterations, 0, 1);
                   Resolver.preSolvePosition(pairs.list);
                   for (i = 0; i < engine.positionIterations; i++) {
@@ -26337,22 +26337,22 @@
                   for (i = 0; i < engine.velocityIterations; i++) {
                     Resolver.solveVelocity(pairs.list, delta);
                   }
-                  Engine3._bodiesUpdateVelocities(allBodies);
+                  Engine2._bodiesUpdateVelocities(allBodies);
                   if (pairs.collisionActive.length > 0)
-                    Events3.trigger(engine, "collisionActive", { pairs: pairs.collisionActive });
+                    Events2.trigger(engine, "collisionActive", { pairs: pairs.collisionActive });
                   if (pairs.collisionEnd.length > 0)
-                    Events3.trigger(engine, "collisionEnd", { pairs: pairs.collisionEnd });
-                  Engine3._bodiesClearForces(allBodies);
-                  Events3.trigger(engine, "afterUpdate", event);
+                    Events2.trigger(engine, "collisionEnd", { pairs: pairs.collisionEnd });
+                  Engine2._bodiesClearForces(allBodies);
+                  Events2.trigger(engine, "afterUpdate", event);
                   engine.timing.lastElapsed = Common.now() - startTime;
                   return engine;
                 };
-                Engine3.merge = function(engineA, engineB) {
+                Engine2.merge = function(engineA, engineB) {
                   Common.extend(engineA, engineB);
                   if (engineB.world) {
                     engineA.world = engineB.world;
-                    Engine3.clear(engineA);
-                    var bodies = Composite3.allBodies(engineA.world);
+                    Engine2.clear(engineA);
+                    var bodies = Composite2.allBodies(engineA.world);
                     for (var i = 0; i < bodies.length; i++) {
                       var body = bodies[i];
                       Sleeping.set(body, false);
@@ -26360,11 +26360,11 @@
                     }
                   }
                 };
-                Engine3.clear = function(engine) {
+                Engine2.clear = function(engine) {
                   Pairs.clear(engine.pairs);
                   Detector.clear(engine.detector);
                 };
-                Engine3._bodiesClearForces = function(bodies) {
+                Engine2._bodiesClearForces = function(bodies) {
                   var bodiesLength = bodies.length;
                   for (var i = 0; i < bodiesLength; i++) {
                     var body = bodies[i];
@@ -26373,7 +26373,7 @@
                     body.torque = 0;
                   }
                 };
-                Engine3._bodiesApplyGravity = function(bodies, gravity) {
+                Engine2._bodiesApplyGravity = function(bodies, gravity) {
                   var gravityScale = typeof gravity.scale !== "undefined" ? gravity.scale : 1e-3, bodiesLength = bodies.length;
                   if (gravity.x === 0 && gravity.y === 0 || gravityScale === 0) {
                     return;
@@ -26386,19 +26386,19 @@
                     body.force.x += body.mass * gravity.x * gravityScale;
                   }
                 };
-                Engine3._bodiesUpdate = function(bodies, delta) {
+                Engine2._bodiesUpdate = function(bodies, delta) {
                   var bodiesLength = bodies.length;
                   for (var i = 0; i < bodiesLength; i++) {
                     var body = bodies[i];
                     if (body.isStatic || body.isSleeping)
                       continue;
-                    Body3.update(body, delta);
+                    Body2.update(body, delta);
                   }
                 };
-                Engine3._bodiesUpdateVelocities = function(bodies) {
+                Engine2._bodiesUpdateVelocities = function(bodies) {
                   var bodiesLength = bodies.length;
                   for (var i = 0; i < bodiesLength; i++) {
-                    Body3.updateVelocities(bodies[i]);
+                    Body2.updateVelocities(bodies[i]);
                   }
                 };
               })();
@@ -26726,15 +26726,15 @@
             function(module2, exports2, __webpack_require__) {
               var Composites = {};
               module2.exports = Composites;
-              var Composite3 = __webpack_require__(6);
+              var Composite2 = __webpack_require__(6);
               var Constraint = __webpack_require__(10);
               var Common = __webpack_require__(0);
-              var Body3 = __webpack_require__(4);
-              var Bodies3 = __webpack_require__(12);
+              var Body2 = __webpack_require__(4);
+              var Bodies2 = __webpack_require__(12);
               var deprecated = Common.deprecated;
               (function() {
                 Composites.stack = function(xx, yy, columns, rows, columnGap, rowGap, callback) {
-                  var stack = Composite3.create({ label: "Stack" }), x = xx, y = yy, lastBody, i = 0;
+                  var stack = Composite2.create({ label: "Stack" }), x = xx, y = yy, lastBody, i = 0;
                   for (var row = 0; row < rows; row++) {
                     var maxHeight = 0;
                     for (var column = 0; column < columns; column++) {
@@ -26743,9 +26743,9 @@
                         var bodyHeight = body.bounds.max.y - body.bounds.min.y, bodyWidth = body.bounds.max.x - body.bounds.min.x;
                         if (bodyHeight > maxHeight)
                           maxHeight = bodyHeight;
-                        Body3.translate(body, { x: bodyWidth * 0.5, y: bodyHeight * 0.5 });
+                        Body2.translate(body, { x: bodyWidth * 0.5, y: bodyHeight * 0.5 });
                         x = body.bounds.max.x + columnGap;
-                        Composite3.addBody(stack, body);
+                        Composite2.addBody(stack, body);
                         lastBody = body;
                         i += 1;
                       } else {
@@ -26768,7 +26768,7 @@
                       pointB: { x: bodyBWidth * xOffsetB, y: bodyBHeight * yOffsetB }
                     };
                     var constraint = Common.extend(defaults, options);
-                    Composite3.addConstraint(composite, Constraint.create(constraint));
+                    Composite2.addConstraint(composite, Constraint.create(constraint));
                   }
                   composite.label += " Chain";
                   return composite;
@@ -26779,20 +26779,20 @@
                     for (col = 1; col < columns; col++) {
                       bodyA = bodies[col - 1 + row * columns];
                       bodyB = bodies[col + row * columns];
-                      Composite3.addConstraint(composite, Constraint.create(Common.extend({ bodyA, bodyB }, options)));
+                      Composite2.addConstraint(composite, Constraint.create(Common.extend({ bodyA, bodyB }, options)));
                     }
                     if (row > 0) {
                       for (col = 0; col < columns; col++) {
                         bodyA = bodies[col + (row - 1) * columns];
                         bodyB = bodies[col + row * columns];
-                        Composite3.addConstraint(composite, Constraint.create(Common.extend({ bodyA, bodyB }, options)));
+                        Composite2.addConstraint(composite, Constraint.create(Common.extend({ bodyA, bodyB }, options)));
                         if (crossBrace && col > 0) {
                           bodyC = bodies[col - 1 + (row - 1) * columns];
-                          Composite3.addConstraint(composite, Constraint.create(Common.extend({ bodyA: bodyC, bodyB }, options)));
+                          Composite2.addConstraint(composite, Constraint.create(Common.extend({ bodyA: bodyC, bodyB }, options)));
                         }
                         if (crossBrace && col < columns - 1) {
                           bodyC = bodies[col + 1 + (row - 1) * columns];
-                          Composite3.addConstraint(composite, Constraint.create(Common.extend({ bodyA: bodyC, bodyB }, options)));
+                          Composite2.addConstraint(composite, Constraint.create(Common.extend({ bodyA: bodyC, bodyB }, options)));
                         }
                       }
                     }
@@ -26810,30 +26810,30 @@
                     if (column < start || column > end)
                       return;
                     if (i === 1) {
-                      Body3.translate(lastBody, { x: (column + (columns % 2 === 1 ? 1 : -1)) * lastBodyWidth, y: 0 });
+                      Body2.translate(lastBody, { x: (column + (columns % 2 === 1 ? 1 : -1)) * lastBodyWidth, y: 0 });
                     }
                     var xOffset = lastBody ? column * lastBodyWidth : 0;
                     return callback(xx + xOffset + column * columnGap, y, column, row, lastBody, i);
                   });
                 };
                 Composites.newtonsCradle = function(xx, yy, number, size, length) {
-                  var newtonsCradle = Composite3.create({ label: "Newtons Cradle" });
+                  var newtonsCradle = Composite2.create({ label: "Newtons Cradle" });
                   for (var i = 0; i < number; i++) {
-                    var separation = 1.9, circle = Bodies3.circle(
+                    var separation = 1.9, circle = Bodies2.circle(
                       xx + i * (size * separation),
                       yy + length,
                       size,
                       { inertia: Infinity, restitution: 1, friction: 0, frictionAir: 1e-4, slop: 1 }
                     ), constraint = Constraint.create({ pointA: { x: xx + i * (size * separation), y: yy }, bodyB: circle });
-                    Composite3.addBody(newtonsCradle, circle);
-                    Composite3.addConstraint(newtonsCradle, constraint);
+                    Composite2.addBody(newtonsCradle, circle);
+                    Composite2.addConstraint(newtonsCradle, constraint);
                   }
                   return newtonsCradle;
                 };
                 deprecated(Composites, "newtonsCradle", "Composites.newtonsCradle \u27A4 moved to newtonsCradle example");
                 Composites.car = function(xx, yy, width, height, wheelSize) {
-                  var group = Body3.nextGroup(true), wheelBase = 20, wheelAOffset = -width * 0.5 + wheelBase, wheelBOffset = width * 0.5 - wheelBase, wheelYOffset = 0;
-                  var car = Composite3.create({ label: "Car" }), body = Bodies3.rectangle(xx, yy, width, height, {
+                  var group = Body2.nextGroup(true), wheelBase = 20, wheelAOffset = -width * 0.5 + wheelBase, wheelBOffset = width * 0.5 - wheelBase, wheelYOffset = 0;
+                  var car = Composite2.create({ label: "Car" }), body = Bodies2.rectangle(xx, yy, width, height, {
                     collisionFilter: {
                       group
                     },
@@ -26842,13 +26842,13 @@
                     },
                     density: 2e-4
                   });
-                  var wheelA = Bodies3.circle(xx + wheelAOffset, yy + wheelYOffset, wheelSize, {
+                  var wheelA = Bodies2.circle(xx + wheelAOffset, yy + wheelYOffset, wheelSize, {
                     collisionFilter: {
                       group
                     },
                     friction: 0.8
                   });
-                  var wheelB = Bodies3.circle(xx + wheelBOffset, yy + wheelYOffset, wheelSize, {
+                  var wheelB = Bodies2.circle(xx + wheelBOffset, yy + wheelYOffset, wheelSize, {
                     collisionFilter: {
                       group
                     },
@@ -26868,11 +26868,11 @@
                     stiffness: 1,
                     length: 0
                   });
-                  Composite3.addBody(car, body);
-                  Composite3.addBody(car, wheelA);
-                  Composite3.addBody(car, wheelB);
-                  Composite3.addConstraint(car, axelA);
-                  Composite3.addConstraint(car, axelB);
+                  Composite2.addBody(car, body);
+                  Composite2.addBody(car, wheelA);
+                  Composite2.addBody(car, wheelB);
+                  Composite2.addConstraint(car, axelA);
+                  Composite2.addConstraint(car, axelB);
                   return car;
                 };
                 deprecated(Composites, "car", "Composites.car \u27A4 moved to car example");
@@ -26880,7 +26880,7 @@
                   particleOptions = Common.extend({ inertia: Infinity }, particleOptions);
                   constraintOptions = Common.extend({ stiffness: 0.2, render: { type: "line", anchors: false } }, constraintOptions);
                   var softBody = Composites.stack(xx, yy, columns, rows, columnGap, rowGap, function(x, y) {
-                    return Bodies3.circle(x, y, particleRadius, particleOptions);
+                    return Bodies2.circle(x, y, particleRadius, particleOptions);
                   });
                   Composites.mesh(softBody, columns, rows, crossBrace, constraintOptions);
                   softBody.label = "Soft Body";
@@ -27020,27 +27020,27 @@
             /* 24 */
             /***/
             function(module2, exports2, __webpack_require__) {
-              var MouseConstraint3 = {};
-              module2.exports = MouseConstraint3;
+              var MouseConstraint2 = {};
+              module2.exports = MouseConstraint2;
               var Vertices = __webpack_require__(3);
               var Sleeping = __webpack_require__(7);
-              var Mouse3 = __webpack_require__(14);
-              var Events3 = __webpack_require__(5);
+              var Mouse2 = __webpack_require__(14);
+              var Events2 = __webpack_require__(5);
               var Detector = __webpack_require__(13);
               var Constraint = __webpack_require__(10);
-              var Composite3 = __webpack_require__(6);
+              var Composite2 = __webpack_require__(6);
               var Common = __webpack_require__(0);
               var Bounds = __webpack_require__(1);
               (function() {
-                MouseConstraint3.create = function(engine, options) {
+                MouseConstraint2.create = function(engine, options) {
                   var mouse = (engine ? engine.mouse : null) || (options ? options.mouse : null);
                   if (!mouse) {
                     if (engine && engine.render && engine.render.canvas) {
-                      mouse = Mouse3.create(engine.render.canvas);
+                      mouse = Mouse2.create(engine.render.canvas);
                     } else if (options && options.element) {
-                      mouse = Mouse3.create(options.element);
+                      mouse = Mouse2.create(options.element);
                     } else {
-                      mouse = Mouse3.create();
+                      mouse = Mouse2.create();
                       Common.warn("MouseConstraint.create: options.mouse was undefined, options.element was undefined, may not function as expected");
                     }
                   }
@@ -27069,14 +27069,14 @@
                     }
                   };
                   var mouseConstraint = Common.extend(defaults, options);
-                  Events3.on(engine, "beforeUpdate", function() {
-                    var allBodies = Composite3.allBodies(engine.world);
-                    MouseConstraint3.update(mouseConstraint, allBodies);
-                    MouseConstraint3._triggerEvents(mouseConstraint);
+                  Events2.on(engine, "beforeUpdate", function() {
+                    var allBodies = Composite2.allBodies(engine.world);
+                    MouseConstraint2.update(mouseConstraint, allBodies);
+                    MouseConstraint2._triggerEvents(mouseConstraint);
                   });
                   return mouseConstraint;
                 };
-                MouseConstraint3.update = function(mouseConstraint, bodies) {
+                MouseConstraint2.update = function(mouseConstraint, bodies) {
                   var mouse = mouseConstraint.mouse, constraint = mouseConstraint.constraint, body = mouseConstraint.body;
                   if (mouse.button === 0) {
                     if (!constraint.bodyB) {
@@ -27091,7 +27091,7 @@
                               constraint.pointB = { x: mouse.position.x - body.position.x, y: mouse.position.y - body.position.y };
                               constraint.angleB = body.angle;
                               Sleeping.set(body, false);
-                              Events3.trigger(mouseConstraint, "startdrag", { mouse, body });
+                              Events2.trigger(mouseConstraint, "startdrag", { mouse, body });
                               break;
                             }
                           }
@@ -27105,18 +27105,18 @@
                     constraint.bodyB = mouseConstraint.body = null;
                     constraint.pointB = null;
                     if (body)
-                      Events3.trigger(mouseConstraint, "enddrag", { mouse, body });
+                      Events2.trigger(mouseConstraint, "enddrag", { mouse, body });
                   }
                 };
-                MouseConstraint3._triggerEvents = function(mouseConstraint) {
+                MouseConstraint2._triggerEvents = function(mouseConstraint) {
                   var mouse = mouseConstraint.mouse, mouseEvents = mouse.sourceEvents;
                   if (mouseEvents.mousemove)
-                    Events3.trigger(mouseConstraint, "mousemove", { mouse });
+                    Events2.trigger(mouseConstraint, "mousemove", { mouse });
                   if (mouseEvents.mousedown)
-                    Events3.trigger(mouseConstraint, "mousedown", { mouse });
+                    Events2.trigger(mouseConstraint, "mousedown", { mouse });
                   if (mouseEvents.mouseup)
-                    Events3.trigger(mouseConstraint, "mouseup", { mouse });
-                  Mouse3.clearSourceEvents(mouse);
+                    Events2.trigger(mouseConstraint, "mouseup", { mouse });
+                  Mouse2.clearSourceEvents(mouse);
                 };
               })();
             },
@@ -27128,7 +27128,7 @@
               var Vector = __webpack_require__(2);
               var Collision = __webpack_require__(8);
               var Bounds = __webpack_require__(1);
-              var Bodies3 = __webpack_require__(12);
+              var Bodies2 = __webpack_require__(12);
               var Vertices = __webpack_require__(3);
               (function() {
                 Query.collides = function(body, bodies) {
@@ -27152,7 +27152,7 @@
                 };
                 Query.ray = function(bodies, startPoint, endPoint, rayWidth) {
                   rayWidth = rayWidth || 1e-100;
-                  var rayAngle = Vector.angle(startPoint, endPoint), rayLength = Vector.magnitude(Vector.sub(startPoint, endPoint)), rayX = (endPoint.x + startPoint.x) * 0.5, rayY = (endPoint.y + startPoint.y) * 0.5, ray = Bodies3.rectangle(rayX, rayY, rayLength, rayWidth, { angle: rayAngle }), collisions = Query.collides(ray, bodies);
+                  var rayAngle = Vector.angle(startPoint, endPoint), rayLength = Vector.magnitude(Vector.sub(startPoint, endPoint)), rayX = (endPoint.x + startPoint.x) * 0.5, rayY = (endPoint.y + startPoint.y) * 0.5, ray = Bodies2.rectangle(rayX, rayY, rayLength, rayWidth, { angle: rayAngle }), collisions = Query.collides(ray, bodies);
                   for (var i = 0; i < collisions.length; i += 1) {
                     var collision = collisions[i];
                     collision.body = collision.bodyB = collision.bodyA;
@@ -27191,13 +27191,13 @@
             function(module2, exports2, __webpack_require__) {
               var Render = {};
               module2.exports = Render;
-              var Body3 = __webpack_require__(4);
+              var Body2 = __webpack_require__(4);
               var Common = __webpack_require__(0);
-              var Composite3 = __webpack_require__(6);
+              var Composite2 = __webpack_require__(6);
               var Bounds = __webpack_require__(1);
-              var Events3 = __webpack_require__(5);
+              var Events2 = __webpack_require__(5);
               var Vector = __webpack_require__(2);
-              var Mouse3 = __webpack_require__(14);
+              var Mouse2 = __webpack_require__(14);
               (function() {
                 var _requestAnimationFrame, _cancelAnimationFrame;
                 if (typeof window !== "undefined") {
@@ -27361,11 +27361,11 @@
                   render.bounds.min.y -= padding.y;
                   render.bounds.max.y -= padding.y;
                   if (render.mouse) {
-                    Mouse3.setScale(render.mouse, {
+                    Mouse2.setScale(render.mouse, {
                       x: (render.bounds.max.x - render.bounds.min.x) / render.canvas.width,
                       y: (render.bounds.max.y - render.bounds.min.y) / render.canvas.height
                     });
-                    Mouse3.setOffset(render.mouse, render.bounds.min);
+                    Mouse2.setOffset(render.mouse, render.bounds.min);
                   }
                 };
                 Render.startViewTransform = function(render) {
@@ -27385,11 +27385,11 @@
                 };
                 Render.world = function(render, time) {
                   var startTime = Common.now(), engine = render.engine, world = engine.world, canvas = render.canvas, context = render.context, options = render.options, timing = render.timing;
-                  var allBodies = Composite3.allBodies(world), allConstraints = Composite3.allConstraints(world), background = options.wireframes ? options.wireframeBackground : options.background, bodies = [], constraints = [], i;
+                  var allBodies = Composite2.allBodies(world), allConstraints = Composite2.allConstraints(world), background = options.wireframes ? options.wireframeBackground : options.background, bodies = [], constraints = [], i;
                   var event = {
                     timestamp: engine.timing.timestamp
                   };
-                  Events3.trigger(render, "beforeRender", event);
+                  Events2.trigger(render, "beforeRender", event);
                   if (render.currentBackground !== background)
                     _applyBackground(render, background);
                   context.globalCompositeOperation = "source-in";
@@ -27415,11 +27415,11 @@
                     }
                     Render.startViewTransform(render);
                     if (render.mouse) {
-                      Mouse3.setScale(render.mouse, {
+                      Mouse2.setScale(render.mouse, {
                         x: (render.bounds.max.x - render.bounds.min.x) / render.options.width,
                         y: (render.bounds.max.y - render.bounds.min.y) / render.options.height
                       });
-                      Mouse3.setOffset(render.mouse, render.bounds.min);
+                      Mouse2.setOffset(render.mouse, render.bounds.min);
                     }
                   } else {
                     constraints = allConstraints;
@@ -27457,19 +27457,19 @@
                   if (options.hasBounds) {
                     Render.endViewTransform(render);
                   }
-                  Events3.trigger(render, "afterRender", event);
+                  Events2.trigger(render, "afterRender", event);
                   timing.lastElapsed = Common.now() - startTime;
                 };
                 Render.stats = function(render, context, time) {
-                  var engine = render.engine, world = engine.world, bodies = Composite3.allBodies(world), parts = 0, width = 55, height = 44, x = 0, y = 0;
+                  var engine = render.engine, world = engine.world, bodies = Composite2.allBodies(world), parts = 0, width = 55, height = 44, x = 0, y = 0;
                   for (var i = 0; i < bodies.length; i += 1) {
                     parts += bodies[i].parts.length;
                   }
                   var sections = {
                     "Part": parts,
                     "Body": bodies.length,
-                    "Cons": Composite3.allConstraints(world).length,
-                    "Comp": Composite3.allComposites(world).length,
+                    "Cons": Composite2.allConstraints(world).length,
+                    "Comp": Composite2.allComposites(world).length,
                     "Pair": engine.pairs.list.length
                   };
                   context.fillStyle = "#0e0f19";
@@ -27854,7 +27854,7 @@
                     var body = bodies[i];
                     if (!body.render.visible)
                       continue;
-                    var velocity = Body3.getVelocity(body);
+                    var velocity = Body2.getVelocity(body);
                     c.moveTo(body.position.x, body.position.y);
                     c.lineTo(body.position.x + velocity.x, body.position.y + velocity.y);
                   }
@@ -28076,10 +28076,10 @@
             /* 27 */
             /***/
             function(module2, exports2, __webpack_require__) {
-              var Runner3 = {};
-              module2.exports = Runner3;
-              var Events3 = __webpack_require__(5);
-              var Engine3 = __webpack_require__(17);
+              var Runner2 = {};
+              module2.exports = Runner2;
+              var Events2 = __webpack_require__(5);
+              var Engine2 = __webpack_require__(17);
               var Common = __webpack_require__(0);
               (function() {
                 var _requestAnimationFrame, _cancelAnimationFrame;
@@ -28098,7 +28098,7 @@
                     clearTimeout(_frameTimeout);
                   };
                 }
-                Runner3.create = function(options) {
+                Runner2.create = function(options) {
                   var defaults = {
                     fps: 60,
                     deltaSampleSize: 60,
@@ -28117,20 +28117,20 @@
                   runner.fps = 1e3 / runner.delta;
                   return runner;
                 };
-                Runner3.run = function(runner, engine) {
+                Runner2.run = function(runner, engine) {
                   if (typeof runner.positionIterations !== "undefined") {
                     engine = runner;
-                    runner = Runner3.create();
+                    runner = Runner2.create();
                   }
                   (function run(time) {
                     runner.frameRequestId = _requestAnimationFrame(run);
                     if (time && runner.enabled) {
-                      Runner3.tick(runner, engine, time);
+                      Runner2.tick(runner, engine, time);
                     }
                   })();
                   return runner;
                 };
-                Runner3.tick = function(runner, engine, time) {
+                Runner2.tick = function(runner, engine, time) {
                   var timing = engine.timing, delta;
                   if (runner.isFixed) {
                     delta = runner.delta;
@@ -28147,24 +28147,24 @@
                   var event = {
                     timestamp: timing.timestamp
                   };
-                  Events3.trigger(runner, "beforeTick", event);
+                  Events2.trigger(runner, "beforeTick", event);
                   runner.frameCounter += 1;
                   if (time - runner.counterTimestamp >= 1e3) {
                     runner.fps = runner.frameCounter * ((time - runner.counterTimestamp) / 1e3);
                     runner.counterTimestamp = time;
                     runner.frameCounter = 0;
                   }
-                  Events3.trigger(runner, "tick", event);
-                  Events3.trigger(runner, "beforeUpdate", event);
-                  Engine3.update(engine, delta);
-                  Events3.trigger(runner, "afterUpdate", event);
-                  Events3.trigger(runner, "afterTick", event);
+                  Events2.trigger(runner, "tick", event);
+                  Events2.trigger(runner, "beforeUpdate", event);
+                  Engine2.update(engine, delta);
+                  Events2.trigger(runner, "afterUpdate", event);
+                  Events2.trigger(runner, "afterTick", event);
                 };
-                Runner3.stop = function(runner) {
+                Runner2.stop = function(runner) {
                   _cancelAnimationFrame(runner.frameRequestId);
                 };
-                Runner3.start = function(runner, engine) {
-                  Runner3.run(runner, engine);
+                Runner2.start = function(runner, engine) {
+                  Runner2.run(runner, engine);
                 };
               })();
             },
@@ -28340,18 +28340,18 @@
             /* 30 */
             /***/
             function(module2, exports2, __webpack_require__) {
-              var World3 = {};
-              module2.exports = World3;
-              var Composite3 = __webpack_require__(6);
+              var World2 = {};
+              module2.exports = World2;
+              var Composite2 = __webpack_require__(6);
               var Common = __webpack_require__(0);
               (function() {
-                World3.create = Composite3.create;
-                World3.add = Composite3.add;
-                World3.remove = Composite3.remove;
-                World3.clear = Composite3.clear;
-                World3.addComposite = Composite3.addComposite;
-                World3.addBody = Composite3.addBody;
-                World3.addConstraint = Composite3.addConstraint;
+                World2.create = Composite2.create;
+                World2.add = Composite2.add;
+                World2.remove = Composite2.remove;
+                World2.clear = Composite2.clear;
+                World2.addComposite = Composite2.addComposite;
+                World2.addBody = Composite2.addBody;
+                World2.addConstraint = Composite2.addConstraint;
               })();
             }
             /******/
@@ -28368,7 +28368,7 @@
       if (true) {
         (function() {
           "use strict";
-          var React3 = require_react();
+          var React2 = require_react();
           var REACT_ELEMENT_TYPE = Symbol.for("react.element");
           var REACT_PORTAL_TYPE = Symbol.for("react.portal");
           var REACT_FRAGMENT_TYPE = Symbol.for("react.fragment");
@@ -28394,7 +28394,7 @@
             }
             return null;
           }
-          var ReactSharedInternals = React3.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+          var ReactSharedInternals = React2.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
           function error(format) {
             {
               {
@@ -29486,8 +29486,8 @@
   }
   var BouncyProjectCards = (0, import_react.forwardRef)(function BouncyProjectCards2({
     cards,
-    width = "100%",
-    height = 520,
+    width = "90%",
+    height = 480,
     restitution = 0.98,
     airFriction = 5e-3,
     hoverScale = 1.03,
@@ -29798,8 +29798,8 @@
       "div",
       {
         ref: containerRef,
-        className: "bouncy-container full-bleed",
-        style: { width: "100vw", height },
+        className: "bouncy-container",
+        style: { width, height, margin: "0 auto" },
         "aria-label": "bouncy project cards",
         children: [
           cards.map((card) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(
@@ -29825,115 +29825,68 @@
   var BouncyProjectCards_default = BouncyProjectCards;
 
   // components/BouncyBlogBubbles.tsx
-  var import_react2 = __toESM(require_react(), 1);
-  var import_matter_js2 = __toESM(require_matter(), 1);
   var import_jsx_runtime2 = __toESM(require_jsx_runtime(), 1);
-  function BouncyBlogBubbles({ cards, height = 420 }) {
-    const containerRef = (0, import_react2.useRef)(null);
-    const worldRef = (0, import_react2.useRef)(null);
-    (0, import_react2.useEffect)(() => {
-      const container = containerRef.current;
-      if (!container)
-        return;
-      const engine = import_matter_js2.Engine.create();
-      engine.gravity.y = 1.1;
-      const runner = import_matter_js2.Runner.create();
-      import_matter_js2.Runner.run(runner, engine);
-      const bounds = container.getBoundingClientRect();
-      const bodiesById = /* @__PURE__ */ new Map();
-      const wallThickness = 80;
-      const half = wallThickness / 2;
-      import_matter_js2.World.add(engine.world, [
-        import_matter_js2.Bodies.rectangle(-half, bounds.height / 2, wallThickness, bounds.height, { isStatic: true }),
-        import_matter_js2.Bodies.rectangle(bounds.width + half, bounds.height / 2, wallThickness, bounds.height, { isStatic: true })
-      ]);
-      const radius = Math.max(bounds.width * 0.9, bounds.height * 1.2);
-      const bowlDepth = Math.min(bounds.height * 0.55, 260);
-      const cy = bounds.height - bowlDepth + radius;
-      const bowl = import_matter_js2.Bodies.circle(bounds.width / 2, cy, radius, { isStatic: true });
-      import_matter_js2.World.add(engine.world, bowl);
-      const minR = 56;
-      const maxR = 84;
-      const slots = cards.map((_, i) => ({ x: (i + 1) * (bounds.width / (cards.length + 1)), y: bounds.height * 0.2 }));
-      cards.forEach((card, i) => {
-        const r = Math.round(minR + Math.random() * (maxR - minR));
-        const pos = slots[i] || { x: Math.random() * bounds.width * 0.8 + bounds.width * 0.1, y: bounds.height * 0.2 };
-        const body = import_matter_js2.Bodies.circle(pos.x + (Math.random() - 0.5) * 30, pos.y, r, {
-          restitution: 0.8,
-          frictionAir: 0.015
-        });
-        import_matter_js2.Body.setVelocity(body, { x: (Math.random() - 0.5) * 2, y: (Math.random() - 0.5) * 2 });
-        body.radius = r;
-        bodiesById.set(card.id, body);
-        import_matter_js2.World.add(engine.world, body);
-      });
-      const mouse = import_matter_js2.Mouse.create(container);
-      const mouseConstraint = import_matter_js2.MouseConstraint.create(engine, { mouse, constraint: { stiffness: 0.2 } });
-      import_matter_js2.World.add(engine.world, mouseConstraint);
-      container.addEventListener("wheel", (e) => e.stopImmediatePropagation(), { capture: true });
-      import_matter_js2.Events.on(engine, "collisionStart", (evt) => {
-        const pairs = evt.pairs;
-        for (const p of pairs) {
-          const a = p.bodyA;
-          const b = p.bodyB;
-          const rvx = (a.velocity?.x || 0) - (b.velocity?.x || 0);
-          const rvy = (a.velocity?.y || 0) - (b.velocity?.y || 0);
-          const impact = Math.hypot(rvx, rvy);
-          if (impact > 1.2)
-            audio.collision(Math.min(impact, 20));
-        }
-      });
-      worldRef.current = { engine, runner, bodiesById };
-      return () => {
-        import_matter_js2.Runner.stop(runner);
-        import_matter_js2.World.clear(engine.world, false);
-        import_matter_js2.Engine.clear(engine);
-        worldRef.current = null;
-      };
-    }, [cards.length]);
-    (0, import_react2.useLayoutEffect)(() => {
-      let raf = 0;
-      const tick = () => {
-        raf = requestAnimationFrame(tick);
-        const ref = worldRef.current;
-        const container = containerRef.current;
-        if (!ref || !container)
-          return;
-        const nodes = container.querySelectorAll("[data-bubble-id]");
-        nodes.forEach((node) => {
-          const id = node.dataset.bubbleId;
-          const body = ref.bodiesById.get(id);
-          if (!body)
-            return;
-          const r = body.radius || 60;
-          node.style.width = `${r * 2}px`;
-          node.style.height = `${r * 2}px`;
-          node.style.transform = `translate3d(${body.position.x - r}px, ${body.position.y - r}px, 0) rotate(${body.angle}rad)`;
-        });
-      };
-      tick();
-      return () => cancelAnimationFrame(raf);
-    }, [cards.length]);
+  function BouncyBlogBubbles({ cards }) {
     const scrollLeft = () => {
-      const container = containerRef.current;
+      const container = document.querySelector(".blog-bubbles-grid");
       if (container) {
         container.scrollBy({ left: -200, behavior: "smooth" });
       }
     };
     const scrollRight = () => {
-      const container = containerRef.current;
+      const container = document.querySelector(".blog-bubbles-grid");
       if (container) {
         container.scrollBy({ left: 200, behavior: "smooth" });
       }
     };
     return /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "blog-container", style: { position: "relative" }, children: [
-      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { ref: containerRef, className: "blog-bubbles", style: { width: "100%", height }, children: cards.map((c) => /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { "data-bubble-id": c.id, className: "blog-bubble", role: "link", tabIndex: 0, onClick: () => {
-        audio.click();
-        window.open(c.url, "_blank", "noopener");
-      }, children: [
-        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "blog-bubble-title", children: (c.title || "").toLowerCase() }),
-        c.subtitle ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "blog-bubble-sub", children: c.subtitle }) : null
-      ] }, c.id)) }),
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "blog-bubbles-grid", style: {
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))",
+        gap: "16px",
+        padding: "20px",
+        width: "100%",
+        maxWidth: "100%",
+        overflowX: "auto"
+      }, children: cards.map((c) => /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(
+        "div",
+        {
+          className: "blog-bubble-grid",
+          role: "link",
+          tabIndex: 0,
+          onClick: () => {
+            audio.click();
+            window.open(c.url, "_blank", "noopener");
+          },
+          style: {
+            background: "rgba(255,255,255,0.9)",
+            borderRadius: "12px",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "16px",
+            textAlign: "center",
+            cursor: "pointer",
+            transition: "transform 0.2s ease, box-shadow 0.2s ease",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+            border: "1px solid rgba(0,0,0,0.05)"
+          },
+          onMouseEnter: (e) => {
+            e.currentTarget.style.transform = "scale(1.05)";
+            e.currentTarget.style.boxShadow = "0 8px 24px rgba(0,0,0,0.15)";
+          },
+          onMouseLeave: (e) => {
+            e.currentTarget.style.transform = "scale(1)";
+            e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.1)";
+          },
+          children: [
+            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "blog-bubble-title", children: (c.title || "").toLowerCase() }),
+            c.subtitle ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "blog-bubble-sub", children: c.subtitle }) : null
+          ]
+        },
+        c.id
+      )) }),
       /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("button", { className: "blog-arrow blog-arrow-left", onClick: scrollLeft, "aria-label": "Scroll left", children: "\u2039" }),
       /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("button", { className: "blog-arrow blog-arrow-right", onClick: scrollRight, "aria-label": "Scroll right", children: "\u203A" })
     ] });
@@ -29941,6 +29894,23 @@
 
   // web/main.tsx
   var import_jsx_runtime3 = __toESM(require_jsx_runtime(), 1);
+  function getResponsiveHeight() {
+    const width = window.innerWidth;
+    if (width <= 768) {
+      return Math.min(400, window.innerHeight * 0.6);
+    }
+    if (width <= 1024) {
+      return Math.min(480, window.innerHeight * 0.65);
+    }
+    return 480;
+  }
+  function getResponsiveWidth() {
+    const width = window.innerWidth;
+    if (width <= 768) {
+      return "100%";
+    }
+    return "100%";
+  }
   function mount(el, cards) {
     const root = (0, import_client.createRoot)(el);
     root.render(
@@ -29948,8 +29918,8 @@
         BouncyProjectCards_default,
         {
           cards,
-          width: "100%",
-          height: 520,
+          width: getResponsiveWidth(),
+          height: getResponsiveHeight(),
           restitution: 0.95,
           airFriction: 0.015,
           hoverScale: 1.03
@@ -30001,7 +29971,7 @@
         url: p.url || "#"
       }));
       const root = (0, import_client.createRoot)(el);
-      root.render(/* @__PURE__ */ (0, import_jsx_runtime3.jsx)(BouncyBlogBubbles, { cards, height: 480 }));
+      root.render(/* @__PURE__ */ (0, import_jsx_runtime3.jsx)(BouncyBlogBubbles, { cards }));
     } catch (e) {
       el.innerHTML = '<p class="muted">Unable to load blog posts.</p>';
     }

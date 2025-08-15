@@ -28,8 +28,8 @@ function getCssCardSize(container: HTMLElement) {
 export const BouncyProjectCards = forwardRef<BouncyProjectCardsRef, Props>(function BouncyProjectCards(
   {
     cards,
-    width = '100%',
-    height = 520,
+    width = '90%',
+    height = 480,
     restitution = 0.98,
     airFriction = 0.005,
     hoverScale = 1.03,
@@ -383,8 +383,8 @@ export const BouncyProjectCards = forwardRef<BouncyProjectCardsRef, Props>(funct
   return (
     <div
       ref={containerRef}
-      className="bouncy-container full-bleed"
-      style={{ width: '100vw', height }}
+      className="bouncy-container"
+      style={{ width, height, margin: '0 auto' }}
       aria-label="bouncy project cards"
     >
       {cards.map((card) => (

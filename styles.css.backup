@@ -637,56 +637,28 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
 .sr-threecol .sr-meta,
 .sr-threecol .sr-text,
 .sr-threecol .sr-sub,
-.sr-threecol .sr-org,
-.sr-threecol .sr-list,
-.sr-threecol .sr-list li,
-.sr-threecol .sr-contact a {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  font-weight: 400;
-  font-size: 12px;
-  color: #666666;
+.sr-threecol .sr-org {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  font-weight: 400 !important;
+  font-size: 12px !important;
+  color: #666666 !important;
 }
 
 .sr-threecol .sr-text {
-  line-height: 1.65;
-  margin: 0 0 0.6rem;
+  line-height: 1.65 !important;
+  margin: 0 0 0.6rem !important;
 }
 
 .sr-threecol .sr-meta {
-  margin: 0 0 0.35rem;
+  margin: 0 0 0.35rem !important;
 }
 
 .sr-threecol .sr-org {
-  margin: 0.75rem 0 0.15rem;
+  margin: 0.75rem 0 0.15rem !important;
 }
 
 .sr-threecol .sr-sub {
-  margin: 1.25rem 0 0.5rem;
-}
-.sr-threecol .sr-list {
-  margin: 0.25rem 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-.sr-threecol .sr-list li {
-  margin: 0.25rem 0;
-}
-
-.sr-threecol .sr-contact {
-  display: grid;
-  gap: 0.35rem;
-  margin: 0.25rem 0 0;
-}
-
-.sr-threecol .sr-contact a {
-  text-decoration: none;
-  border-bottom: 1px solid transparent;
-  text-underline-offset: 3px;
-}
-
-.sr-threecol .sr-contact a:hover {
-  text-decoration: underline;
+  margin: 1.25rem 0 0.5rem !important;
 }
 
 /* BouncyProjectCards (React-injected optional) */
@@ -1378,9 +1350,6 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
   background:transparent;
   color:var(--sr-text);
   padding:clamp(2rem,6vw,4rem) clamp(1rem,5vw,3rem);
-  min-height: 480px;
-  display: flex;
-  align-items: center;
 }
 
 /* Desktop: three equal columns with big gutters */
@@ -1408,7 +1377,48 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
   color: #000;
 }
 
-/* General styles removed - now handled by .sr-threecol prefixed rules above */
+.sr-sub{
+  font-family:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-weight:400;
+  font-size:12px;
+  margin:1.25rem 0 .5rem;
+  color: #666666;
+}
+
+.sr-org{
+  font-family:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-weight:400;
+  font-size:12px;
+  margin:.75rem 0 .15rem;
+  color: #666666;
+}
+
+.sr-meta{
+  font-family:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size:12px;
+  color: #666666;
+  margin:0 0 .35rem;
+}
+
+.sr-text, .sr-list, .sr-contact a{
+  font-family:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size:12px;
+  line-height:1.65;
+  color: #666666;
+}
+
+.sr-text{ margin:0 0 .6rem; }
+
+.sr-list{ margin:.25rem 0 0; padding:0; list-style:none; }
+.sr-list li{ margin:.25rem 0; }
+
+/* Contact links */
+.sr-contact{ display:grid; gap:.35rem; margin:.25rem 0 0; }
+.sr-contact a{
+  color: #666666; text-decoration:none; border-bottom:1px solid transparent;
+  text-underline-offset:3px;
+}
+.sr-contact a:hover{ text-decoration:underline; }
 
 /* Blocks */
 .sr-block + .sr-block{ margin-top:1rem; }
