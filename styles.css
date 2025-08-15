@@ -720,11 +720,15 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
   .blog-grid {
     grid-template-columns: repeat(2, 1fr);
     margin-top: 1.5rem;
+    max-width: calc(100vw - 2rem);
+    margin-left: auto;
+    margin-right: auto;
   }
   
   .blog-grid-item {
-    padding: 1.5rem 1rem;
+    padding: 1.5rem 0.75rem;
     min-height: 100px;
+    max-width: 100%;
   }
   
   /* Update borders for 2-column layout */
@@ -748,6 +752,14 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
 @media (max-width: 480px) {
   .blog-grid {
     grid-template-columns: 1fr;
+    max-width: calc(100vw - 1rem);
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .blog-grid-item {
+    padding: 1rem 0.5rem;
+    max-width: 100%;
   }
   
   /* Update borders for 1-column layout */
