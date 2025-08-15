@@ -975,7 +975,7 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
 
 /* Match the size of "product principles" heading (19px) for non-hero panel titles */
 .hs-panel:not(.hs-panel--hero) h1 {
-  font-size: 10px;
+  font-size: 40px;
 }
 
 .hs-panel p {
