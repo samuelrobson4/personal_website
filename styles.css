@@ -1377,17 +1377,21 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
 .sr-threecol{
   background:transparent;
   color:var(--sr-text);
-  padding:clamp(2rem,6vw,4rem) clamp(1rem,5vw,3rem);
+  padding:0 clamp(1rem,5vw,3rem);
   min-height: 480px;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-direction: column;
+  /* Move titles up to align with Projects/Studio Log */
+  margin-top: -28px;
 }
 
-/* Desktop: three equal columns with big gutters */
+/* Desktop: two equal columns with big gutters */
 .sr-threecol__inner{
   margin:0 auto; max-width:var(--sr-maxw);
   display:grid; gap:clamp(2rem,5vw,4rem);
-  grid-template-columns:repeat(3,1fr);
+  grid-template-columns:repeat(2,1fr);
 }
 
 /* Cards (light like the screenshot) */
@@ -1397,7 +1401,8 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
 }
 
 /* Typography */
-.sr-h{
+.sr-h,
+.sr-threecol .sr-h{
   font-family:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-weight:400;
   font-size:clamp(2rem,6vw,3rem);
@@ -1456,17 +1461,5 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
   .sr-card{
     padding-top: 0.75rem;
   }
-}
-
-/* lock wrapping to word boundaries for the big intro */
-.about-intro{
-  white-space: normal !important;
-  word-break: keep-all !important;        /* do not break inside words */
-  overflow-wrap: normal !important;        /* don't force word breaks */
-  hyphens: none !important;
-  -webkit-hyphens: none !important;        /* iOS Safari */
-  -ms-hyphens: none !important;
-  -webkit-line-break: after-white-space !important;  /* Safari: only break at spaces */
-  line-break: strict !important;           /* be conservative about breaks */
 }
 
