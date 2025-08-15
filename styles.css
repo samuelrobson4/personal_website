@@ -1203,27 +1203,7 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
   
 
   
-  @media (max-width: 768px) {
-    .contact-columns {
-      grid-template-columns: 1fr;
-      gap: 2rem;
-      margin-top: 1.5rem;
-    }
-    
-    .contact-column h2 {
-      font-size: 1.25rem;
-      margin-bottom: 1.5rem;
-    }
-    
-    .contact-column h3 {
-      font-size: 1rem;
-    }
-    
-    .contact-column p,
-    .contact-column li {
-      font-size: 0.875rem;
-    }
-  }
+
 }
 
 /* Gooey audio slider (bottom-right) */
@@ -1234,59 +1214,109 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
 .audio-speaker svg{display:block;fill:#000;color:#000}
 
 /* Contact page three-column layout */
-.contact-columns {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 3rem;
-  margin-top: 2rem;
+:root{
+  --sr-bg:#FAF8F2;         /* warm off-white */
+  --sr-text:#111;          /* body */
+  --sr-muted:#666;         /* secondary */
+  --sr-rule:#D6D3CE;       /* hairline */
+  --sr-accent:#FF6B00;
+  --sr-maxw:1280px;
 }
 
-.contact-column h2 {
-  font-family: 'Baskervville', Georgia, 'Times New Roman', serif;
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #000;
-  margin-bottom: 2rem;
-  text-transform: lowercase;
+/* Section shell */
+.sr-threecol{
+  background:var(--sr-bg);
+  color:var(--sr-text);
+  padding:clamp(2rem,6vw,4rem) clamp(1rem,5vw,3rem);
 }
 
-.contact-column h3 {
-  font-family: 'Inter', sans-serif;
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: #000;
-  margin-bottom: 0.5rem;
+/* Desktop: three equal columns with big gutters */
+.sr-threecol__inner{
+  margin:0 auto; max-width:var(--sr-maxw);
+  display:grid; gap:clamp(2rem,5vw,4rem);
+  grid-template-columns:repeat(3,1fr);
 }
 
-.contact-column p {
-  font-family: 'Inter', sans-serif;
-  font-size: 0.875rem;
-  color: #666;
-  margin-bottom: 1rem;
-  line-height: 1.4;
+/* Cards (light like the screenshot) */
+.sr-card{
+  border-top:1px solid var(--sr-rule);   /* hairline */
+  padding-top:clamp(1rem,2.5vw,1.75rem);
 }
 
-.contact-column ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+/* Typography */
+.sr-h{
+  font-family:"Baskervville", Georgia, serif;
+  font-weight:400;
+  font-size:clamp(1.4rem,3vw,1.75rem);
+  line-height:1.2;
+  margin:0 0 .75rem;
+  letter-spacing:0.005em;
 }
 
-.contact-column li {
-  font-family: 'Inter', sans-serif;
-  font-size: 0.875rem;
-  color: #000;
-  margin-bottom: 0.75rem;
-  line-height: 1.4;
+.sr-sub{
+  font-family:"Baskervville", Georgia, serif;
+  font-weight:400;
+  font-size:clamp(1.05rem,2.2vw,1.15rem);
+  margin:1.25rem 0 .5rem;
 }
 
-.contact-column a {
-  color: #000;
-  text-decoration: none;
-  transition: color 0.2s ease;
+.sr-org{
+  font-family:"Baskervville", Georgia, serif;
+  font-weight:400;
+  font-size:clamp(1.05rem,2vw,1.15rem);
+  margin:.75rem 0 .15rem;
 }
 
-.contact-column a:hover {
-  color: #666;
+.sr-meta{
+  font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size:clamp(.9rem,1.4vw,.98rem);
+  color:var(--sr-muted);
+  margin:0 0 .35rem;
+}
+
+.sr-text, .sr-list, .sr-contact a{
+  font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size:clamp(.95rem,1.5vw,1.02rem);
+  line-height:1.65;
+}
+
+.sr-text{ margin:0 0 .6rem; }
+
+.sr-list{ margin:.25rem 0 0; padding:0; list-style:none; }
+.sr-list li{ margin:.25rem 0; }
+
+/* Contact links */
+.sr-contact{ display:grid; gap:.35rem; margin:.25rem 0 0; }
+.sr-contact a{
+  color:var(--sr-text); text-decoration:none; border-bottom:1px solid transparent;
+  text-underline-offset:3px;
+}
+.sr-contact a:hover{ text-decoration:underline; }
+
+/* Blocks */
+.sr-block + .sr-block{ margin-top:1rem; }
+.sr-now{ margin-top:1rem; }
+
+/* -------- Mobile behavior: horizontal rows instead of stacked columns -------- */
+@media (max-width: 900px){
+  .sr-threecol__inner{
+    display:flex;
+    gap:1rem;
+    overflow-x:auto; overscroll-behavior-x:contain;
+    -webkit-overflow-scrolling:touch;
+    scroll-snap-type:x mandatory;
+    padding-bottom:.5rem;
+  }
+  .sr-card{
+    flex:0 0 85vw;            /* card width on mobile */
+    scroll-snap-align:start;
+    border-top:1px solid var(--sr-rule);
+    padding-top:1rem;
+  }
+}
+
+/* Optional: very small phones—wider card */
+@media (max-width: 380px){
+  .sr-card{ flex-basis: 92vw; }
 }
 
