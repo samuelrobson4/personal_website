@@ -631,10 +631,21 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
   cursor: pointer;
   transition: background-color 0.2s ease;
   min-height: 120px;
-  border: 1px solid #949494;
+  border-top: 1px solid #949494;
+  border-left: 1px solid #949494;
   opacity: 0;
   transform: translateY(20px);
   animation: fadeInUp 0.6s ease forwards;
+}
+
+/* Add right border to last column items */
+.blog-grid-item:nth-child(3n) {
+  border-right: 1px solid #949494;
+}
+
+/* Add bottom border to last row items */
+.blog-grid-item:nth-last-child(-n+3) {
+  border-bottom: 1px solid #949494;
 }
 
 @keyframes fadeInUp {
@@ -674,6 +685,15 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
     min-height: 100px;
   }
   
+  /* Update borders for 2-column layout */
+  .blog-grid-item:nth-child(3n) {
+    border-right: none;
+  }
+  
+  .blog-grid-item:nth-child(2n) {
+    border-right: 1px solid #949494;
+  }
+  
   .blog-grid-title {
     font-size: 0.875rem;
   }
@@ -686,6 +706,15 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
 @media (max-width: 480px) {
   .blog-grid {
     grid-template-columns: 1fr;
+  }
+  
+  /* Update borders for 1-column layout */
+  .blog-grid-item:nth-child(2n) {
+    border-right: none;
+  }
+  
+  .blog-grid-item {
+    border-right: 1px solid #949494;
   }
 }
 .blog-bubble {
