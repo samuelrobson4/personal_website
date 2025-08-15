@@ -1118,6 +1118,13 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
     margin-bottom: 1.5rem;
   }
   
+  #hs-contact-form textarea {
+    resize: none;
+    height: 1.5rem;
+    line-height: 1.5rem;
+    overflow: hidden;
+  }
+  
   #hs-contact-form input::placeholder,
   #hs-contact-form textarea::placeholder {
     font-size: 0.875rem;
