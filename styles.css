@@ -817,7 +817,7 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
   
   .page {
     margin: 0 auto;
-    padding: 120px 1.5rem 3rem 1.5rem !important; /* top, right, bottom, left */
+    padding: 100px 1.5rem 2rem 1.5rem !important; /* top, right, bottom, left */
     max-width: calc(100vw - 3rem);
   }
   
@@ -832,7 +832,7 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
   
   /* Non-hero panels need space for nav */
   .hs-panel:not(.hs-panel--hero) .hs-inner {
-    padding-top: 140px !important;
+    padding-top: 100px !important;
   }
 }
 
@@ -1021,7 +1021,7 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
     min-height: auto;
     min-width: auto; 
     padding: 0; 
-    margin: 0;
+    margin: 0 0 1rem 0;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -1070,18 +1070,18 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
   .hs-panel .lead {
     font-size: clamp(0.875rem, 3.5vw, 1rem);
     color: #666;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
   }
   
   /* Mobile about section improvements */
   .about-intro {
     display: flex;
     line-height: 1.6;
-    margin-bottom: 3rem;
+    margin-bottom: 2rem;
   }
   
   .about-divider {
-    margin: 3rem 0;
+    margin: 2rem 0;
   }
   
   .about-principles {
@@ -1093,7 +1093,7 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
   .about-principles li {
     display: flex;
     align-items: flex-start;
-    margin: 1.5rem 0;
+    margin: 1rem 0;
     text-align: left;
   }
   

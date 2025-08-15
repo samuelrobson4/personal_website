@@ -11,10 +11,30 @@
   <style>
     .page{max-width:1100px;margin:0 auto;padding:140px 2rem 4rem}
     .page h1{font-family:'Baskervville',serif;font-size:24px;font-weight:600;margin-bottom:1rem}
-    .about-intro{font-family:'Baskervville',serif;font-weight:400;color:#000;letter-spacing:-0.02em;line-height:1.05;max-width:1100px;font-size:clamp(36px,8vw,100px);word-break:keep-all;overflow-wrap:normal;hyphens:none;text-wrap:balance}
+    .about-intro{font-family:'Baskervville',serif;font-weight:400;color:#000;letter-spacing:-0.02em;line-height:1.05;max-width:1100px;font-size:clamp(24px,6vw,100px);word-break:keep-all;overflow-wrap:normal;hyphens:none;text-wrap:balance;padding:0 1rem}
     .about-divider{border:0;border-top:1px solid #cfcfcf;margin:28px 0}
     .about-principles{list-style:decimal inside;font-family:'Baskervville',serif;color:#000;letter-spacing:-0.02em;margin-top:10px;max-width:900px;font-size:clamp(18px,2.2vw,26px);line-height:1.2;padding-left:0}
     .about-principles li{margin:0.5rem 0}
+    
+    /* Mobile responsive adjustments */
+    @media (max-width: 768px) {
+      .page {
+        padding: 100px 1rem 2rem;
+      }
+      .about-intro {
+        font-size: clamp(20px, 5vw, 36px);
+        line-height: 1.2;
+        padding: 0 0.5rem;
+        margin-bottom: 2rem;
+      }
+      .about-principles {
+        font-size: clamp(16px, 4vw, 22px);
+        padding: 0 0.5rem;
+      }
+      .about-principles li {
+        margin: 0.75rem 0;
+      }
+    }
   </style>
 </head>
 <body>
