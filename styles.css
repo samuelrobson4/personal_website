@@ -342,19 +342,26 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
 
 @media (max-width: 768px) {
   .landing .hero {
-    padding: 120px 1.5rem 0 !important;
+    padding: 120px 1.5rem 2rem 1.5rem !important;
     max-width: calc(100vw - 3rem);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: calc(100vh - 120px);
   }
   
-  /* Mobile text sizing */
+  /* Mobile text sizing and centering */
   .hero-title {
     font-size: 24px !important;
     line-height: 1.2;
+    text-align: center !important;
   }
   
   .hero-subtitle {
     font-size: 14px !important;
     line-height: 1.6;
+    text-align: center !important;
   }
   
   /* Panel headings */
@@ -816,7 +823,11 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
   
   /* Hero panel needs more top space on mobile */
   .hs-panel--hero .hs-inner {
-    padding-top: 160px !important;
+    padding-top: 120px !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: calc(100vh - 120px);
   }
   
   /* Non-hero panels need space for nav */
@@ -1007,13 +1018,13 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
     flex: none; 
     width: auto; 
     height: auto; 
-    min-height: calc(100vh - 80px);
+    min-height: auto;
     min-width: auto; 
     padding: 0; 
     margin: 0;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
   }
   /* Padding handled by container approach above */
 
@@ -1039,16 +1050,15 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
   
   /* Mobile scroll hint positioning - move to hero section */
   .hs-panel--hero .hs-hero__scroll-hint {
-    position: absolute;
-    bottom: 2rem;
-    left: 50%;
-    transform: translateX(-50%);
+    position: relative;
+    margin-top: 2rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 0.5rem;
     font-size: 0.875rem;
     color: #999;
+    text-align: center;
   }
   
   /* Mobile section headings */
