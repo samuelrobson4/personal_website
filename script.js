@@ -30,6 +30,28 @@
     });
   }
 
+  function checkCardTouches() {
+    // Remove all touching classes first
+    cards.forEach(card => card.classList.remove('touching'));
+    
+    // Check for overlaps and add touching class
+    cards.forEach((card1, index1) => {
+      const rect1 = card1.getBoundingClientRect();
+      cards.forEach((card2, index2) => {
+        if (index1 === index2) return;
+        const rect2 = card2.getBoundingClientRect();
+        
+        const overlapX = Math.max(0, Math.min(rect1.right, rect2.right) - Math.max(rect1.left, rect2.left));
+        const overlapY = Math.max(0, Math.min(rect1.bottom, rect2.bottom) - Math.max(rect1.top, rect2.top));
+        
+        if (overlapX > 10 && overlapY > 10) { // Minimum overlap threshold
+          card1.classList.add('touching');
+          card2.classList.add('touching');
+        }
+      });
+    });
+  }
+
   cards.forEach((card) => {
     let isPointerDown = false;
     let isDragging = false;
@@ -77,6 +99,7 @@
       card.style.bottom = 'auto';
 
       resolveCollisions(card);
+      checkCardTouches();
     };
 
     const onPointerUp = () => {
@@ -97,6 +120,8 @@
         card.style.transform = 'translate3d(0,0,0)';
       }
 
+      checkCardTouches();
+      
       if (!wasDragging) {
         const slug = card.getAttribute('data-slug');
         if (slug) window.location.href = 'projects/' + slug + '.html';
