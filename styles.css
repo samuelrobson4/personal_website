@@ -1144,26 +1144,27 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
   }
   
   .hs-hero__title {
-    font-size: clamp(2rem, 8vw, 3rem);
+    font-size: clamp(1.5rem, 6vw, 2.5rem);
     line-height: 1.2;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
   }
   
   .hs-hero__subtitle {
-    font-size: clamp(1rem, 4vw, 1.125rem);
+    font-size: clamp(0.75rem, 3vw, 0.9rem);
     line-height: 1.6;
     color: #666;
+    margin-bottom: 2rem;
   }
   
   /* Mobile scroll hint positioning - move to hero section */
   .hs-panel--hero .hs-hero__scroll-hint {
     position: relative;
-    margin-top: 2rem;
+    margin-top: 1.5rem;
     display: flex;
     flex-direction: row;
     align-items: center;
     gap: 0.5rem;
-    font-size: 0.875rem;
+    font-size: 0.7rem;
     color: #999;
     text-align: left;
   }
