@@ -1225,7 +1225,7 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
 
 /* Section shell */
 .sr-threecol{
-  background:var(--sr-bg);
+  background:transparent;
   color:var(--sr-text);
   padding:clamp(2rem,6vw,4rem) clamp(1rem,5vw,3rem);
 }
@@ -1239,7 +1239,7 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
 
 /* Cards (light like the screenshot) */
 .sr-card{
-  border-top:1px solid var(--sr-rule);   /* hairline */
+  border-top:none;
   padding-top:clamp(1rem,2.5vw,1.75rem);
 }
 
@@ -1251,6 +1251,7 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
   line-height:1.2;
   margin:0 0 .75rem;
   letter-spacing:0.005em;
+  text-transform:lowercase;
 }
 
 .sr-sub{
@@ -1295,7 +1296,6 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
 
 /* Blocks */
 .sr-block + .sr-block{ margin-top:1rem; }
-.sr-now{ margin-top:1rem; }
 
 /* -------- Mobile behavior: horizontal rows instead of stacked columns -------- */
 @media (max-width: 900px){
@@ -1310,7 +1310,7 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
   .sr-card{
     flex:0 0 85vw;            /* card width on mobile */
     scroll-snap-align:start;
-    border-top:1px solid var(--sr-rule);
+    border-top:none;
     padding-top:1rem;
   }
 }
