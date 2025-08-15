@@ -1075,9 +1075,12 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
   
   /* Mobile about section - simple scaled down version */
   .about-intro {
-    font-size: clamp(24px, 6vw, 48px);
+    font-size: clamp(32px, 8vw, 64px);
     line-height: 1.1;
-    margin-bottom: 2rem;
+    margin-bottom: 3rem;
+    min-height: 40vh;
+    display: flex;
+    align-items: center;
   }
   
   .about-divider {
