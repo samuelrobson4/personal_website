@@ -372,18 +372,18 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
   
   /* General text sizing */
   .hs-panel p {
-    font-size: 14px !important;
+    font-size: 9px !important;
     line-height: 1.6;
   }
   
   /* Static page headings */
   .page h1 {
-    font-size: 22px !important;
+    font-size: 17px !important;
     line-height: 1.3;
   }
   
   .page p {
-    font-size: 14px !important;
+    font-size: 9px !important;
     line-height: 1.6;
   }
 }
@@ -618,6 +618,21 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
   background: transparent;
   border: none;
   margin-top: 2rem;
+  position: relative;
+}
+
+/* Sloping background effect for studio log */
+.blog-grid::before {
+  content: '';
+  position: absolute;
+  top: -50px;
+  left: -50px;
+  right: -50px;
+  bottom: -50px;
+  background: linear-gradient(135deg, #f8f8f8 0%, #e8e8e8 100%);
+  z-index: -1;
+  transform: skewY(-2deg);
+  transform-origin: top left;
 }
 
 .blog-grid-item {
@@ -927,9 +942,9 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
   letter-spacing: -0.02em;
 }
 
-/* Match the size of "product principles" heading (24px) for non-hero panel titles */
+/* Match the size of "product principles" heading (19px) for non-hero panel titles */
 .hs-panel:not(.hs-panel--hero) h1 {
-  font-size: 24px;
+  font-size: 19px;
 }
 
 .hs-panel p {
