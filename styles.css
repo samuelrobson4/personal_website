@@ -344,24 +344,24 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
   .landing .hero {
     padding: 120px 1.5rem 2rem 1.5rem !important;
     max-width: calc(100vw - 3rem);
-    text-align: center;
+    text-align: left;
     display: flex;
     flex-direction: column;
     justify-content: center;
     min-height: calc(100vh - 120px);
   }
   
-  /* Mobile text sizing and centering */
+  /* Mobile text sizing - left aligned */
   .hero-title {
     font-size: 24px !important;
     line-height: 1.2;
-    text-align: center !important;
+    text-align: left !important;
   }
   
   .hero-subtitle {
     font-size: 14px !important;
     line-height: 1.6;
-    text-align: center !important;
+    text-align: left !important;
   }
   
   /* Panel headings */
@@ -1054,11 +1054,11 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
     margin-top: 2rem;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     gap: 0.5rem;
     font-size: 0.875rem;
     color: #999;
-    text-align: center;
+    text-align: left;
   }
   
   /* Mobile section headings */
