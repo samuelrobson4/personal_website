@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>About – Samuel Robson</title>
-  <link rel="stylesheet" href="styles.css?v=1755295102112" />
+  <link rel="stylesheet" href="styles.css?v=1755295250672" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Baskervville:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
@@ -14,6 +14,8 @@
       max-width: 1100px;
       margin: 0 auto;
       padding: 140px 2rem 4rem;
+      width: 100%;
+      box-sizing: border-box;
     }
     
     .about-intro {
@@ -25,6 +27,9 @@
       line-height: 1.2;
       margin-bottom: 2rem;
       max-width: none;
+      width: 100%;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
     }
     
     .about-divider {
@@ -53,12 +58,18 @@
     @media (max-width: 768px) {
       .about-page {
         padding: 100px 1rem 2rem;
+        max-width: 100%;
+        width: 100%;
       }
       
       .about-intro {
         font-size: clamp(2.5rem, 8vw, 4rem);
         line-height: 1.2;
         margin-bottom: 1.5rem;
+        width: 100%;
+        max-width: 100%;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
       }
       
       .about-principles {
@@ -120,7 +131,7 @@
       </ol>
     </div>
   </main>
-  <script src="dist/bundle.js?v=1755295102112"></script>
+  <script src="dist/bundle.js?v=1755295250672"></script>
   <script src="gooey-water.js"></script>
   <script src="title-wiggle.js"></script>
   <script src="site-loader.js"></script>
