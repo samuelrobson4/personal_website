@@ -532,6 +532,8 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
     
     .projects-container {
         padding: 1rem;
+        max-width: 90vw;
+        min-height: 40vh;
     }
     
     .project-card {
@@ -588,6 +590,11 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
     
     .hero-title {
         font-size: 1.8rem;
+    }
+    
+    .projects-container {
+        max-width: 85vw;
+        min-height: 35vh;
     }
     
     .project-card {
