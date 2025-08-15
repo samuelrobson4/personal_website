@@ -94,11 +94,15 @@ body {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    position: sticky;
+    position: fixed;
     top: 0;
+    left: 0;
+    right: 0;
     z-index: 1000;
     width: 100%;
     box-sizing: border-box;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
   }
   
   .header-top {
@@ -247,17 +251,19 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 16px;
+  padding-top: max(16px, env(safe-area-inset-top));
   border-bottom: 1px solid #e6e6e0;
 }
 .mobile-nav-close {
   width: 40px;
   height: 40px;
-  display: none;
+  display: flex;
   align-items: center;
   justify-content: center;
   background: transparent;
   border: none;
   cursor: pointer;
+  color: #000;
 }
 .mobile-nav-content {
   padding: 48px 32px;
@@ -506,18 +512,18 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
 @media (max-width: 768px) {
   .burger { display: flex; }
   .nav-container { display: none; }
-  .nav { padding: 1rem; }
+  .nav { padding: 0; }
   .nav-container { top: 14px; right: 14px; gap: 8px; }
   .nav-item { width: 10px; height: 10px; }
   .nav-stack-label { font-size: 10px; top: calc(100% + 6px); }
   
   /* Ensure content doesn't go under nav */
   .hs-panel .hs-inner {
-    padding-top: 60px !important;
+    padding-top: 80px !important;
   }
   
   .hs-panel--hero .hs-inner {
-    padding-top: 40px !important;
+    padding-top: 60px !important;
   }
     
     .hero {
@@ -580,6 +586,11 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
 }
 
 @media (max-width: 480px) {
+    .header {
+        padding: 12px;
+        padding-top: max(12px, env(safe-area-inset-top));
+    }
+    
     .nav-container {
         gap: 1.5rem;
     }
@@ -619,14 +630,14 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
 .principles li { margin: 0.7rem 0; }
 
 /* About page typography - simplified to match other headers */
-.about-intro { 
+.hs-panel .about-intro { 
   font-family: 'Baskervville', Georgia, 'Times New Roman', serif; 
   font-weight: 600; 
   color: #000; 
   letter-spacing: -0.02em; 
   line-height: 1.1; 
   margin-bottom: 1.5rem;
-  font-size: clamp(2rem, 6vw, 3rem) !important;
+  font-size: clamp(2rem, 6vw, 3rem);
 }
 .about-divider { border: 0; border-top: 1px solid #cfcfcf; margin: 50px 0; }
 .about-principles { list-style: decimal inside; font-family: 'Baskervville', Georgia, 'Times New Roman', serif; color: #000; letter-spacing: -0.02em; margin-top: 10px; max-width: 900px; font-size: clamp(18px, 2.2vw, 26px); line-height: 1.4; padding-left: 0; }
@@ -1002,15 +1013,7 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
   margin-bottom: 1.5rem;
 }
 
-/* Override default panel paragraph style for the large Baskerville intro */
-.hs-panel .about-intro {
-  font-family: 'Baskervville', Georgia, 'Times New Roman', serif;
-  font-weight: 600;
-  color: #000;
-  letter-spacing: -0.02em;
-  line-height: 1.1;
-  margin-bottom: 1.5rem;
-}
+
 
 .hs-panel p.lead {
   font-size: clamp(1.125rem, 2.5vw, 1.25rem);
@@ -1199,12 +1202,7 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
     margin-bottom: 0.5rem;
   }
   
-  /* Mobile about intro - match other headers */
-  .hs-panel .about-intro {
-    font-size: clamp(2rem, 6vw, 3rem);
-    line-height: 1.1;
-    margin-bottom: 0.5rem;
-  }
+
   
   .hs-panel .lead {
     font-size: clamp(1.125rem, 4vw, 1.25rem);
