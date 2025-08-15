@@ -548,9 +548,10 @@
         // Create blog grid for all devices
         const grid = document.createElement('div');
         grid.className = 'blog-grid';
-        cards.forEach(card => {
+        cards.forEach((card, index) => {
           const item = document.createElement('div');
           item.className = 'blog-grid-item';
+          item.style.animationDelay = `${index * 0.1}s`;
           item.innerHTML = `
             <div class="blog-grid-title">${card.title}</div>
             <div class="blog-grid-date">${card.subtitle}</div>
@@ -559,6 +560,23 @@
           grid.appendChild(item);
         });
         blogEl.appendChild(grid);
+        
+        // Trigger animations when section comes into view
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              const items = entry.target.querySelectorAll('.blog-grid-item');
+              items.forEach((item, index) => {
+                setTimeout(() => {
+                  item.style.animation = `fadeInUp 0.6s ease ${index * 0.1}s forwards`;
+                }, 100);
+              });
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.3 });
+        
+        observer.observe(grid);
         return;
       })();
     }
