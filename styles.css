@@ -531,9 +531,9 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
     }
     
     .projects-container {
-        padding: 1rem;
-        max-width: 90vw;
-        min-height: 40vh;
+        padding: 0.5rem;
+        max-width: 80vw;
+        min-height: 30vh;
     }
     
     .project-card {
@@ -593,8 +593,8 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
     }
     
     .projects-container {
-        max-width: 85vw;
-        min-height: 35vh;
+        max-width: 75vw;
+        min-height: 25vh;
     }
     
     .project-card {
@@ -943,8 +943,8 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
   
   .page {
     margin: 0 auto;
-    padding: 100px 1.5rem 2rem 1.5rem !important; /* top, right, bottom, left */
-    max-width: calc(100vw - 3rem);
+    padding: 80px 1rem 1.5rem 1rem !important; /* top, right, bottom, left */
+    max-width: calc(100vw - 2rem);
   }
   
   /* Hero panel needs more top space on mobile */
@@ -958,7 +958,7 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover { color: 
   
   /* Non-hero panels need space for nav */
   .hs-panel:not(.hs-panel--hero) .hs-inner {
-    padding-top: 100px !important;
+    padding-top: 80px !important;
   }
 }
 
