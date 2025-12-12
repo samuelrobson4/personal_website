@@ -772,7 +772,7 @@
     initNavigation();
     
     // Handle deep links
-    // handleDeepLink(); // Temporarily disabled for testing
+    handleDeepLink();
     
     // Handle popstate
     initPopState();
