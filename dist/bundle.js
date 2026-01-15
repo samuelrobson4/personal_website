@@ -29667,8 +29667,13 @@
             return;
           if (onCardClick)
             onCardClick(card);
-          else
-            window.location.href = card.url;
+          else {
+            if (card.url.startsWith("http://") || card.url.startsWith("https://")) {
+              window.open(card.url, "_blank", "noopener");
+            } else {
+              window.location.href = card.url;
+            }
+          }
         }
         downData.delete(id);
       }
@@ -30240,7 +30245,7 @@
         const res = await fetch("dist/substack.json", { cache: "no-store" });
         const posts = await res.json();
         console.log("Blog posts loaded:", posts);
-        const cards = posts.slice(0, 8).map((p, i) => ({
+        const cards = posts.slice(0, 6).map((p, i) => ({
           id: String(i + 1),
           title: p.title || "",
           subtitle: new Date(p.date || Date.now()).toLocaleDateString(),
@@ -30271,7 +30276,7 @@
     try {
       const res = await fetch("dist/substack.json", { cache: "no-store" });
       const posts = await res.json();
-      const cards = posts.slice(0, 8).map((p, i) => ({
+      const cards = posts.slice(0, 6).map((p, i) => ({
         id: String(i + 1),
         title: p.title || "",
         subtitle: new Date(p.date || Date.now()).toLocaleDateString(),
@@ -30288,7 +30293,7 @@
     try {
       const res = await fetch("dist/substack.json", { cache: "no-store" });
       const posts = await res.json();
-      const cards = posts.slice(0, 8).map((p, i) => ({
+      const cards = posts.slice(0, 6).map((p, i) => ({
         id: String(i + 1),
         title: p.title || "",
         subtitle: new Date(p.date || Date.now()).toLocaleDateString(),

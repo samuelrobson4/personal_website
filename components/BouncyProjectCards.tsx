@@ -424,7 +424,14 @@ export const BouncyProjectCards = forwardRef<BouncyProjectCardsRef, Props>(funct
         const card = cards.find((c) => c.id === id);
         if (!card) return;
         if (onCardClick) onCardClick(card);
-        else window.location.href = card.url;
+        else {
+          // Open external URLs in a new tab, internal links in same tab
+          if (card.url.startsWith('http://') || card.url.startsWith('https://')) {
+            window.open(card.url, '_blank', 'noopener');
+          } else {
+            window.location.href = card.url;
+          }
+        }
       }
       downData.delete(id);
     }

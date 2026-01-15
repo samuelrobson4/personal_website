@@ -40,7 +40,7 @@
     "description": "Led redesign of advertiser onboarding with AI-powered support, achieving 1.5× QoQ revenue growth and 3.0× completion rates.",
     "technologies": ["Product Analytics", "AI", "User Research"],
     "date": "May 2025",
-    "url": "projects/project-detail.html?id=intelligent-symptom-tracker",
+    "url": "https://intelligent-symptom-tracker.vercel.app/",
     "backgroundImage": "assets/images/projects/intelligent-symptom-tracker/logo.jpg"
   },
   {

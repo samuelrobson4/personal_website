@@ -660,7 +660,7 @@
       const response = await fetch('dist/substack.json');
       const posts = await response.json();
       
-      const cards = posts.slice(0, 8).map((post, i) => ({
+      const cards = posts.slice(0, 6).map((post, i) => ({
         id: String(i + 1),
         title: (post.title || '').toLowerCase(),
         subtitle: new Date(post.date || Date.now()).toLocaleDateString(),

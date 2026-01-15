@@ -30,6 +30,36 @@
     .project-content figcaption{font-family:'Inter',sans-serif;font-size:14px;color:#666;margin-top:0.75rem;font-style:italic;line-height:1.5}
     .project-content a img{display:inline-block}
     .project-content::after{content:"";display:table;clear:both}
+    /* Video and pitch deck embeds */
+    .project-embeds{margin:2.5rem 0;display:flex;flex-direction:row;gap:1.5rem;align-items:flex-start}
+    .project-embed-item{flex:1;min-width:0}
+    .project-embed-item h3{font-family:'Inter',sans-serif;font-size:14px;font-weight:600;margin-bottom:0.75rem;color:#666;text-transform:uppercase;letter-spacing:0.05em}
+    .project-embed-thumbnail{position:relative;width:100%;padding-bottom:56.25%;height:0;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);cursor:pointer;background:#000}
+    .project-embed-thumbnail img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover}
+    .project-embed-thumbnail .play-button{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:80px;height:80px;background:rgba(0,0,0,0.8);border-radius:50%;display:flex;align-items:center;justify-content:center;transition:all 0.3s ease;z-index:1}
+    .project-embed-thumbnail .play-button svg{width:32px;height:32px;fill:#fff;margin-left:4px}
+    .project-embed-thumbnail:hover .play-button{background:rgba(255,0,0,0.9);transform:translate(-50%,-50%) scale(1.1)}
+    .project-embed-video{position:relative;width:100%;padding-bottom:56.25%;height:0;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);background:#000;display:none}
+    .project-embed-video.active{display:block}
+    .project-embed-video iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
+    .project-embed-video video{width:100%;height:auto;display:block;border-radius:12px}
+    .project-embed-deck-thumbnail{position:relative;width:100%;padding-bottom:56.25%;height:0;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);cursor:pointer;background:#fafafa;display:flex;align-items:center;justify-content:center}
+    .project-embed-deck-thumbnail img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover}
+    .project-embed-deck-thumbnail .pdf-icon{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:80px;height:80px;display:flex;align-items:center;justify-content:center;z-index:1}
+    .project-embed-deck-thumbnail .pdf-icon svg{width:64px;height:64px;fill:#666}
+    .project-embed-deck-thumbnail:hover{box-shadow:0 4px 20px rgba(0,0,0,0.15)}
+    .project-embed-deck{width:100%;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);background:#fafafa;display:none;position:relative;padding-bottom:56.25%;height:0}
+    .project-embed-deck.active{display:block}
+    .project-embed-deck iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0;display:block}
+    .project-embed-deck a{display:block;padding:1.5rem;text-align:center;color:var(--text);text-decoration:none;border:2px dashed #ddd;border-radius:12px;transition:all 0.3s ease}
+    .project-embed-deck a:hover{border-color:var(--blue);color:var(--blue);background:#f0f7ff}
+    @media (max-width: 768px) {
+      .project-embeds{flex-direction:column;margin:2rem 0;gap:1.5rem}
+      .project-embed-item{width:100%}
+      .project-embed-deck iframe{height:400px}
+      .project-embed-thumbnail .play-button{width:60px;height:60px}
+      .project-embed-thumbnail .play-button svg{width:24px;height:24px}
+    }
     @media (max-width: 768px) {
       .page{padding:80px 1rem 2rem;max-width:calc(100vw - 2rem)}
       .page h1{font-size:clamp(1.5rem, 5vw, 2rem);margin-bottom:0.75rem}
@@ -123,6 +153,9 @@
     
     <h1 id="project-title">Loading...</h1>
     <p class="lead" id="project-subtitle"></p>
+    
+    <!-- Video and pitch deck embeds container -->
+    <div class="project-embeds" id="project-embeds"></div>
     
     <!-- Project description -->
     <div class="project-content" id="project-content">
@@ -282,6 +315,132 @@
         const subtitle = data.subtitle || '';
         document.getElementById('project-subtitle').textContent = subtitle;
 
+        // Handle video and pitch deck embeds for graph-expertise-search project
+        const embedsContainer = document.getElementById('project-embeds');
+        if (projectId === 'graph-expertise-search') {
+          let embedsHtml = '';
+          
+          // Video embed
+          if (data.video) {
+            const videoUrl = data.video;
+            let videoEmbed = '';
+            let videoThumbnail = '';
+            let videoId = '';
+            
+            // Check if it's a YouTube URL
+            if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
+              if (videoUrl.includes('youtube.com/watch?v=')) {
+                videoId = videoUrl.split('v=')[1].split('&')[0];
+              } else if (videoUrl.includes('youtu.be/')) {
+                videoId = videoUrl.split('youtu.be/')[1].split('?')[0];
+              } else if (videoUrl.includes('youtube.com/embed/')) {
+                videoId = videoUrl.split('embed/')[1].split('?')[0];
+              }
+              if (videoId) {
+                videoEmbed = `<div class="project-embed-video active" data-video-id="${videoId}">
+                  <iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>`;
+              }
+            }
+            // Check if it's a Vimeo URL
+            else if (videoUrl.includes('vimeo.com')) {
+              if (videoUrl.includes('vimeo.com/')) {
+                videoId = videoUrl.split('vimeo.com/')[1].split('?')[0];
+              }
+              if (videoId) {
+                videoEmbed = `<div class="project-embed-video active" data-video-id="${videoId}" data-platform="vimeo">
+                  <iframe src="https://player.vimeo.com/video/${videoId}" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+                </div>`;
+              }
+            }
+            // Direct video file
+            else if (videoUrl.match(/\.(mp4|webm|ogg)$/i)) {
+              videoEmbed = `<div class="project-embed-video active" data-video-url="${videoUrl}">
+                <video controls style="width: 100%; height: 100%; object-fit: cover;">
+                  <source src="${videoUrl}" type="video/mp4">
+                  Your browser does not support the video tag.
+                </video>
+              </div>`;
+            }
+            // Generic iframe embed (for other platforms)
+            else if (videoUrl.startsWith('http')) {
+              videoEmbed = `<div class="project-embed-video active" data-video-url="${videoUrl}">
+                <iframe src="${videoUrl}" frameborder="0" allowfullscreen></iframe>
+              </div>`;
+            }
+            
+            if (videoEmbed) {
+              embedsHtml += `<div class="project-embed-item">
+                <h3>Video</h3>
+                ${videoEmbed}
+              </div>`;
+            }
+          }
+          
+          // Pitch deck embed
+          if (data.pitchDeck) {
+            const deckUrl = data.pitchDeck;
+            let deckEmbed = '';
+            let deckThumbnail = '';
+            
+            // Check if it's a PDF
+            if (deckUrl.match(/\.pdf$/i) || deckUrl.includes('pdf')) {
+              // Load PDF directly without thumbnail
+              deckEmbed = `<div class="project-embed-deck active" data-deck-url="${deckUrl}">
+                <iframe src="${deckUrl}#toolbar=0" type="application/pdf"></iframe>
+              </div>`;
+            }
+            // Check if it's Google Slides
+            else if (deckUrl.includes('docs.google.com/presentation') || deckUrl.includes('slides.google.com')) {
+              // Convert Google Slides URL to embed format
+              let embedUrl = deckUrl;
+              if (deckUrl.includes('/d/')) {
+                const slideId = deckUrl.split('/d/')[1].split('/')[0];
+                embedUrl = `https://docs.google.com/presentation/d/${slideId}/preview`;
+              }
+              deckEmbed = `<div class="project-embed-deck active" data-deck-url="${embedUrl}">
+                <iframe src="${embedUrl}" frameborder="0"></iframe>
+              </div>`;
+            }
+            // Check if it's a Notion page
+            else if (deckUrl.includes('notion.so')) {
+              deckEmbed = `<div class="project-embed-deck active" data-deck-url="${deckUrl}">
+                <iframe src="${deckUrl}" frameborder="0"></iframe>
+              </div>`;
+            }
+            // Generic link
+            else if (deckUrl.startsWith('http')) {
+              deckEmbed = `<div class="project-embed-deck active" data-deck-url="${deckUrl}">
+                <a href="${deckUrl}" target="_blank" rel="noopener" style="display: block; padding: 1.5rem; text-align: center; color: var(--text); text-decoration: none; border: 2px dashed #ddd; border-radius: 12px; transition: all 0.3s ease;">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin: 0 auto 0.5rem;">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                    <polyline points="15 3 21 3 21 9"></polyline>
+                    <line x1="10" y1="14" x2="21" y2="3"></line>
+                  </svg>
+                  View Pitch Deck
+                </a>
+              </div>`;
+            }
+            
+            if (deckEmbed) {
+              embedsHtml += `<div class="project-embed-item">
+                <h3>Pitch Deck</h3>
+                ${deckEmbed}
+              </div>`;
+            }
+          }
+          
+          if (embedsHtml) {
+            embedsContainer.innerHTML = embedsHtml;
+            
+            // Both video and pitch deck now load directly, no thumbnail click handlers needed
+          } else {
+            embedsContainer.style.display = 'none';
+          }
+        } else {
+          embedsContainer.style.display = 'none';
+        }
+
         // Configure marked for better image rendering
         marked.setOptions({
           breaks: true,
@@ -291,21 +450,51 @@
         // Render markdown content
         let html = marked.parse(content);
         
-        // Get images from frontmatter and create bento box grid at the start
+        // Get images from frontmatter
         const images = data.images || [];
-        let bentoGridHtml = '';
         
-        if (images.length > 0) {
-          // Create bento box grid with images (stacked vertically, floating right)
-          bentoGridHtml = `<div class="bento-grid">${images.map((img, i) => {
-            // Extract image name for alt text
+        // For intelligent-creation project, insert images next to their respective sections
+        if (projectId === 'intelligent-creation' && images.length >= 3) {
+          // First image (pointandcreate) goes with "point & create" section
+          const pointAndCreateImage = images[0];
+          const pointAndCreateImgName = pointAndCreateImage.split('/').pop().replace(/\.[^/.]+$/, '');
+          const pointAndCreateBento = `<div class="bento-grid"><div class="bento-box" data-image="${pointAndCreateImgName}"><img src="${pointAndCreateImage}" alt="${pointAndCreateImgName}"></div></div>`;
+          
+          // Insert first image before the "point & create" h1 heading
+          // Handle both encoded (&amp;) and unencoded (&) ampersands, and the em dash that follows
+          const pointAndCreateMatch = html.match(/(<h1[^>]*>point\s+(&amp;|&)\s+create[^<]*<\/h1>)/i);
+          if (pointAndCreateMatch) {
+            html = html.replace(/(<h1[^>]*>point\s+(&amp;|&)\s+create[^<]*<\/h1>)/i, pointAndCreateBento + '$1');
+          } else {
+            // Fallback: insert at the beginning if regex doesn't match
+            console.warn('Could not find "point & create" heading, inserting image at start');
+            html = pointAndCreateBento + html;
+          }
+          
+          // Second and third images (adscript1, adscript2) go with "ad script generator" section
+          const adScriptImages = images.slice(1, 3);
+          const adScriptBento = `<div class="bento-grid">${adScriptImages.map((img) => {
             const imgName = img.split('/').pop().replace(/\.[^/.]+$/, '');
-            return `<div class="bento-box"><img src="${img}" alt="${imgName}"></div>`;
+            return `<div class="bento-box" data-image="${imgName}"><img src="${img}" alt="${imgName}"></div>`;
           }).join('')}</div>`;
-        }
-        
-        // Insert bento grid at the beginning of content
-        if (bentoGridHtml) {
+          
+          // Insert ad script images before the "ad script generator" h1 heading
+          const adScriptMatch = html.match(/(<h1[^>]*>ad\s+script\s+generator[^<]*<\/h1>)/i);
+          if (adScriptMatch) {
+            html = html.replace(/(<h1[^>]*>ad\s+script\s+generator[^<]*<\/h1>)/i, adScriptBento + '$1');
+          } else {
+            // Fallback: insert after first section if regex doesn't match
+            console.warn('Could not find "ad script generator" heading, inserting images after first section');
+            html = html.replace(/(<\/h1>)/, '$1' + adScriptBento);
+          }
+        } else if (images.length > 0) {
+          // For other projects, create bento box grid at the start (original behavior)
+          const bentoGridHtml = `<div class="bento-grid">${images.map((img, i) => {
+            const imgName = img.split('/').pop().replace(/\.[^/.]+$/, '');
+            // For interpretable-chatbot project, remove alt text from second image
+            const altText = (projectId === 'interpretable-chatbot' && i === 1) ? '' : imgName;
+            return `<div class="bento-box" data-image="${imgName}"><img src="${img}" alt="${altText}"></div>`;
+          }).join('')}</div>`;
           html = bentoGridHtml + html;
         }
         

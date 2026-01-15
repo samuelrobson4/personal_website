@@ -39,7 +39,7 @@ Everything runs locally in Python with clean modular structure, making it easy t
 - **Building a simple but expressive UX**  
   Kept the interface minimal and focused: live feed, cropped region, and grounded model response.
 
-## outcome / lessons Learned
+## outcome / lessons learned
 The prototype demonstrated that spatially grounded AI can feel intuitive with the right feedback loop. It became a useful sandbox for testing multimodal behavior, interpretability overlays, and ideas for future tangible assistants — from cooking guidance to hardware repair help.
 
 

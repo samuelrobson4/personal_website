@@ -3,9 +3,9 @@ title: knowledge graph expertise search — connecting people, skills, and proje
 subtitle: 2024
 images:
 technologies: ["React", "TypeScript", "FastAPI", "Python", "Claude API", "Neo4j", "Vite", "Cypher"]
+video: https://youtu.be/TRhvyYHXyfk
+pitchDeck: /assets/docs/pitchdeck.pdf 
 ---
-## PROJECT IN PROGRESS
-
 ## inspiration
 In growing teams, I kept seeing people struggle to find the right expertise or documents—knowledge about "who knows what" was scattered across Slack, Google Docs, and Notion. This led to **duplicated work, slower progress, and missed collaboration opportunities**. I wanted to build a **centralized system** that connects people, skills, and projects, letting anyone ask "Who can help with data visualization?" and get instant, relevant answers.
 

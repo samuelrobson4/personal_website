@@ -113,7 +113,7 @@ async function mountProjects(el: HTMLElement) {
       const res = await fetch('dist/substack.json', { cache: 'no-store' });
       const posts = await res.json();
       console.log('Blog posts loaded:', posts);
-      const cards: Card[] = posts.slice(0, 8).map((p: any, i: number) => ({
+      const cards: Card[] = posts.slice(0, 6).map((p: any, i: number) => ({
         id: String(i + 1),
         title: p.title || '',
         subtitle: new Date(p.date || Date.now()).toLocaleDateString(),
@@ -148,7 +148,7 @@ async function mountBlog(el: HTMLElement) {
   try {
     const res = await fetch('dist/substack.json', { cache: 'no-store' });
     const posts = await res.json();
-    const cards: Card[] = posts.slice(0, 8).map((p: any, i: number) => ({
+    const cards: Card[] = posts.slice(0, 6).map((p: any, i: number) => ({
       id: String(i + 1),
       title: p.title || '',
       subtitle: new Date(p.date || Date.now()).toLocaleDateString(),
@@ -169,7 +169,7 @@ window.mountBlog = mountBlog;
   try {
     const res = await fetch('dist/substack.json', { cache: 'no-store' });
     const posts = await res.json();
-    const cards: Card[] = posts.slice(0, 8).map((p: any, i: number) => ({
+    const cards: Card[] = posts.slice(0, 6).map((p: any, i: number) => ({
       id: String(i + 1),
       title: p.title || '',
       subtitle: new Date(p.date || Date.now()).toLocaleDateString(),
